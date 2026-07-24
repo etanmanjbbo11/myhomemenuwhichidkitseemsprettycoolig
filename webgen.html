@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Website Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #020617;
+      padding: 30px 40px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      width: 320px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    #chosen {
+      margin: 15px 0;
+      font-size: 15px;
+      color: #38bdf8;
+      min-height: 20px;
+    }
+    .icons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .icons img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      opacity: 0.85;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #38bdf8;
+      color: #020617;
+      font-weight: bold;
+      width: 100%;
+    }
+    button:hover {
+      background: #0ea5e9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Random Website</h1>
+    <p>Not a calculator!</p>
+
+    <div class="icons">
+      <img src="https://cdn.simpleicons.org/youtube/red" />
+      <img src="https://cdn.simpleicons.org/google/white" />
+      <img src="https://cdn.simpleicons.org/notion/white" />
+      <img src="https://cdn.simpleicons.org/whatsapp/25D366" />
+      <img src="https://cdn.simpleicons.org/googledocs/4285F4" />
+      <img src="https://cdn.simpleicons.org/apple/white" />
+      <img src="https://cdn.simpleicons.org/gmail" />
+      <img src="https://cdn.simpleicons.org/googledrive" />
+      <img src="https://cdn.simpleicons.org/googlemaps" />
+      <img src="https://cdn.simpleicons.org/googlephotos" />
+      <img src="https://cdn.simpleicons.org/googlechrome" />
+      <img src="https://cdn.simpleicons.org/googlegemini" alt="ChatGPT" />
+
+    </div>
+
+    <div id="chosen"></div>
+<input
+  type="number"
+  id="customCount"
+  min="1"
+  max="1000"
+  placeholder="Tabs (1–1000)"
+  style="
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:8px;
+    border:none;
+    font-size:14px;
+  "
+/>
+
+<button
+  id="backBtn"
+  style="
+    margin-bottom:12px;
+    background:#334155;
+    color:#e5e7eb;
+  "
+>
+  ⬅ Back to Homepage
+</button>
+
+
+<button
+  id="customBtn"
+  style="margin-bottom:10px;background:#22c55e;color:#020617;"
+>
+  Open Custom Amount
+</button>
+
+    <button id="spamBtn">Try Once</button>
+    <button id="nukeBtn" style="margin-top:10px;background:#ef4444;color:#fff;">
+    NUKE (x10)
+    </button>
+    
+  </div>
+
+  <script>
+    const sites = [
+      { name: "YouTube", url: "https://www.youtube.com" },
+      { name: "Google", url: "https://www.google.com" },
+      { name: "Notion", url: "https://www.notion.so" },
+      { name: "WhatsApp", url: "https://www.whatsapp.com" },
+      { name: "Google Docs", url: "https://docs.google.com" },
+      { name: "Gmail", url: "https://mail.google.com" },
+      { name: "Google Drive", url: "https://drive.google.com" },
+      { name: "ChatGPT", url: "https://chatgpt.com"}
+  
+    
+    ];
+
+    let pressCount = 0;
+    let spamInterval = null;
+
+    function goRandom() {
+      const choice = sites[Math.floor(Math.random() * sites.length)];
+      pressCount++;
+      document.getElementById("chosen").textContent =
+        `#${pressCount} Opening: ${choice.name}`;
+      window.open(choice.url, "_blank");
+    }
+
+    const spamBtn = document.getElementById("spamBtn");
+    const nukeBtn = document.getElementById("nukeBtn");
+const customBtn = document.getElementById("customBtn");
+const customCount = document.getElementById("customCount");
+
+customBtn.addEventListener("click", () => {
+  let count = parseInt(customCount.value);
+
+  if (isNaN(count) || count < 1) {
+    alert("Enter a valid number (1–1000)");
+    return;
+  }
+
+  // hard limit
+  count = Math.min(count, 1000);
+
+  if (!confirm(`⚠️ This will open ${count} tabs. Continue?`)) return;
+
+  for (let i = 0; i < count; i++) {
+    setTimeout(goRandom, i * 120);
+  }
+});
+
+    // HOLD TO SPAM
+    spamBtn.addEventListener("mousedown", () => {
+      goRandom();
+      spamInterval = setInterval(goRandom, 400);
+    });
+
+    ["mouseup", "mouseleave"].forEach(event =>
+      spamBtn.addEventListener(event, () => {
+        clearInterval(spamInterval);
+        spamInterval = null;
+      })
+    );
+
+    // NUKE MODE
+    nukeBtn.addEventListener("click", () => {
+      if (!confirm("⚠️ This will open 10 tabs. Continue?")) return;
+      for (let i = 0; i < 10; i++) {
+        setTimeout(goRandom, i * 120);
+      }
+    });
+
+    document.getElementById("backBtn").addEventListener("click", () => {
+  window.location.href =
+    "index.html";
+});
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ethan's Home Menu</title>
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --card: #111827;
+      --card-hover: #1f2937;
+      --text: #e5e7eb;
+      --subtext: #94a3b8;
+      --accent: #6366f1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Header & Clock Section */
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(10, 14, 23, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 24px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-bottom: none; /* Line removed here */
+}
+
+    .clock {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: #ffffff;
+    }
+
+    .date {
+      font-size: 0.85rem;
+      color: var(--subtext);
+      margin-top: 2px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--subtext);
+      height: 1.2em;
+      margin-bottom: 14px;
+    }
+
+    .cursor {
+      animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* Search Bar Engine Switcher */
+    .search-container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      gap: 8px;
+      background: var(--card);
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+   .search-select {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0 8px;
+  outline: none;
+  cursor: pointer;
+}
+
+.search-select option {
+  background-color: var(--card); /* Dark background (#111827) */
+  color: var(--text);           /* Light text (#e5e7eb) */
+}
+
+    .search-container input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 8px;
+    }
+
+    .search-container input::placeholder {
+      color: #64748b;
+    }
+
+    /* Buttons */
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .action-btn {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--card);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      background: var(--card-hover);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    .lucky-pick {
+      box-shadow: 0 0 0 2px var(--accent), 0 12px 30px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Container & Scrolling Rows */
+    .container {
+      padding: 30px 0;
+      flex: 1;
+    }
+
+    .row {
+      overflow: hidden;
+      margin: 20px 0;
+      padding-top: 6px;
+    }
+
+    .row-strip {
+      display: flex;
+      width: max-content;
+      will-change: transform;
+    }
+
+    /* Cards */
+    .card {
+      min-width: 140px;
+      height: 90px;
+      margin: 0 8px;
+      background: var(--card);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      background: var(--card-hover);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .card img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 8px;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .scrolling .card:hover {
+      box-shadow: none;
+    }
+
+    /* --- PIN LOCK OVERLAY --- */
+.pin-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg); /* Solid background hides dashboard completely */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.pin-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pin-card {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 32px 28px;
+  text-align: center;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+}
+
+.pin-icon {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+.pin-card h2 {
+  font-size: 1.3rem;
+  margin-bottom: 6px;
+  color: #ffffff;
+}
+
+.pin-card p {
+  font-size: 0.85rem;
+  color: var(--subtext);
+  margin-bottom: 20px;
+}
+
+.pin-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.6rem;
+  letter-spacing: 10px;
+  text-align: center;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--card-hover);
+  color: #ffffff;
+  outline: none;
+  font-family: inherit;
+  margin-bottom: 8px;
+}
+
+.pin-input:focus {
+  border-color: var(--accent);
+}
+
+.pin-error {
+  color: #ef4444;
+  font-size: 0.8rem;
+  min-height: 20px;
+  margin-bottom: 12px;
+}
+
+.pin-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.pin-btn:hover {
+  opacity: 0.9;
+}
+
+/* Shake Animation on Wrong PIN */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+.shake {
+  animation: shake 0.3s ease;
+}
+
+  </style>
+</head>
+<body>
+ <h3>Hi!</h3>
+  <p>- For use of Alkitab SABDA, you can only type in queries such as "Yesus" and "Tuhan"</p>
+  <p>- For use of Bible Gateway, you can only type in verses and books such as "Exodus" and "Matthew 1:1"</p>
+ </h3>
+ <a href="index.html" class="action-btn" style="text-decoration: none;">Go Back to Home</a>
+</body>
+</html>
