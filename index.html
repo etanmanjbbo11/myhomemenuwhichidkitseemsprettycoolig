@@ -18,7 +18,7 @@
     <div class="pin-card" id="pinCard">
       <div class="pin-icon" style="font-size: 3.5rem; margin-bottom: 12px;">🔒</div>
       <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 6px;">Locked</h2>
-      <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 20px;">Enter PIN To Access</p>
+      <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 20px;">Enter QuickPIN To Access</p>
       <input type="password" id="pinInput" inputmode="numeric" class="pin-input" maxlength="4" autofocus autocomplete="off" />
       <div id="pinError" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 12px;"></div>
     </div>
@@ -410,7 +410,7 @@
     overlay.addEventListener("click", closeAllDrawers);
 
     /* PIN LOCK LOGIC */
-    const CORRECT_PIN = "2508";
+    const CORRECT_PIN = "etan";
     const pinOverlay = document.getElementById("pinOverlay");
     const pinInput = document.getElementById("pinInput");
     const pinError = document.getElementById("pinError");
