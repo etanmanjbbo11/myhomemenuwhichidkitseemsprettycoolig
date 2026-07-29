@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <div class="version-tag" id="versionTag">Ethan's Home Menu - v12.0</div>
 <div id="pinOverlay" class="pin-overlay">
     <div class="pin-card" id="pinCard">
@@ -26,7 +25,7 @@
     <div class="pin-sidebar">
 
       <div class="field-group">
-        <label>Quick Access</label>
+        <label>My Links</label>
         <div class="pin-shortcuts">
           <a href="https://github.com/etanmanjbbo11/myhomemenuwhichidkitseemsprettycoolig" target="_blank" class="app-card">
             <div class="app-icon">
@@ -38,23 +37,23 @@
             </div>
           </a>
 
-          <a href="https://mail.google.com" target="_blank" class="app-card">
+          <a href="https://www.instagram.com/ethanman.25" target="_blank" class="app-card">
             <div class="app-icon">
-              <img src="https://cdn.simpleicons.org/gmail/white" alt="Gmail">
+              <img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram">
             </div>
             <div class="app-info">
-              <div class="app-name">Gmail</div>
-              <span class="app-desc">Email</span>
+              <div class="app-name">Instagram</div>
+              <span class="app-desc">Visit My Instagram!</span>
             </div>
           </a>
 
-          <a href="https://www.youtube.com" target="_blank" class="app-card">
+          <a href="https://soundcloud.com/ethan-isaiah-manumpil/" target="_blank" class="app-card">
             <div class="app-icon">
-              <img src="https://cdn.simpleicons.org/youtube/white" alt="YouTube">
+              <img src="https://cdn.simpleicons.org/soundcloud/white" alt="GitHub">
             </div>
             <div class="app-info">
-              <div class="app-name">YouTube</div>
-              <span class="app-desc">Video Streaming</span>
+              <div class="app-name">SoundCloud</div>
+              <span class="app-desc">Yeah, I Make Music Too...</span>
             </div>
           </a>
         </div>
@@ -62,6 +61,20 @@
       <div class="field-group">
         <label>Options</label>
         <div class="pin-shortcuts">
+
+      <button type="button" class="app-card sidebar-action-btn" id="ctrlFullscreenBtn">
+              <div class="app-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+            </div>
+            
+            <div class="app-info">
+              <div class="app-name">Fullscreen</div>
+              <span class="app-desc">Enter Fullscreen Mode</span>
+            </div>
+          </button>
+
           <button type="button" class="app-card sidebar-action-btn" id="pinRefreshBtn">
             <div class="app-icon">
               <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -69,6 +82,7 @@
                 <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
               </svg>
             </div>
+            
             <div class="app-info">
               <div class="app-name">Reload Page</div>
               <span class="app-desc">Refresh Session</span>
@@ -94,6 +108,19 @@
   </div>
 
   <div class="header-btns">
+    <button class="icon-btn-circle" id="journalBtn" aria-label="Journal" title="Journal">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+      </svg>
+    </button>
+    <button class="icon-btn-circle" id="todoBtn" aria-label="To-Do List" title="To-Do List">
+    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <polyline points="9 11 12 14 22 4"></polyline>
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+    </svg>
+  </button>
+
     <button class="icon-btn-circle" id="appGridBtn" aria-label="App Grid" title="App Grid">
       <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
         <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
@@ -116,7 +143,7 @@
   </div>
 
   <div class="wrap">
-    <div class="eyebrow"><span class="dot"></span><span id="tzLabel">Local time</span></div>
+    <div class="eyebrow"><span class="dot"></span><span id="tzLabel">Welcome</span></div>
     <h1 class="clock" id="clock">00:00<span class="sec" id="clockSec">:00</span></h1>
     <div class="date-line" id="dateLine">Loading date…</div>
 
@@ -155,7 +182,38 @@
     <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">System & Quick Actions</div>
 
     <div class="actions-grid">
+
+       <a href="https://github.com/etanmanjbbo11/myhomemenuwhichidkitseemsprettycoolig" target="_blank" class="app-card">
+            <div class="app-icon">
+              <img src="https://cdn.simpleicons.org/github/white" alt="GitHub">
+            </div>
+            <div class="app-info">
+              <div class="app-name">GitHub</div>
+              <span class="app-desc">View My GitHub Repository!</span>
+            </div>
+          </a>
+
+          <a href="https://www.instagram.com/ethanman.25" target="_blank" class="app-card">
+            <div class="app-icon">
+              <img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram">
+            </div>
+            <div class="app-info">
+              <div class="app-name">Instagram</div>
+              <span class="app-desc">Visit My Instagram!</span>
+            </div>
+          </a>
+
+           <a href="https://soundcloud.com/ethan-isaiah-manumpil/" target="_blank" class="app-card">
+            <div class="app-icon">
+              <img src="https://cdn.simpleicons.org/soundcloud/white" alt="GitHub">
+            </div>
+            <div class="app-info">
+              <div class="app-name">SoundCloud</div>
+              <span class="app-desc">Yeah, I Make Music Too...</span>
+            </div>
+          </a>
       <button type="button" class="app-card" id="ctrlLockBtn">
+
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -164,7 +222,7 @@
         </div>
         <div class="app-name">Lock Site</div>
       </button>
-      <button type="button" class="app-card" id="ctrlFullscreenBtn">
+      <button type="button" class="app-card" id="qcFullscreenBtn">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
@@ -184,15 +242,6 @@
         </div>
         <div class="app-name">Open Random Site</div>
       </button>
-      <button type="button" class="app-card" id="ctrlReloadBtn">
-        <div class="app-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="23 4 23 10 17 10"></polyline>
-            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-          </svg>
-        </div>
-        <div class="app-name">Reload Page</div>
-      </button>
       <button type="button" class="app-card" id="ctrlSettingsBtn">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -202,6 +251,16 @@
         </div>
         <div class="app-name">Open Settings</div>
       </button>
+      <button type="button" class="app-card" id="ctrlReloadBtn">
+        <div class="app-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+        </div>
+        <div class="app-name">Reload Page</div>
+      </button>
+      
       <button type="button" class="app-card shutdown-card" id="ctrlShutdownBtn">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -300,6 +359,7 @@
       { name: "iCloud", cat: "productivity", icon: "https://cdn.simpleicons.org/icloud/white", url: "https://www.icloud.com", desc: "Cloud Storage & Services" },
       { name: "Google Translate", cat: "google", icon: "https://cdn.simpleicons.org/googletranslate/white", url: "https://translate.google.com", desc: "Language Translation" },
       { name: "Instagram", cat: "media", icon: "https://cdn.simpleicons.org/instagram/white", url: "https://www.instagram.com", desc: "Social Media" },
+      { name: "SoundCloud", cat: "media", icon: "https://cdn.simpleicons.org/soundcloud/white", url: "https://www.soundcloud.com", desc: "Music" },
       { name: "WhatsApp Web", cat: "productivity", icon: "https://cdn.simpleicons.org/whatsapp/white", url: "https://web.whatsapp.com", desc: "Web Messaging" },
       { name: "Canva", cat: "productivity", icon: "https://cdn.simpleicons.org/chai/white", url: "https://www.canva.com", desc: "Design Tool"  }
     ];
@@ -328,7 +388,6 @@
       verses: [
         { ref: "Joshua 1:9", text: "Be strong and courageous. Do not be afraid; for the LORD your God will be with you wherever you go." },
         { ref: "Proverbs 3:5-6", text: "Trust in the LORD with all your heart and lean not on your own understanding." },
-        { ref: "Philippians 4:13", text: "I can do all this through him who gives me strength." },
         { ref: "Jeremiah 29:11", text: "For I know the plans I have for you, declares the LORD, plans to prosper you and not to harm you." }
       ]
     };
@@ -454,6 +513,13 @@
     }
 
     document.getElementById("ctrlLockBtn").addEventListener("click", lockScreen);
+    // Keyboard Shortcut to Lock Site (Alt + L)
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    e.preventDefault();
+    lockScreen();
+  }
+});
     document.getElementById("ctrlReloadBtn").addEventListener("click", () => location.reload());
     document.getElementById("ctrlShutdownBtn").addEventListener("click", () => location.href = "about:blank");
     document.getElementById("ctrlFullscreenBtn").addEventListener("click", () => {
@@ -470,6 +536,19 @@
       overlay.classList.add("open");
       drawer.classList.add("open");
     });
+
+    // Fullscreen handler function
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// Attach event listener to both buttons
+document.getElementById("ctrlFullscreenBtn")?.addEventListener("click", toggleFullscreen);
+document.getElementById("qcFullscreenBtn")?.addEventListener("click", toggleFullscreen);
 
     /* TIME & DATE */
     function updateClock() {
@@ -619,16 +698,24 @@
       });
     }
 
-    function renderVerse() {
-      if (!state.verses || state.verses.length === 0) return;
-      const v = state.verses[Math.floor(Math.random() * state.verses.length)];
-      const msgEl = document.getElementById("message");
-      msgEl.style.opacity = 0;
-      setTimeout(() => {
-        msgEl.textContent = `"${v.text}" — ${v.ref}`;
-        msgEl.style.opacity = 1;
-      }, 300);
-    }
+    let currentVerseIndex = 0;
+
+function renderVerse() {
+  if (!state.verses || state.verses.length === 0) return;
+  
+  // Pick the current verse and cycle to the next index
+  const v = state.verses[currentVerseIndex % state.verses.length];
+  currentVerseIndex++;
+
+  const msgEl = document.getElementById("message");
+  msgEl.style.opacity = 0;
+  
+  // Fade out, swap text, fade back in
+  setTimeout(() => {
+    msgEl.textContent = `"${v.text}" — ${v.ref}`;
+    msgEl.style.opacity = 1;
+  }, 300);
+}
 
     /* SETTINGS CONTROLS */
     document.getElementById("setName").addEventListener("input", (e) => {
@@ -752,12 +839,38 @@
       renderAppManager();
     }
 
-    // INITIALIZATION
-    checkUnlock();
-    setEngine(state.searchEngine);
-    renderShortcuts();
-    renderVerse();
-    document.getElementById("versionTag").style.display = isVersionVisible ? "flex" : "none";
+    document.getElementById("todoBtn").addEventListener("click", () => {
+  window.location.href = "todolist.html"; // Opens todolist.html in a new tab
+});
+
+// INITIALIZATION
+checkUnlock();
+setEngine(state.searchEngine);
+renderShortcuts();
+
+// Start verse rotation
+renderVerse();
+setInterval(renderVerse, 3000);
+
+document.getElementById("versionTag").style.display = isVersionVisible ? "flex" : "none";
+document.getElementById("journalBtn").addEventListener("click", () => {
+  window.location.href = "journal.html"; // Replace with your journal file name or URL
+});
+
+// Function to safely navigate with access verification
+function openProtectedPage(url) {
+  sessionStorage.setItem('authorized_access', 'true');
+  window.location.href = url;
+}
+
+// Button Event Listeners
+document.getElementById("todoBtn")?.addEventListener("click", () => {
+  openProtectedPage("todolist.html");
+});
+
+document.getElementById("journalBtn")?.addEventListener("click", () => {
+  openProtectedPage("journal.html");
+});
   </script>
 </body>
 </html>

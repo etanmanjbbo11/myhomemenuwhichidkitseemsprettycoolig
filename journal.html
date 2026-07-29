@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethan's Journal</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📔</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Toned-down, desaturated dark slate background matching style.css */
+      --bg: #0c1014;
+      --sky-a: #10151a;
+      --sky-b: #0c1013;
+      --sky-c: #080a0d;
+
+      /* Muted Card & Text Colors */
+      --card-bg: rgba(20, 26, 32, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f3f4f6;
+      --text-muted: #8b95a1;
+
+      /* Accent Colors */
+      --accent: #dd9c47;
+      --accent-hover: #c88a3a;
+      --gold: #dd9c47;
+      --teal: #3e6e71;
+      --deep: #16232c;
+
+      /* UI Button Styles */
+      --btn-bg: rgba(255, 255, 255, 0.05);
+      --btn-hover: rgba(255, 255, 255, 0.1);
+      --glass-blur: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(180deg, var(--sky-a) 0%, var(--sky-b) 55%, var(--sky-c) 100%);
+      color: var(--text);
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient dot pattern overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+      background-size: 22px 22px;
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    /* Fixed Top Corners */
+    .version-tag {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--btn-bg);
+      padding: 0 16px;
+      border-radius: 21px;
+      border: 1px solid var(--card-border);
+      z-index: 10;
+    }
+
+    .header-btns {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .icon-btn-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn-circle:hover {
+      background: var(--btn-hover);
+      transform: translateY(-2px);
+    }
+
+    .icon-btn-circle svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+
+    /* Main Container */
+    .wrap {
+      width: 100%;
+      max-width: 680px;
+      padding: 80px 20px 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .eyebrow .dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    .clock {
+      font-family: 'Fraunces', serif;
+      font-size: 3.8rem;
+      font-weight: 300;
+      line-height: 1;
+      margin-bottom: 6px;
+      letter-spacing: -1px;
+    }
+
+    .clock .sec {
+      font-size: 1.8rem;
+      color: var(--text-muted);
+    }
+
+    .date-line {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    /* Journal Form Card */
+    .journal-form-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(var(--glass-blur));
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .input-title {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-title::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .input-title:focus, .input-content:focus {
+      border-color: var(--accent);
+    }
+
+    .input-content {
+      width: 100%;
+      min-height: 110px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      resize: vertical;
+      line-height: 1.5;
+      transition: border-color 0.2s;
+    }
+
+    .input-content::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .fav-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .fav-toggle-btn.active {
+      background: rgba(221, 156, 71, 0.15);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .submit-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--gold);
+      color: #16232c;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+
+    /* Controls Bar: Search & Filter */
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .search-box svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  stroke: var(--text-muted);
+  z-index: 1;            /* Lifts the icon above the input background */
+  pointer-events: none;  /* Allows click events to pass through to the input */
+}
+
+    .search-box input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 9px 14px 9px 38px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      color: var(--text);
+      outline: none;
+      backdrop-filter: blur(var(--glass-blur));
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-muted);
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-pill {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 7px 16px;
+      border-radius: 18px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill.active {
+      background: var(--deep);
+      color: #f6f1e6;
+      border-color: var(--accent);
+    }
+
+    .filter-pill:hover {
+      color: var(--text);
+      background: var(--btn-bg);
+    }
+
+    /* Journal List Cards */
+    .journal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .entry-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .entry-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .entry-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .entry-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .entry-date {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    .entry-body {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .entry-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 4px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .action-icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .action-icon-btn:hover {
+      background: var(--btn-hover);
+      color: var(--text);
+    }
+
+    .action-icon-btn.fav-btn.is-fav {
+      color: var(--gold);
+    }
+
+    .action-icon-btn.delete-btn:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      backdrop-filter: blur(var(--glass-blur));
+    }
+
+    /* Drawer Sidebar */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      max-width: 360px;
+      height: 100%;
+      background: #0f141a;
+      border-left: 1px solid var(--card-border);
+      padding: 30px 24px;
+      z-index: 101;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .drawer-close svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+
+    .drawer h2 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .drawer-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .drawer-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .drawer-btn:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+    }
+
+    .drawer-btn.danger-btn {
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .drawer-btn.danger-btn:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="version-tag" id="versionTag">Ethan's Journal</div>
+
+  <div class="header-btns">
+    <a href="index.html" class="icon-btn-circle" title="Home Menu" aria-label="Home Menu">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+    </a>
+    </a>
+    <button class="icon-btn-circle" id="gearBtn" title="Settings & Options" aria-label="Settings">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span><span>Journal & Notes</span></div>
+    <h1 class="clock" id="clock">00:00<span class="sec" id="clockSec">:00</span></h1>
+    <div class="date-line" id="dateLine">Loading date…</div>
+
+    <div class="journal-form-card">
+      <input type="text" id="entryTitle" class="input-title" placeholder="Entry Title (Optional)" autocomplete="off">
+      <textarea id="entryContent" class="input-content" placeholder="Write down your thoughts, notes, or reflections..."></textarea>
+      
+      <div class="form-bottom">
+        <button type="button" class="fav-toggle-btn" id="favToggleBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          Favorite
+        </button>
+
+        <button type="button" class="submit-btn" id="saveEntryBtn">
+          Save Entry
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="controls-bar">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search entries..." autocomplete="off">
+      </div>
+
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-pill active" data-filter="all">All</button>
+        <button class="filter-pill" data-filter="favorites">⭐ Favorites</button>
+      </div>
+    </div>
+
+    <div class="journal-list" id="journalList"></div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="drawer" id="drawer">
+    <button class="drawer-close" id="drawerClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h2>Journal Options</h2>
+    
+    <div class="drawer-section">
+      <button class="drawer-btn" id="exportDataBtn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Export Backup (JSON)
+      </button>
+
+      <button class="drawer-btn" id="importDataBtn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Import Backup (JSON)
+      </button>
+      <input type="file" id="importFileInput" accept=".json" style="display: none;">
+    </div>
+
+    <div class="drawer-section">
+      <button class="drawer-btn danger-btn" id="clearAllBtn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        Delete All Entries
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // LOCAL STORAGE KEYS
+    const STORAGE_KEY = "ethan_journal_entries";
+
+    // STATE
+    let entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    let isNewFav = false;
+    let currentFilter = "all";
+    let searchQuery = "";
+
+    // REAL-TIME CLOCK & DATE
+    function updateClock() {
+      const now = new Date();
+      const hrs = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const secs = String(now.getSeconds()).padStart(2, '0');
+
+      document.getElementById('clock').childNodes[0].nodeValue = `${hrs}:${mins}`;
+      document.getElementById('clockSec').textContent = `:${secs}`;
+
+      const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+      document.getElementById('dateLine').textContent = now.toLocaleDateString('en-US', options);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // SAVE STATE
+    function saveEntries() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+      renderEntries();
+    }
+
+    // TOGGLE FAVORITE IN FORM
+    const favToggleBtn = document.getElementById("favToggleBtn");
+    favToggleBtn.addEventListener("click", () => {
+      isNewFav = !isNewFav;
+      favToggleBtn.classList.toggle("active", isNewFav);
+    });
+
+    // ADD NEW ENTRY
+    document.getElementById("saveEntryBtn").addEventListener("click", () => {
+      const titleInput = document.getElementById("entryTitle");
+      const contentInput = document.getElementById("entryContent");
+
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+
+      if (!content && !title) {
+        alert("Please enter a title or journal content.");
+        return;
+      }
+
+      const newEntry = {
+        id: "entry_" + Date.now(),
+        title: title || "Untitled Entry",
+        content: content,
+        isFav: isNewFav,
+        timestamp: new Date().toISOString()
+      };
+
+      entries.unshift(newEntry);
+      saveEntries();
+
+      // Reset form
+      titleInput.value = "";
+      contentInput.value = "";
+      isNewFav = false;
+      favToggleBtn.classList.remove("active");
+    });
+
+    // RENDER ENTRIES
+    function renderEntries() {
+      const container = document.getElementById("journalList");
+      container.innerHTML = "";
+
+      let filtered = entries.filter(e => {
+        // Filter tab
+        if (currentFilter === "favorites" && !e.isFav) return false;
+
+        // Search query
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const inTitle = (e.title || "").toLowerCase().includes(q);
+          const inContent = (e.content || "").toLowerCase().includes(q);
+          if (!inTitle && !inContent) return false;
+        }
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            ${searchQuery ? "No matching entries found." : currentFilter === "favorites" ? "No favorite entries yet." : "No journal entries yet. Write your first thought above!"}
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(entry => {
+        const card = document.createElement("div");
+        card.className = "entry-card";
+
+        const formattedDate = new Date(entry.timestamp).toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false
+        });
+
+        card.innerHTML = `
+          <div class="entry-header">
+            <div>
+              <div class="entry-title">${escapeHTML(entry.title)}</div>
+              <div class="entry-date">${formattedDate}</div>
+            </div>
+          </div>
+          ${entry.content ? `<div class="entry-body">${escapeHTML(entry.content)}</div>` : ""}
+          <div class="entry-footer">
+            <button class="action-icon-btn fav-btn ${entry.isFav ? 'is-fav' : ''}" onclick="toggleFavorite('${entry.id}')" title="${entry.isFav ? 'Remove Favorite' : 'Mark Favorite'}">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="${entry.isFav ? 'currentColor' : 'none'}">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </button>
+            <button class="action-icon-btn delete-btn" onclick="deleteEntry('${entry.id}')" title="Delete Entry">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function escapeHTML(str) {
+      if (!str) return "";
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+    // ACTIONS
+    window.toggleFavorite = function(id) {
+      const entry = entries.find(e => e.id === id);
+      if (entry) {
+        entry.isFav = !entry.isFav;
+        saveEntries();
+      }
+    };
+
+    window.deleteEntry = function(id) {
+      if (confirm("Are you sure you want to delete this journal entry?")) {
+        entries = entries.filter(e => e.id !== id);
+        saveEntries();
+      }
+    };
+
+    // SEARCH & FILTER LOGIC
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim();
+      renderEntries();
+    });
+
+    document.getElementById("filterBar").addEventListener("click", (e) => {
+      if (e.target.classList.contains("filter-pill")) {
+        document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
+        e.target.classList.add("active");
+        currentFilter = e.target.dataset.filter;
+        renderEntries();
+      }
+    });
+
+    // DRAWER & SETTINGS
+    const overlay = document.getElementById("overlay");
+    const drawer = document.getElementById("drawer");
+    const gearBtn = document.getElementById("gearBtn");
+    const drawerClose = document.getElementById("drawerClose");
+
+    gearBtn.addEventListener("click", () => {
+      overlay.classList.add("open");
+      drawer.classList.add("open");
+    });
+
+    function closeDrawer() {
+      overlay.classList.remove("open");
+      drawer.classList.remove("open");
+    }
+
+    drawerClose.addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
+
+    // EXPORT / IMPORT / CLEAR
+    document.getElementById("exportDataBtn").addEventListener("click", () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(entries, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `ethan_journal_backup_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    });
+
+    document.getElementById("importDataBtn").addEventListener("click", () => {
+      document.getElementById("importFileInput").click();
+    });
+
+    document.getElementById("importFileInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (Array.isArray(imported)) {
+            entries = imported;
+            saveEntries();
+            closeDrawer();
+            alert("Journal entries imported successfully!");
+          } else {
+            alert("Invalid backup file format.");
+          }
+        } catch (err) {
+          alert("Error parsing backup JSON file.");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
+      if (confirm("Are you sure you want to permanently delete ALL journal entries?")) {
+        entries = [];
+        saveEntries();
+        closeDrawer();
+      }
+    });
+
+    // INIT
+    renderEntries();
+
+    // --- DIRECT ACCESS PROTECTION ---
+(function verifyAccess() {
+  const isAuthorized = sessionStorage.getItem('authorized_access');
+
+  if (!isAuthorized) {
+    // Redirect back to index.html immediately if opened directly
+    window.location.replace('index.html');
+  } else {
+    // Clear token so re-entry without index.html is blocked
+    sessionStorage.removeItem('authorized_access');
+  }
+})();
+  </script>
+</body>
+</html>

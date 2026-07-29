@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethan's Task Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Toned-down, desaturated dark slate background matching style.css */
+      --bg: #0c1014;
+      --sky-a: #10151a;
+      --sky-b: #0c1013;
+      --sky-c: #080a0d;
+
+      /* Muted Card & Text Colors */
+      --card-bg: rgba(20, 26, 32, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f3f4f6;
+      --text-muted: #8b95a1;
+
+      /* Accent Colors */
+      --accent: #dd9c47;
+      --accent-hover: #c88a3a;
+      --gold: #dd9c47;
+      --teal: #3e6e71;
+      --deep: #16232c;
+
+      /* UI Button Styles */
+      --btn-bg: rgba(255, 255, 255, 0.05);
+      --btn-hover: rgba(255, 255, 255, 0.1);
+      --glass-blur: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(180deg, var(--sky-a) 0%, var(--sky-b) 55%, var(--sky-c) 100%);
+      color: var(--text);
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient dot pattern overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+      background-size: 22px 22px;
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    /* Fixed Top Corners */
+    .version-tag {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--btn-bg);
+      padding: 0 16px;
+      border-radius: 21px;
+      border: 1px solid var(--card-border);
+      z-index: 10;
+    }
+
+    .header-btns {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .icon-btn-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn-circle:hover {
+      background: var(--btn-hover);
+      transform: translateY(-2px);
+    }
+
+    .icon-btn-circle svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+
+    /* Main Container */
+    .wrap {
+      width: 100%;
+      max-width: 680px;
+      padding: 80px 20px 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .eyebrow .dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    .clock {
+      font-family: 'Fraunces', serif;
+      font-size: 3.8rem;
+      font-weight: 300;
+      line-height: 1;
+      margin-bottom: 6px;
+      letter-spacing: -1px;
+    }
+
+    .clock .sec {
+      font-size: 1.8rem;
+      color: var(--text-muted);
+    }
+
+    .date-line {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    /* Progress Widget Card */
+    .progress-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      backdrop-filter: blur(var(--glass-blur));
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    /* Task Input Form */
+    .task-form-block {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .task-form {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 6px 6px 6px 18px;
+      backdrop-filter: blur(var(--glass-blur));
+      gap: 10px;
+    }
+
+    .task-form input[type="text"] {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--text);
+      padding: 8px 0;
+    }
+
+    .task-form input[type="text"]::placeholder {
+      color: var(--text-muted);
+    }
+
+    .task-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-color: var(--bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px 28px 8px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .task-form button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: var(--gold);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .task-form button:hover {
+      transform: scale(1.06);
+      filter: brightness(1.05);
+    }
+
+    .task-form button svg {
+      width: 20px;
+      height: 20px;
+      stroke: #16232c;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* Category & Filter Pills */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .filter-pill {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 18px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill.active {
+      background: var(--deep);
+      color: #f6f1e6;
+      border-color: var(--accent);
+    }
+
+    .filter-pill:hover {
+      color: var(--text);
+      background: var(--btn-bg);
+    }
+
+    /* Task Item List */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .task-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      color: var(--text);
+      transition: all 0.2s ease;
+    }
+
+    .task-card:hover {
+      background: var(--btn-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Custom Checkbox */
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 1.5px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .task-card.completed .task-checkbox {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .task-checkbox svg {
+      width: 12px;
+      height: 12px;
+      stroke: #16232c;
+      stroke-width: 3;
+      fill: none;
+      display: none;
+    }
+
+    .task-card.completed .task-checkbox svg {
+      display: block;
+    }
+
+    .task-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      word-break: break-word;
+      transition: color 0.2s, text-decoration 0.2s;
+    }
+
+    .task-card.completed .task-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .task-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .cat-badge {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .priority-badge {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .priority-high { background: #ef4444; }
+    .priority-normal { background: var(--gold); }
+    .priority-low { background: #10b981; }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      opacity: 0.5;
+      padding: 4px;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .task-card:hover .delete-btn {
+      opacity: 1;
+    }
+
+    .delete-btn:hover {
+      color: #ef4444;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Sidebars Drawer & Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(var(--glass-blur));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 900;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -380px;
+      width: 100%;
+      max-width: 380px;
+      height: 100%;
+      background: rgba(18, 22, 28, 0.95);
+      border-left: 1px solid var(--card-border);
+      z-index: 950;
+      padding: 24px;
+      overflow-y: auto;
+      transition: right 0.3s ease;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .drawer.open {
+      right: 0;
+    }
+
+    .drawer-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      float: right;
+    }
+
+    .drawer-close svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+    }
+
+    .field-group {
+      margin-top: 20px;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .field-group input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .drawer-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .drawer-btn:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+    }
+
+    .drawer-btn.danger {
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .drawer-btn.danger:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.6);
+    }
+
+    /* Sparkle Animations */
+    .sparkle-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      user-select: none;
+      animation: floatSparkle 1.2s ease-out forwards;
+    }
+
+    @keyframes floatSparkle {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.3) rotate(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.3) rotate(180deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx) * 1.4), calc(-50% + var(--dy) * 1.4)) scale(0.2) rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="version-tag">Ethan's Tasks</div>
+
+  <div class="header-btns">
+    <button class="icon-btn-circle" id="homeBtn" aria-label="Home" title="Home Menu" onclick="location.href='index.html'">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+    </button>
+    <button class="icon-btn-circle" id="gearBtn" aria-label="Settings" title="Task Settings">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span>Task Dashboard</div>
+    <h1 class="clock" id="clock">00:00<span class="sec" id="clockSec">:00</span></h1>
+    <div class="date-line" id="dateLine">Loading date…</div>
+
+    <div class="progress-card">
+      <div class="progress-info">
+        <span id="progressText">0 of 0 tasks completed</span>
+        <span id="progressPercent" style="font-weight: 700; color: var(--gold);">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+    </div>
+
+    <div class="task-form-block">
+      <form class="task-form" id="taskForm">
+        <input type="text" id="taskInput" placeholder="What needs to be done today?" autocomplete="off" required>
+        <select id="priorityInput" class="task-select" style="width: auto;">
+          <option value="normal">Normal</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+        <select id="catInput" class="task-select" style="width: auto;">
+          <option value="general">General</option>
+          <option value="school">School</option>
+          <option value="work">Work</option>
+          <option value="personal">Personal</option>
+        </select>
+        <button type="submit" aria-label="Add Task">
+          <svg viewBox="0 0 24 24">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="active">Active</button>
+      <button class="filter-pill" data-filter="completed">Completed</button>
+      <button class="filter-pill" data-filter="high">High Priority</button>
+      <button class="filter-pill" data-filter="school">School</button>
+      <button class="filter-pill" data-filter="work">Work</button>
+    </div>
+
+    <div class="task-list" id="taskList"></div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="drawer" id="drawer">
+    <button class="drawer-close" id="drawerClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h2>Task Settings</h2>
+    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Manage Your Tasks</div>
+
+    <div class="field-group">
+      <label>Quick Actions</label>
+      <button class="drawer-btn" id="clearCompletedBtn">Clear Completed Tasks</button>
+      <button class="drawer-btn danger" id="clearAllBtn">Delete All Tasks</button>
+    </div>
+  </div>
+
+  <script>
+    // --- DIRECT ACCESS PROTECTION ---
+    (function verifyAccess() {
+      const isAuthorized = sessionStorage.getItem('authorized_access');
+
+      if (!isAuthorized) {
+        // Redirect back to index.html immediately if opened directly
+        window.location.replace('index.html');
+      } else {
+        // Clear token so re-entry without index.html is blocked
+        sessionStorage.removeItem('authorized_access');
+      }
+    })();
+
+    const DEFAULT_TASKS = [
+      { id: 1, title: "Organize daily study schedule", completed: false, category: "school", priority: "high" },
+      { id: 2, title: "Review GitHub repository updates", completed: true, category: "work", priority: "normal" }
+    ];
+
+    let tasks = loadTasks();
+    let currentFilter = "all";
+    let sparklesTriggered = false;
+
+    function loadTasks() {
+      try {
+        const raw = localStorage.getItem("ethan_tasks");
+        return raw ? JSON.parse(raw) : DEFAULT_TASKS;
+      } catch (e) {
+        return DEFAULT_TASKS;
+      }
+    }
+
+    function saveTasks() {
+      localStorage.setItem("ethan_tasks", JSON.stringify(tasks));
+      renderTasks();
+      updateProgress();
+    }
+
+    /* SPARKLE EFFECT GENERATOR */
+    function triggerSparkles() {
+      if (sparklesTriggered) return;
+      sparklesTriggered = true;
+
+      const sparkleIcons = ['✨', '⭐', '🌟', '✦', '🎉'];
+      const totalSparkles = 35;
+
+      for (let i = 0; i < totalSparkles; i++) {
+        setTimeout(() => {
+          const sparkle = document.createElement('div');
+          sparkle.className = 'sparkle-particle';
+          sparkle.textContent = sparkleIcons[Math.floor(Math.random() * sparkleIcons.length)];
+
+          // Originates around the center progress widget area
+          const startX = window.innerWidth / 2 + (Math.random() * 260 - 130);
+          const startY = window.innerHeight * 0.32 + (Math.random() * 80 - 40);
+
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 90 + Math.random() * 160;
+          const dx = `${Math.cos(angle) * distance}px`;
+          const dy = `${Math.sin(angle) * distance}px`;
+
+          sparkle.style.left = `${startX}px`;
+          sparkle.style.top = `${startY}px`;
+          sparkle.style.setProperty('--dx', dx);
+          sparkle.style.setProperty('--dy', dy);
+          sparkle.style.fontSize = `${1 + Math.random() * 1.2}rem`;
+
+          document.body.appendChild(sparkle);
+
+          setTimeout(() => sparkle.remove(), 1200);
+        }, i * 30);
+      }
+    }
+
+    /* TIME & DATE DISPLAY */
+    function updateClock() {
+      const now = new Date();
+      let hrs = String(now.getHours()).padStart(2, '0');
+      let mins = String(now.getMinutes()).padStart(2, '0');
+      let secs = String(now.getSeconds()).padStart(2, '0');
+
+      document.getElementById("clock").childNodes[0].nodeValue = `${hrs}:${mins}`;
+      document.getElementById("clockSec").textContent = `:${secs}`;
+
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById("dateLine").textContent = now.toLocaleDateString('en-US', options);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    /* RENDER TASKS */
+    function renderTasks() {
+      const container = document.getElementById("taskList");
+      container.innerHTML = "";
+
+      let filtered = tasks.filter(task => {
+        if (currentFilter === "active") return !task.completed;
+        if (currentFilter === "completed") return task.completed;
+        if (currentFilter === "high") return task.priority === "high";
+        if (["school", "work", "personal", "general"].includes(currentFilter)) {
+          return task.category === currentFilter;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty-state">No tasks found. Add a new one above!</div>`;
+        return;
+      }
+
+      filtered.forEach(task => {
+        const card = document.createElement("div");
+        card.className = `task-card ${task.completed ? 'completed' : ''}`;
+
+        card.innerHTML = `
+          <div class="task-left">
+            <div class="task-checkbox" onclick="toggleTask(${task.id})">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <span class="task-title" onclick="toggleTask(${task.id})">${escapeHtml(task.title)}</span>
+          </div>
+          <div class="task-right">
+            <span class="cat-badge">${task.category}</span>
+            <span class="priority-badge priority-${task.priority}" title="${task.priority} priority"></span>
+            <button class="delete-btn" onclick="deleteTask(${task.id})" title="Delete task">✕</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    /* PROGRESS CALCULATOR */
+    function updateProgress() {
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.completed).length;
+      const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+      const progressPercentEl = document.getElementById("progressPercent");
+
+      if (total > 0 && completed === total) {
+        progressPercentEl.textContent = `${percent}% ✨`;
+        triggerSparkles();
+      } else {
+        progressPercentEl.textContent = `${percent}%`;
+        sparklesTriggered = false; // Reset so adding or toggling tasks can re-trigger sparkles
+      }
+
+      document.getElementById("progressText").textContent = `${completed} of ${total} tasks completed`;
+      document.getElementById("progressBarFill").style.width = `${percent}%`;
+    }
+
+    /* TASK OPERATIONS */
+    document.getElementById("taskForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("taskInput");
+      const title = input.value.trim();
+      const priority = document.getElementById("priorityInput").value;
+      const category = document.getElementById("catInput").value;
+
+      if (!title) return;
+
+      tasks.unshift({
+        id: Date.now(),
+        title,
+        completed: false,
+        priority,
+        category
+      });
+
+      input.value = "";
+      saveTasks();
+    });
+
+    window.toggleTask = function(id) {
+      tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+      saveTasks();
+    };
+
+    window.deleteTask = function(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      saveTasks();
+    };
+
+    /* FILTER PILLS */
+    document.getElementById("filterBar").addEventListener("click", (e) => {
+      if (e.target.classList.contains("filter-pill")) {
+        document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
+        e.target.classList.add("active");
+        currentFilter = e.target.dataset.filter;
+        renderTasks();
+      }
+    });
+
+    /* DRAWER LOGIC */
+    const overlay = document.getElementById("overlay");
+    const drawer = document.getElementById("drawer");
+    const gearBtn = document.getElementById("gearBtn");
+    const drawerClose = document.getElementById("drawerClose");
+
+    gearBtn.addEventListener("click", () => {
+      overlay.classList.add("open");
+      drawer.classList.add("open");
+    });
+
+    function closeDrawer() {
+      overlay.classList.remove("open");
+      drawer.classList.remove("open");
+    }
+
+    drawerClose.addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
+
+    document.getElementById("clearCompletedBtn").addEventListener("click", () => {
+      tasks = tasks.filter(t => !t.completed);
+      saveTasks();
+      closeDrawer();
+    });
+
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
+      if (confirm("Are you sure you want to delete all tasks?")) {
+        tasks = [];
+        saveTasks();
+        closeDrawer();
+      }
+    });
+
+    /* INIT */
+    renderTasks();
+    updateProgress();
+
+    document.getElementById("journalBtn")?.addEventListener("click", () => {
+      window.location.href = "journal.html";
+    });
+  </script>
+</body>
+</html>
