@@ -8,22 +8,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="version-tag" id="versionTag">Ethan's Home Menu - v12.0</div>
-<div id="pinOverlay" class="pin-overlay">
+  <div class="version-tag" id="versionTag">Ethan's Home Menu</div>
+
+  <div id="pinOverlay" class="pin-overlay">
     <div class="pin-card" id="pinCard">
-      <div class="pin-icon" style="font-size: 3.5rem; margin-bottom: 12px;">🔒</div>
-      <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 6px;">Locked</h2>
-      <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 20px;">Enter QuickPIN To Access</p>
-      <input type="password" id="pinInput" inputmode="numeric" class="pin-input" maxlength="4" autofocus autocomplete="off" />
-      <div id="pinError" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 12px;"></div>
+      <div class="pin-icon" style="font-size: 3.5rem; margin-bottom: 12px;">🚀</div>
+      <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 6px;">Hi There!</h2>
+      <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 24px;">To Start, Press The ENTER SITE Button</p>
+      <button type="button" id="unlockBtn" class="unlock-btn">ENTER SITE</button>
     </div>
 
-    <div class="pin-sidebar">
-
+   <div class="pin-sidebar">
       <div class="field-group">
         <label>My Links</label>
         <div class="pin-shortcuts">
@@ -49,7 +47,7 @@
 
           <a href="https://soundcloud.com/ethan-isaiah-manumpil/" target="_blank" class="app-card">
             <div class="app-icon">
-              <img src="https://cdn.simpleicons.org/soundcloud/white" alt="GitHub">
+              <img src="https://cdn.simpleicons.org/soundcloud/white" alt="SoundCloud">
             </div>
             <div class="app-info">
               <div class="app-name">SoundCloud</div>
@@ -57,18 +55,17 @@
             </div>
           </a>
         </div>
-        <div class="pin-datetime" id="pinDateTime">Loading...</div>
+      </div>
+
       <div class="field-group">
         <label>Options</label>
         <div class="pin-shortcuts">
-
-      <button type="button" class="app-card sidebar-action-btn" id="ctrlFullscreenBtn">
-              <div class="app-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-          </svg>
+          <button type="button" class="app-card sidebar-action-btn" id="ctrlFullscreenBtn">
+            <div class="app-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+              </svg>
             </div>
-            
             <div class="app-info">
               <div class="app-name">Fullscreen</div>
               <span class="app-desc">Enter Fullscreen Mode</span>
@@ -82,7 +79,6 @@
                 <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
               </svg>
             </div>
-            
             <div class="app-info">
               <div class="app-name">Reload Page</div>
               <span class="app-desc">Refresh Session</span>
@@ -103,11 +99,37 @@
           </button>
         </div>
       </div>
-</div>
+
+      <div class="pin-datetime" id="pinDateTime">Loading...</div>
     </div>
   </div>
 
   <div class="header-btns">
+    <a href="photobooth.html" style="text-decoration: none;">
+  <button class="icon-btn-circle" id="galleryBtn" title="Photo Booth" aria-label="Photo Booth"> 
+    <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor"> 
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect> 
+      <circle cx="8.5" cy="8.5" r="1.5"></circle> 
+      <polyline points="21 15 16 10 5 21"></polyline> 
+    </svg> 
+  </button>
+</a>
+
+<a href="filemanager.html" style="text-decoration: none;">
+  <button class="icon-btn-circle" id="fileExplorerBtn" title="File Explorer" aria-label="File Explorer"> 
+    <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor"> 
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path> 
+    </svg> 
+  </button>
+</a>
+
+    <button class="icon-btn-circle" id="classroomBtn" title="Classroom Launcher" aria-label="Classroom Launcher">
+  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+    <path d="M12 6v6l4 2"></path>
+  </svg>
+</button>
     <button class="icon-btn-circle" id="journalBtn" aria-label="Journal" title="Journal">
       <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -115,12 +137,11 @@
       </svg>
     </button>
     <button class="icon-btn-circle" id="todoBtn" aria-label="To-Do List" title="To-Do List">
-    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
-      <polyline points="9 11 12 14 22 4"></polyline>
-      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-    </svg>
-  </button>
-
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <polyline points="9 11 12 14 22 4"></polyline>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+      </svg>
+    </button>
     <button class="icon-btn-circle" id="appGridBtn" aria-label="App Grid" title="App Grid">
       <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
         <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
@@ -144,7 +165,7 @@
 
   <div class="wrap">
     <div class="eyebrow"><span class="dot"></span><span id="tzLabel">Welcome</span></div>
-    <h1 class="clock" id="clock">00:00<span class="sec" id="clockSec">:00</span></h1>
+    <h1 class="clock" id="clock"><span id="clockMain">00:00</span><span class="sec" id="clockSec">:00</span></h1>
     <div class="date-line" id="dateLine">Loading date…</div>
 
     <div class="greeting" id="greeting">Hello</div>
@@ -182,46 +203,46 @@
     <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">System & Quick Actions</div>
 
     <div class="actions-grid">
+      <a href="https://github.com/etanmanjbbo11/myhomemenuwhichidkitseemsprettycoolig" target="_blank" class="app-card">
+        <div class="app-icon">
+          <img src="https://cdn.simpleicons.org/github/white" alt="GitHub">
+        </div>
+        <div class="app-info">
+          <div class="app-name">GitHub</div>
+          <span class="app-desc">View My GitHub Repitory!</span>
+        </div>
+      </a>
 
-       <a href="https://github.com/etanmanjbbo11/myhomemenuwhichidkitseemsprettycoolig" target="_blank" class="app-card">
-            <div class="app-icon">
-              <img src="https://cdn.simpleicons.org/github/white" alt="GitHub">
-            </div>
-            <div class="app-info">
-              <div class="app-name">GitHub</div>
-              <span class="app-desc">View My GitHub Repository!</span>
-            </div>
-          </a>
+      <a href="https://www.instagram.com/ethanman.25" target="_blank" class="app-card">
+        <div class="app-icon">
+          <img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram">
+        </div>
+        <div class="app-info">
+          <div class="app-name">Instagram</div>
+          <span class="app-desc">Visit My Instagram!</span>
+        </div>
+      </a>
 
-          <a href="https://www.instagram.com/ethanman.25" target="_blank" class="app-card">
-            <div class="app-icon">
-              <img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram">
-            </div>
-            <div class="app-info">
-              <div class="app-name">Instagram</div>
-              <span class="app-desc">Visit My Instagram!</span>
-            </div>
-          </a>
+      <a href="https://soundcloud.com/ethan-isaiah-manumpil/" target="_blank" class="app-card">
+        <div class="app-icon">
+          <img src="https://cdn.simpleicons.org/soundcloud/white" alt="SoundCloud">
+        </div>
+        <div class="app-info">
+          <div class="app-name">SoundCloud</div>
+          <span class="app-desc">Yeah, I Make Music Too...</span>
+        </div>
+      </a>
 
-           <a href="https://soundcloud.com/ethan-isaiah-manumpil/" target="_blank" class="app-card">
-            <div class="app-icon">
-              <img src="https://cdn.simpleicons.org/soundcloud/white" alt="GitHub">
-            </div>
-            <div class="app-info">
-              <div class="app-name">SoundCloud</div>
-              <span class="app-desc">Yeah, I Make Music Too...</span>
-            </div>
-          </a>
       <button type="button" class="app-card" id="ctrlLockBtn">
-
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
           </svg>
         </div>
-        <div class="app-name">Lock Site</div>
+        <div class="app-name">Go To Portal</div>
       </button>
+
       <button type="button" class="app-card" id="qcFullscreenBtn">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -229,7 +250,9 @@
           </svg>
         </div>
         <div class="app-name">Fullscreen</div>
+
       </button>
+
       <button type="button" class="app-card" id="ctrlLuckyBtn">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -242,15 +265,17 @@
         </div>
         <div class="app-name">Open Random Site</div>
       </button>
+
       <button type="button" class="app-card" id="ctrlSettingsBtn">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <circle cx="12" cy="12" r="3"></circle>
-  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-</svg>
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
         </div>
         <div class="app-name">Open Settings</div>
       </button>
+
       <button type="button" class="app-card" id="ctrlReloadBtn">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -260,7 +285,7 @@
         </div>
         <div class="app-name">Reload Page</div>
       </button>
-      
+
       <button type="button" class="app-card shutdown-card" id="ctrlShutdownBtn">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -271,7 +296,6 @@
         <div class="app-name">Shut Down Session</div>
       </button>
     </div>
-  
   </div>
 
   <div class="drawer" id="appModal">
@@ -280,7 +304,6 @@
     </button>
     <h2>Launcher</h2>
     <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Apps & Web Services</div>
-
     <div id="appGridContainer"></div>
   </div>
 
@@ -361,7 +384,7 @@
       { name: "Instagram", cat: "media", icon: "https://cdn.simpleicons.org/instagram/white", url: "https://www.instagram.com", desc: "Social Media" },
       { name: "SoundCloud", cat: "media", icon: "https://cdn.simpleicons.org/soundcloud/white", url: "https://www.soundcloud.com", desc: "Music" },
       { name: "WhatsApp Web", cat: "productivity", icon: "https://cdn.simpleicons.org/whatsapp/white", url: "https://web.whatsapp.com", desc: "Web Messaging" },
-      { name: "Canva", cat: "productivity", icon: "https://cdn.simpleicons.org/chai/white", url: "https://www.canva.com", desc: "Design Tool"  }
+      { name: "Canva", cat: "productivity", icon: "https://cdn.simpleicons.org/canva/white", url: "https://www.canva.com", desc: "Design Tool"  }
     ];
 
     const CATEGORY_LABELS = {
@@ -468,87 +491,70 @@
     appModalClose.addEventListener("click", closeAllDrawers);
     overlay.addEventListener("click", closeAllDrawers);
 
-    /* PIN LOCK LOGIC */
-    const CORRECT_PIN = "etan";
+    /* LOCK SCREEN & SITE LOCK LOGIC */
     const pinOverlay = document.getElementById("pinOverlay");
-    const pinInput = document.getElementById("pinInput");
-    const pinError = document.getElementById("pinError");
-    const pinCard = document.getElementById("pinCard");
-    const pinDateTime = document.getElementById("pinDateTime");
+    const unlockBtn = document.getElementById("unlockBtn");
 
     function checkUnlock() {
       if (sessionStorage.getItem("isUnlocked") === "true") {
         pinOverlay.classList.add("hidden");
-        pinDateTime.style.display = "none";
       } else {
         pinOverlay.classList.remove("hidden");
-        if (isTimeVisible) pinDateTime.style.display = "block";
-        setTimeout(() => pinInput.focus(), 100);
       }
     }
 
-    pinInput.addEventListener("input", () => {
-      pinError.textContent = "";
-      if (pinInput.value.length === 4) {
-        if (pinInput.value === CORRECT_PIN) {
-          sessionStorage.setItem("isUnlocked", "true");
-          checkUnlock();
-          pinInput.value = "";
-        } else {
-          pinError.textContent = "Incorrect PIN code!";
-          pinInput.value = "";
+    function lockSite() {
+      sessionStorage.removeItem("isUnlocked");
+      closeAllDrawers();
+      checkUnlock();
+    }
+
+    unlockBtn?.addEventListener("click", () => {
+      sessionStorage.setItem("isUnlocked", "true");
+      checkUnlock();
+    });
+
+    document.getElementById("ctrlLockBtn")?.addEventListener("click", lockSite);
+
+    /* ESC KEY HANDLER */
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (overlay.classList.contains("open")) {
+          closeAllDrawers();
+        } else if (sessionStorage.getItem("isUnlocked") === "true") {
+          lockSite();
         }
       }
     });
 
-    document.getElementById("pinRefreshBtn").addEventListener("click", () => location.reload());
-    document.getElementById("pinCloseBtn").addEventListener("click", () => location.href = "about:blank");
+    /* ACTION BUTTONS */
+    document.getElementById("pinRefreshBtn")?.addEventListener("click", () => location.reload());
+    document.getElementById("pinCloseBtn")?.addEventListener("click", () => location.href = "about:blank");
+    document.getElementById("ctrlReloadBtn")?.addEventListener("click", () => location.reload());
+    document.getElementById("ctrlShutdownBtn")?.addEventListener("click", () => location.href = "about:blank");
 
-    function lockScreen() {
-      sessionStorage.removeItem("isUnlocked");
-      closeAllDrawers();
-      pinInput.value = "";
-      pinError.textContent = "";
-      checkUnlock();
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
     }
 
-    document.getElementById("ctrlLockBtn").addEventListener("click", lockScreen);
-    // Keyboard Shortcut to Lock Site (Alt + L)
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    e.preventDefault();
-    lockScreen();
-  }
-});
-    document.getElementById("ctrlReloadBtn").addEventListener("click", () => location.reload());
-    document.getElementById("ctrlShutdownBtn").addEventListener("click", () => location.href = "about:blank");
-    document.getElementById("ctrlFullscreenBtn").addEventListener("click", () => {
-      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-      else document.exitFullscreen();
-    });
-    document.getElementById("ctrlLuckyBtn").addEventListener("click", () => {
+    document.getElementById("ctrlFullscreenBtn")?.addEventListener("click", toggleFullscreen);
+    document.getElementById("qcFullscreenBtn")?.addEventListener("click", toggleFullscreen);
+
+    document.getElementById("ctrlLuckyBtn")?.addEventListener("click", () => {
       const rand = state.shortcuts[Math.floor(Math.random() * state.shortcuts.length)];
       if (rand && rand.url) window.open(rand.url, "_blank");
     });
-    document.getElementById("ctrlSettingsBtn").addEventListener("click", () => {
+
+    document.getElementById("ctrlSettingsBtn")?.addEventListener("click", () => {
       syncSettingsUI();
       closeAllDrawers();
       overlay.classList.add("open");
       drawer.classList.add("open");
     });
-
-    // Fullscreen handler function
-function toggleFullscreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else {
-    document.exitFullscreen();
-  }
-}
-
-// Attach event listener to both buttons
-document.getElementById("ctrlFullscreenBtn")?.addEventListener("click", toggleFullscreen);
-document.getElementById("qcFullscreenBtn")?.addEventListener("click", toggleFullscreen);
 
     /* TIME & DATE */
     function updateClock() {
@@ -557,27 +563,38 @@ document.getElementById("qcFullscreenBtn")?.addEventListener("click", toggleFull
       let mins = String(now.getMinutes()).padStart(2, '0');
       let secs = String(now.getSeconds()).padStart(2, '0');
 
-      document.getElementById("clock").childNodes[0].nodeValue = `${hrs}:${mins}`;
-      document.getElementById("clockSec").textContent = `:${secs}`;
+      const clockMain = document.getElementById("clockMain");
+      if (clockMain) clockMain.textContent = `${hrs}:${mins}`;
+
+      const clockSec = document.getElementById("clockSec");
+      if (clockSec) clockSec.textContent = `:${secs}`;
 
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       const dateStr = now.toLocaleDateString('en-US', options);
-      document.getElementById("dateLine").textContent = dateStr;
+      
+      const dateLine = document.getElementById("dateLine");
+      if (dateLine) dateLine.textContent = dateStr;
 
       const timeStrStr = `${hrs}:${mins}:${secs}`;
-      pinDateTime.innerHTML = `${timeStrStr}<br><span style="font-size:0.75em; opacity:0.8;">${dateStr}</span>`;
+      const pinDateTime = document.getElementById("pinDateTime");
+      if (pinDateTime) {
+        pinDateTime.innerHTML = `${timeStrStr}<br><span style="font-size:0.75em; opacity:0.8;">${dateStr}</span>`;
+      }
 
       const hour = now.getHours();
       let g = "Hello";
       if (hour < 12) g = "Good Morning";
       else if (hour < 18) g = "Good Afternoon";
       else g = "Good Evening";
-      document.getElementById("greeting").textContent = `${g}, ${state.name || 'Ethan'}`;
+
+      const greeting = document.getElementById("greeting");
+      if (greeting) greeting.textContent = `${g}, ${state.name || 'Ethan'}`;
     }
+
     setInterval(updateClock, 1000);
     updateClock();
 
-    /* SEARCH ENGINES & GO TO URL */
+    /* SEARCH ENGINES */
     let currentEngine = state.searchEngine || "google";
     function setEngine(engineKey) {
       if (!ENGINES[engineKey]) engineKey = "google";
@@ -698,24 +715,23 @@ document.getElementById("qcFullscreenBtn")?.addEventListener("click", toggleFull
       });
     }
 
+    /* VERSES ROTATION */
     let currentVerseIndex = 0;
+    function renderVerse() {
+      if (!state.verses || state.verses.length === 0) return;
+      
+      const v = state.verses[currentVerseIndex % state.verses.length];
+      currentVerseIndex++;
 
-function renderVerse() {
-  if (!state.verses || state.verses.length === 0) return;
-  
-  // Pick the current verse and cycle to the next index
-  const v = state.verses[currentVerseIndex % state.verses.length];
-  currentVerseIndex++;
-
-  const msgEl = document.getElementById("message");
-  msgEl.style.opacity = 0;
-  
-  // Fade out, swap text, fade back in
-  setTimeout(() => {
-    msgEl.textContent = `"${v.text}" — ${v.ref}`;
-    msgEl.style.opacity = 1;
-  }, 300);
-}
+      const msgEl = document.getElementById("message");
+      if (!msgEl) return;
+      
+      msgEl.style.opacity = 0;
+      setTimeout(() => {
+        msgEl.textContent = `"${v.text}" — ${v.ref}`;
+        msgEl.style.opacity = 1;
+      }, 300);
+    }
 
     /* SETTINGS CONTROLS */
     document.getElementById("setName").addEventListener("input", (e) => {
@@ -742,7 +758,7 @@ function renderVerse() {
             <strong>${s.label}</strong>
             <div style="font-size:11px; opacity:0.7;">${s.url}</div>
           </div>
-          <button class="drawer-close" onclick="removeShortcut(${idx})">✕</button>
+          <button type="button" class="remove-btn" onclick="removeShortcut(${idx})">✕</button>
         `;
         list.appendChild(row);
       });
@@ -785,7 +801,7 @@ function renderVerse() {
             <strong>${app.name}</strong> <span style="font-size:10px; opacity:0.6;">(${app.cat})</span>
             <div style="font-size:11px; opacity:0.7;">${app.url}</div>
           </div>
-          <button class="drawer-close" onclick="removeApp(${idx})">✕</button>
+          <button type="button" class="remove-btn" onclick="removeApp(${idx})">✕</button>
         `;
         list.appendChild(row);
       });
@@ -839,38 +855,33 @@ function renderVerse() {
       renderAppManager();
     }
 
-    document.getElementById("todoBtn").addEventListener("click", () => {
-  window.location.href = "todolist.html"; // Opens todolist.html in a new tab
+    /* PROTECTED NAVIGATION CONTROLS */
+    function openProtectedPage(url) {
+      sessionStorage.setItem('authorized_access', 'true');
+      window.location.href = url;
+    }
+
+    document.getElementById("todoBtn")?.addEventListener("click", () => {
+      openProtectedPage("todolist.html");
+    });
+
+    document.getElementById("journalBtn")?.addEventListener("click", () => {
+      openProtectedPage("journal.html");
+    });
+
+    document.getElementById("classroomBtn")?.addEventListener("click", () => {
+  openProtectedPage("classroomlaunch.html");
 });
 
-// INITIALIZATION
-checkUnlock();
-setEngine(state.searchEngine);
-renderShortcuts();
+    /* INITIALIZATION */
+    checkUnlock();
+    setEngine(state.searchEngine);
+    renderShortcuts();
+    renderVerse();
+    setInterval(renderVerse, 3000);
 
-// Start verse rotation
-renderVerse();
-setInterval(renderVerse, 3000);
-
-document.getElementById("versionTag").style.display = isVersionVisible ? "flex" : "none";
-document.getElementById("journalBtn").addEventListener("click", () => {
-  window.location.href = "journal.html"; // Replace with your journal file name or URL
-});
-
-// Function to safely navigate with access verification
-function openProtectedPage(url) {
-  sessionStorage.setItem('authorized_access', 'true');
-  window.location.href = url;
-}
-
-// Button Event Listeners
-document.getElementById("todoBtn")?.addEventListener("click", () => {
-  openProtectedPage("todolist.html");
-});
-
-document.getElementById("journalBtn")?.addEventListener("click", () => {
-  openProtectedPage("journal.html");
-});
+    const versionTag = document.getElementById("versionTag");
+    if (versionTag) versionTag.style.display = isVersionVisible ? "flex" : "none";
   </script>
 </body>
 </html>

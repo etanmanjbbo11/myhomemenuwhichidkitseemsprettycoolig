@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethan's Classroom Launcher</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0c1014;
+      --sky-a: #10151a;
+      --sky-b: #0c1013;
+      --sky-c: #080a0d;
+      --card-bg: rgba(20, 26, 32, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f3f4f6;
+      --text-muted: #8b95a1;
+      --accent: #dd9c47;
+      --accent-hover: #c88a3a;
+      --gold: #dd9c47;
+      --teal: #3e6e71;
+      --deep: #16232c;
+      --btn-bg: rgba(255, 255, 255, 0.05);
+      --btn-hover: rgba(255, 255, 255, 0.1);
+      --glass-blur: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: linear-gradient(180deg, var(--sky-a) 0%, var(--sky-b) 55%, var(--sky-c) 100%);
+      color: var(--text);
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+      background-size: 22px 22px;
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    .version-tag {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--btn-bg);
+      padding: 0 16px;
+      border-radius: 21px;
+      border: 1px solid var(--card-border);
+      z-index: 10;
+    }
+
+    .header-btns {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .icon-btn-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn-circle:hover {
+      background: var(--btn-hover);
+      transform: translateY(-2px);
+    }
+
+    .icon-btn-circle svg { width: 20px; height: 20px; stroke: currentColor; }
+
+    /* Page Container */
+    .wrap {
+      width: 100%;
+      max-width: 1100px;
+      padding: 70px 20px 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1;
+    }
+
+    /* Centered Time & Header Section */
+    .header-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .eyebrow .dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; }
+
+    .clock {
+      font-family: 'Fraunces', serif;
+      font-size: 3.8rem;
+      font-weight: 300;
+      line-height: 1;
+      margin-bottom: 6px;
+      letter-spacing: -1px;
+    }
+
+    .clock .sec { font-size: 1.8rem; color: var(--text-muted); }
+
+    .date-line { font-size: 1rem; color: var(--text-muted); }
+
+    /* 2-Column Split Layout */
+    .split-layout {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 850px) {
+      .split-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Left Side: Launch Card */
+    .main-launch-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .main-launch-info h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+    .main-launch-info p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+    .launch-gc-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: var(--gold);
+      color: #10151a;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 14px rgba(221, 156, 71, 0.3);
+      width: 100%;
+    }
+
+    .launch-gc-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow: 0 6px 18px rgba(221, 156, 71, 0.4);
+    }
+
+    /* Left Side: Add Course Form */
+    .class-form-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    .form-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .form-row { display: flex; gap: 10px; width: 100%; }
+
+    .input-field {
+      width: 100%;
+      flex: 1;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-field::placeholder { color: var(--text-muted); }
+    .input-field:focus { border-color: var(--accent); }
+
+    /* UNIFIED DROPDOWN STYLING matching Category Dropdown */
+    .select-field {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 32px 10px 12px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+      /* Custom Chevron Arrow */
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      text-overflow: ellipsis;
+    }
+
+    .select-field:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .select-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(221, 156, 71, 0.2);
+    }
+
+    .select-field option {
+      background-color: #10151a;
+      color: var(--text);
+      padding: 10px;
+    }
+
+    .form-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
+
+    .fav-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .fav-toggle-btn.active {
+      background: rgba(221, 156, 71, 0.15);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .submit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 18px;
+      background: var(--gold);
+      color: #16232c;
+      font-weight: 700;
+      font-size: 0.88rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      flex: 1;
+    }
+
+    .submit-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+
+    /* Container for Category Filters ABOVE Search Box */
+    .search-block {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    /* Drop-downs Group Container */
+    .category-dropdown-group {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* WIDE CATEGORY DROP-DOWN STYLING */
+    .category-dropdown {
+      flex: 1 1 200px;
+      min-width: 200px;
+      width: 100%;
+      padding: 12px 38px 12px 16px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      backdrop-filter: blur(var(--glass-blur));
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+      /* Custom Arrow Icon */
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+
+    .category-dropdown:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .category-dropdown:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(221, 156, 71, 0.2);
+    }
+
+    .category-dropdown option {
+      background-color: #10151a;
+      color: var(--text);
+      padding: 10px;
+    }
+
+    /* Search Bar Input Styling */
+    .search-input-wrap {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 14px;
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-muted);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .search-input-wrap input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 16px 12px 42px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      backdrop-filter: blur(var(--glass-blur));
+      transition: border-color 0.2s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .search-input-wrap input:focus { border-color: var(--accent); }
+    .search-input-wrap input::placeholder { color: var(--text-muted); }
+
+    /* Right Side: Class Grid */
+    .class-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .class-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .class-card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.18); }
+
+    .class-card-header { display: flex; align-items: flex-start; gap: 14px; }
+    .class-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .class-meta { flex: 1; overflow: hidden; }
+    .class-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .class-sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px; }
+    .tag-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(62, 110, 113, 0.3);
+      color: #a7f3d0;
+      border: 1px solid rgba(62, 110, 113, 0.5);
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 12px;
+    }
+
+    .launch-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .launch-link:hover { background: var(--gold); color: #10151a; border-color: var(--gold); }
+
+    .card-btns-right { display: flex; gap: 4px; }
+
+    .action-icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .action-icon-btn:hover { color: var(--text); background: var(--btn-hover); }
+    .action-icon-btn.starred { color: var(--gold); }
+
+    .empty-state {
+      width: 100%;
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      background: var(--card-bg);
+      border: 1px dashed var(--card-border);
+      border-radius: 16px;
+    }
+
+    /* Drawer Styles */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 99;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .overlay.open { opacity: 1; pointer-events: auto; }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -360px;
+      width: 100%;
+      max-width: 340px;
+      height: 100%;
+      background: #10151a;
+      border-left: 1px solid var(--card-border);
+      z-index: 100;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .drawer.open { right: 0; }
+
+    .drawer-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); padding-bottom: 16px; }
+    .drawer-header h3 { font-size: 1.2rem; font-weight: 700; }
+
+    .drawer-close-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; }
+    .drawer-close-btn:hover { color: var(--text); }
+
+    .drawer-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .drawer-btn:hover { background: var(--btn-hover); border-color: rgba(255, 255, 255, 0.2); }
+    .drawer-btn.danger { color: #f87171; border-color: rgba(248, 113, 113, 0.2); }
+    .drawer-btn.danger:hover { background: rgba(248, 113, 113, 0.1); }
+
+    /* Edit Modal Popup */
+    .edit-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.95);
+      width: 90%;
+      max-width: 520px;
+      background: #10151a;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .edit-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  </style>
+</head>
+<body>
+  <div class="version-tag">Ethan's Classroom Launcher</div>
+
+  <div class="header-btns">
+    <a href="index.html" class="icon-btn-circle" title="Home Menu"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
+    <a href="todolist.html" class="icon-btn-circle" title="To-Do List"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></a>
+    <a href="journal.html" class="icon-btn-circle" title="Journal"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></a>
+    <button class="icon-btn-circle" id="gearBtn" title="Settings">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    </button>
+  </div>
+
+  <div class="wrap">
+    <div class="header-center">
+      <div class="eyebrow"><span class="dot"></span>Google Classroom Hub</div>
+      <div class="clock" id="clockDisplay">00:00<span class="sec">:00</span></div>
+      <div class="date-line" id="dateDisplay">Loading date...</div>
+    </div>
+
+    <div class="split-layout">
+      
+      <div class="left-col">
+        <div class="main-launch-card">
+          <div class="main-launch-info">
+            <div class="form-title">Quick Links</div>
+          </div>
+          <a href="https://classroom.google.com" target="_blank" class="launch-gc-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Open Classroom
+          </a>
+          <a href="https://app.notion.com" target="_blank" class="launch-gc-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Open Notion
+          </a>
+        </div>
+
+        <div class="class-form-card">
+          <div class="form-title">Add New Course</div>
+          <input type="text" id="classTitle" class="input-field" placeholder="Course Name" required>
+          
+          <div class="form-row">
+            <input type="text" id="classDetail" class="input-field" placeholder="Teacher / Period">
+            
+            <select id="classTag" class="select-field" aria-label="Course Category">
+              <option value="Science & Maths">Science & Maths</option>
+              <option value="Humanities">Humanities</option>
+              <option value="Arts">Arts</option>
+              <option value="Languages">Languages</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <input type="url" id="classUrl" class="input-field" placeholder="Course URL Link">
+            
+            <select id="classIcon" class="select-field" aria-label="Course Icon">
+              <option value="💻">💻</option>
+              <option value="📐">📐</option>
+              <option value="🧪">🧪</option>
+              <option value="📖">📖</option>
+              <option value="🌍">🌍</option>
+              <option value="🎨">🎨</option>
+              <option value="🌐">🌐</option>
+              <option value="📚">📚</option>
+            </select>
+          </div>
+
+          <div class="form-bottom">
+            <button type="button" id="starToggleBtn" class="fav-toggle-btn">★ Star</button>
+            <button type="button" id="addClassBtn" class="submit-btn">Add Class</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-col">
+        
+        <div class="search-block">
+          
+          <div class="category-dropdown-group">
+            <select class="category-dropdown" id="categorySelect" aria-label="Filter courses by category">
+              <option value="all">All Categories</option>
+              <option value="starred">★ Starred Courses</option>
+              <option value="Science & Maths">Science & Maths</option>
+              <option value="Humanities">Humanities</option>
+              <option value="Arts">Arts</option>
+              <option value="Languages">Languages</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+
+          <div class="search-input-wrap">
+            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search classes or teachers..." aria-label="Search courses">
+          </div>
+
+        </div>
+
+        <div id="classGrid" class="class-grid"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h3>Classroom Settings</h3>
+      <button class="drawer-close-btn" id="drawerClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <button class="drawer-btn" id="switchAccountBtn">Switch Google Account (?authuser=1)</button>
+    <button class="drawer-btn" id="exportBtn">Export Classes Backup</button>
+    <button class="drawer-btn" id="importBtn">Import Classes Backup</button>
+    <input type="file" id="importFileInput" accept=".json" style="display: none;">
+    <button class="drawer-btn danger" id="resetBtn">Reset Default Classes</button>
+  </div>
+
+  <div class="overlay" id="editOverlay"></div>
+  <div class="edit-modal" id="editModal">
+    <div class="drawer-header" style="margin-bottom: 16px;">
+      <h3>Edit Course</h3>
+      <button class="drawer-close-btn" id="editModalClose">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <input type="hidden" id="editClassId">
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <input type="text" id="editTitle" class="input-field" placeholder="Course Name" required>
+      
+      <div class="form-row">
+        <input type="text" id="editDetail" class="input-field" placeholder="Teacher / Section / Period">
+        
+        <select id="editTag" class="select-field" aria-label="Edit Course Category">
+          <option value="Science & Maths">Science & Maths</option>
+          <option value="Humanities">Humanities</option>
+          <option value="Arts">Arts</option>
+          <option value="Languages">Languages</option>
+          <option value="General">General</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <input type="url" id="editUrl" class="input-field" placeholder="Google Classroom Link">
+        
+        <select id="editIcon" class="select-field" aria-label="Edit Course Icon">
+          <option value="💻">💻</option>
+          <option value="📐">📐</option>
+          <option value="🧪">🧪</option>
+          <option value="📖">📖</option>
+          <option value="🌍">🌍</option>
+          <option value="🎨">🎨</option>
+          <option value="🌐">🌐</option>
+          <option value="📚">📚</option>
+        </select>
+      </div>
+
+      <div class="form-bottom" style="margin-top: 8px;">
+        <button type="button" id="editStarBtn" class="fav-toggle-btn">★ Star Class</button>
+        <button type="button" id="saveEditBtn" class="submit-btn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "ethan_classroom_launcher_data";
+    const DEFAULT_CLASSES = [];
+
+    let classes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || DEFAULT_CLASSES;
+    let isStarredNew = false;
+    let currentEditStarred = false;
+    let currentFilter = "all";
+    let searchQuery = "";
+
+    function saveClasses() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(classes));
+    }
+
+    function updateClock() {
+      const now = new Date();
+      let hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById("clockDisplay").innerHTML = `${hours}:${minutes}<span class="sec">:${seconds}</span>`;
+      document.getElementById("dateDisplay").innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    /* RENDER CLASSES */
+    function renderClasses() {
+      const grid = document.getElementById("classGrid");
+      grid.innerHTML = "";
+
+      let filtered = classes.filter(c => {
+        const matchesFilter = 
+          currentFilter === "all" ? true :
+          currentFilter === "starred" ? c.starred :
+          c.tag === currentFilter;
+
+        const matchesSearch = 
+          c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.detail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.tag.toLowerCase().includes(searchQuery.toLowerCase());
+
+        return matchesFilter && matchesSearch;
+      });
+
+      filtered.sort((a, b) => {
+        if (b.starred !== a.starred) {
+          return b.starred ? 1 : -1;
+        }
+        return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' });
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="empty-state">No courses found matching your criteria.</div>`;
+        return;
+      }
+
+      filtered.forEach(c => {
+        const card = document.createElement("div");
+        card.className = "class-card";
+
+        // Conditionally render launch link if URL exists and is non-empty
+        const launchBtnHtml = (c.url && c.url.trim() !== "") 
+          ? `<a href="${escapeHtml(c.url)}" target="_blank" class="launch-link">
+              Launch Class
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>` 
+          : `<span></span>`;
+
+        card.innerHTML = `
+          <div class="class-card-header">
+            <div class="class-icon">${c.icon || '📚'}</div>
+            <div class="class-meta">
+              <div class="class-title" title="${escapeHtml(c.title)}">${escapeHtml(c.title)}</div>
+              <div class="class-sub">${escapeHtml(c.detail || 'No description')}</div>
+              <span class="tag-badge">${escapeHtml(c.tag)}</span>
+            </div>
+          </div>
+          <div class="card-actions">
+            ${launchBtnHtml}
+            <div class="card-btns-right">
+              <button class="action-icon-btn" onclick="openEditModal('${c.id}')" title="Edit Class">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+              <button class="action-icon-btn ${c.starred ? 'starred' : ''}" onclick="toggleStar('${c.id}')" title="Star Class">
+                ★
+              </button>
+              <button class="action-icon-btn" onclick="deleteClass('${c.id}')" title="Delete Class">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+    }
+
+    document.getElementById("starToggleBtn").addEventListener("click", () => {
+      isStarredNew = !isStarredNew;
+      document.getElementById("starToggleBtn").classList.toggle("active", isStarredNew);
+    });
+
+    document.getElementById("addClassBtn").addEventListener("click", () => {
+      const title = document.getElementById("classTitle").value.trim();
+      const detail = document.getElementById("classDetail").value.trim();
+      const tag = document.getElementById("classTag").value;
+      const url = document.getElementById("classUrl").value.trim();
+      const icon = document.getElementById("classIcon").value;
+
+      if (!title) {
+        alert("Please enter a Course Name.");
+        return;
+      }
+
+      classes.unshift({
+        id: "c_" + Date.now(),
+        title, detail, tag,
+        url: url,
+        icon, starred: isStarredNew
+      });
+
+      saveClasses();
+      document.getElementById("classTitle").value = "";
+      document.getElementById("classDetail").value = "";
+      document.getElementById("classUrl").value = "";
+      document.getElementById("classTag").value = "Science";
+      document.getElementById("classIcon").value = "💻";
+      isStarredNew = false;
+      document.getElementById("starToggleBtn").classList.remove("active");
+
+      renderClasses();
+    });
+
+    /* EDIT MODAL FUNCTIONS */
+    window.openEditModal = function(id) {
+      const cls = classes.find(c => c.id === id);
+      if (!cls) return;
+
+      document.getElementById("editClassId").value = cls.id;
+      document.getElementById("editTitle").value = cls.title;
+      document.getElementById("editDetail").value = cls.detail || "";
+      document.getElementById("editUrl").value = cls.url || "";
+      document.getElementById("editTag").value = cls.tag || "Science & Maths";
+      document.getElementById("editIcon").value = cls.icon || "💻";
+
+      currentEditStarred = !!cls.starred;
+      document.getElementById("editStarBtn").classList.toggle("active", currentEditStarred);
+
+      document.getElementById("editOverlay").classList.add("open");
+      document.getElementById("editModal").classList.add("open");
+    };
+
+    function closeEditModal() {
+      document.getElementById("editOverlay").classList.remove("open");
+      document.getElementById("editModal").classList.remove("open");
+    }
+
+    document.getElementById("editModalClose").addEventListener("click", closeEditModal);
+    document.getElementById("editOverlay").addEventListener("click", closeEditModal);
+
+    document.getElementById("editStarBtn").addEventListener("click", () => {
+      currentEditStarred = !currentEditStarred;
+      document.getElementById("editStarBtn").classList.toggle("active", currentEditStarred);
+    });
+
+    document.getElementById("saveEditBtn").addEventListener("click", () => {
+      const id = document.getElementById("editClassId").value;
+      const title = document.getElementById("editTitle").value.trim();
+      const detail = document.getElementById("editDetail").value.trim();
+      const tag = document.getElementById("editTag").value;
+      const url = document.getElementById("editUrl").value.trim();
+      const icon = document.getElementById("editIcon").value;
+
+      if (!title) {
+        alert("Please enter a Course Name.");
+        return;
+      }
+
+      const cls = classes.find(c => c.id === id);
+      if (cls) {
+        cls.title = title;
+        cls.detail = detail;
+        cls.tag = tag;
+        cls.url = url;
+        cls.icon = icon;
+        cls.starred = currentEditStarred;
+
+        saveClasses();
+        renderClasses();
+        closeEditModal();
+      }
+    });
+
+    window.toggleStar = function(id) {
+      const target = classes.find(c => c.id === id);
+      if (target) {
+        target.starred = !target.starred;
+        saveClasses();
+        renderClasses();
+      }
+    };
+
+    window.deleteClass = function(id) {
+      if (confirm("Are you sure you want to delete this course link?")) {
+        classes = classes.filter(c => c.id !== id);
+        saveClasses();
+        renderClasses();
+      }
+    };
+
+    /* SEARCH EVENT LISTENER */
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      renderClasses();
+    });
+
+    /* CATEGORY DROPDOWN CHANGE LISTENER */
+    document.getElementById("categorySelect").addEventListener("change", (e) => {
+      currentFilter = e.target.value;
+      renderClasses();
+    });
+
+    /* DRAWER CONTROLS */
+    const overlay = document.getElementById("overlay");
+    const drawer = document.getElementById("drawer");
+
+    document.getElementById("gearBtn").addEventListener("click", () => {
+      overlay.classList.add("open");
+      drawer.classList.add("open");
+    });
+
+    function closeDrawer() {
+      overlay.classList.remove("open");
+      drawer.classList.remove("open");
+    }
+
+    document.getElementById("drawerClose").addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
+
+    document.getElementById("switchAccountBtn").addEventListener("click", () => {
+      window.open("https://classroom.google.com/u/1/h", "_blank");
+      closeDrawer();
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(classes, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `classroom_backup_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    });
+
+    document.getElementById("importBtn").addEventListener("click", () => {
+      document.getElementById("importFileInput").click();
+    });
+
+    document.getElementById("importFileInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (Array.isArray(imported)) {
+            classes = imported;
+            saveClasses();
+            closeDrawer();
+            renderClasses();
+            alert("Classes imported successfully!");
+          }
+        } catch (err) {
+          alert("Error parsing backup file.");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if (confirm("Reset to default empty state?")) {
+        classes = [];
+        saveClasses();
+        closeDrawer();
+        renderClasses();
+      }
+    });
+
+    renderClasses();
+
+    (function verifyAccess() {
+      if (!sessionStorage.getItem('authorized_access')) {
+        sessionStorage.setItem('authorized_access', 'true');
+      }
+    })();
+  </script>
+</body>
+</html>

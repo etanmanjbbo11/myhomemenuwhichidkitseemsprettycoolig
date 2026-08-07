@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethan's Local File Explorer</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📁</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      justify-content: flex-start;
+      padding-top: 80px;
+      padding-bottom: 40px;
+    }
+
+    .explorer-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 24px;
+      z-index: 1;
+    }
+
+    .sidebar-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      height: fit-content;
+    }
+
+    .nav-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: var(--btn-hover);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      background: rgba(221, 156, 71, 0.1);
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
+
+    .main-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      backdrop-filter: blur(var(--glass-blur));
+    }
+
+    /* Navigation Bar / Breadcrumb Styles */
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-icon-nav {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-icon-nav:hover:not(:disabled) {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-icon-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .breadcrumb-item {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .breadcrumb-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb-link:hover {
+      color: var(--accent);
+    }
+
+    .breadcrumb-separator {
+      margin: 0 6px;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    .btn-action {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+    }
+
+    .btn-action-primary {
+      background: var(--accent);
+      color: #10151a;
+      border-color: var(--accent);
+    }
+
+    .btn-action-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .file-search-form {
+      flex: 1;
+      max-width: 100%;
+    }
+
+    .view-toggle {
+      display: flex;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 3px;
+    }
+
+    .view-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .view-btn.active {
+      background: var(--deep);
+      color: var(--accent);
+    }
+
+    /* Grid Layout */
+    .files-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    /* List Layout */
+    .files-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .file-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .file-item:hover {
+      border-color: var(--accent);
+      background: var(--btn-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .file-item.selected {
+      border-color: var(--accent);
+      background: rgba(221, 156, 71, 0.12);
+    }
+
+    /* Grid View Card Styles */
+    .files-grid .file-item {
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      min-height: 120px;
+    }
+
+    .file-icon-wrapper {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--btn-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .file-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .file-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-details {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* List View Row Styles */
+    .files-list .file-item {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 18px;
+    }
+
+    .files-list .file-main-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 2;
+      min-width: 0;
+    }
+
+    .files-list .file-meta-info {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 24px;
+      flex: 1;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Drawer Preview Content Styles */
+    .preview-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 10px 0 20px 0;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 20px;
+    }
+
+    .preview-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .preview-info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .preview-info-label {
+      color: var(--text-muted);
+    }
+
+    .preview-info-value {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .file-viewer-box {
+      margin: 16px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      background: rgba(0, 0, 0, 0.25);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 868px) {
+      .explorer-container {
+        grid-template-columns: 1fr;
+      }
+      .sidebar-panel {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="version-tag" id="versionTag">Ethan's File Explorer</div>
+
+  <div class="header-btns">
+    <button class="icon-btn-circle" title="Back to Home" onclick="window.location.href='index.html'">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <div class="explorer-container">
+    <aside class="sidebar-panel">
+      <div>
+        <div class="nav-section-title">Filter By</div>
+        <ul class="nav-list">
+          <li class="nav-item active" onclick="switchCategory('all', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span>All Files</span>
+          </li>
+          <li class="nav-item" onclick="switchCategory('documents', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span>Documents</span>
+          </li>
+          <li class="nav-item" onclick="switchCategory('code', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            <span>Code</span>
+          </li>
+          <li class="nav-item" onclick="switchCategory('images', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Images</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <div class="toolbar">
+        <div class="breadcrumb-nav">
+          <button class="btn-icon-nav" id="upDirBtn" onclick="goUpDirectory()" disabled title="Go Up Directory">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <div class="breadcrumb" id="breadcrumbContainer">
+            <span class="breadcrumb-item">No Local Directory Opened</span>
+          </div>
+        </div>
+
+        <button class="btn-action btn-action-primary" id="openFolderBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          <span>Open Directory</span>
+        </button>
+      </div>
+
+      <div class="filter-bar">
+        <form class="search-form file-search-form" onsubmit="event.preventDefault();">
+          <input type="text" id="fileSearchInput" placeholder="Search files in open directory..." autocomplete="off">
+          <button type="button" aria-label="Search">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <circle cx="11" cy="11" r="7"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </form>
+
+        <div class="view-toggle">
+          <button class="view-btn active" id="gridViewBtn" title="Grid View">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </button>
+          <button class="view-btn" id="listViewBtn" title="List View">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="fileContainer" class="files-grid"></div>
+    </main>
+  </div>
+
+  <div class="overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="previewDrawer">
+    <button class="drawer-close" id="drawerCloseBtn" aria-label="Close">
+      <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div id="previewContent"></div>
+  </div>
+
+  <script>
+    let filesState = [];
+    let currentFilter = "all";
+    let activeView = "grid";
+    let selectedFile = null;
+    let currentBlobUrl = null;
+    
+    // History stack to support back navigation through folders
+    let dirStack = []; 
+
+    function getFileType(filename, isDirectory) {
+      if (isDirectory) return 'folder';
+      const ext = filename.split('.').pop().toLowerCase();
+      if (['html', 'css', 'js', 'json', 'py', 'ts', 'cpp', 'java', 'xml', 'md'].includes(ext)) return 'code';
+      if (['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'].includes(ext)) return 'images';
+      if (['mp3', 'wav', 'ogg', 'm4a'].includes(ext)) return 'audio';
+      if (['pdf', 'txt', 'doc', 'docx', 'csv', 'log'].includes(ext)) return 'documents';
+      return 'other';
+    }
+
+    function getFileIcon(type) {
+      switch(type) {
+        case 'folder':
+          return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
+        case 'code':
+          return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`;
+        case 'documents':
+          return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>`;
+        case 'images':
+          return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+        case 'audio':
+          return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`;
+        default:
+          return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path></svg>`;
+      }
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '--';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    function renderBreadcrumbs() {
+      const container = document.getElementById('breadcrumbContainer');
+      const upBtn = document.getElementById('upDirBtn');
+
+      if (dirStack.length === 0) {
+        container.innerHTML = `<span class="breadcrumb-item">No Local Directory Opened</span>`;
+        if (upBtn) upBtn.disabled = true;
+        return;
+      }
+
+      if (upBtn) upBtn.disabled = dirStack.length <= 1;
+
+      container.innerHTML = dirStack.map((item, index) => {
+        const isLast = index === dirStack.length - 1;
+        if (isLast) {
+          return `<span class="breadcrumb-item">${item.name}</span>`;
+        } else {
+          return `<a href="#" class="breadcrumb-link" onclick="event.preventDefault(); navigateToStackIndex(${index});">${item.name}</a><span class="breadcrumb-separator">/</span>`;
+        }
+      }).join('');
+    }
+
+    function navigateToStackIndex(index) {
+      if (index < 0 || index >= dirStack.length) return;
+      dirStack = dirStack.slice(0, index + 1);
+      const target = dirStack[dirStack.length - 1];
+      openNativeDirectory(target.handle, false);
+    }
+
+    function goUpDirectory() {
+      if (dirStack.length > 1) {
+        navigateToStackIndex(dirStack.length - 2);
+      }
+    }
+
+    async function openNativeDirectory(dirHandle, isNewRoot = false) {
+      try {
+        if (!dirHandle) {
+          if (!('showDirectoryPicker' in window)) {
+            alert('Your browser does not support the File System Access API. Please use Google Chrome, Microsoft Edge, or Opera.');
+            return;
+          }
+          dirHandle = await window.showDirectoryPicker();
+          isNewRoot = true;
+        }
+
+        if (isNewRoot || dirStack.length === 0) {
+          dirStack = [{ name: dirHandle.name, handle: dirHandle }];
+        }
+
+        renderBreadcrumbs();
+        filesState = [];
+
+        for await (const entry of dirHandle.values()) {
+          let size = '--';
+          let modified = 'Local';
+
+          if (entry.kind === 'file') {
+            try {
+              const fileData = await entry.getFile();
+              size = formatBytes(fileData.size);
+              modified = new Date(fileData.lastModified).toLocaleDateString();
+            } catch (e) {
+              console.warn("Could not read file metadata:", e);
+            }
+          }
+
+          const type = getFileType(entry.name, entry.kind === 'directory');
+          filesState.push({
+            name: entry.name,
+            kind: entry.kind,
+            type: type,
+            size: size,
+            date: modified,
+            handle: entry
+          });
+        }
+
+        renderFiles();
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('File System Error:', err);
+        }
+      }
+    }
+
+    function renderFiles() {
+      const container = document.getElementById("fileContainer");
+      const searchVal = document.getElementById("fileSearchInput").value.toLowerCase();
+
+      if (filesState.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+            <p style="margin-bottom:12px; font-size:1.1rem; font-weight:600;">No folder loaded or directory is empty.</p>
+            <p style="font-size:0.85rem;">Click <strong>"Open Directory"</strong> above to access local files from your Chromebook, Mac, or PC.</p>
+          </div>`;
+        return;
+      }
+
+      const filtered = filesState.filter(file => {
+        const matchesCategory = currentFilter === 'all' || file.type === currentFilter;
+        const matchesSearch = file.name.toLowerCase().includes(searchVal);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--text-muted);">
+            <p>No files match your search query.</p>
+          </div>`;
+        return;
+      }
+
+      if (activeView === 'grid') {
+        container.innerHTML = filtered.map(file => `
+          <div class="file-item ${selectedFile?.name === file.name ? 'selected' : ''}" onclick="selectFile('${file.name.replace(/'/g, "\\'")}')">
+            <div class="file-icon-wrapper">${getFileIcon(file.type)}</div>
+            <div class="file-meta">
+              <div class="file-name" title="${file.name}">${file.name}</div>
+              <div class="file-details">
+                <span>${file.size}</span>
+                <span>${file.date}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        container.innerHTML = filtered.map(file => `
+          <div class="file-item ${selectedFile?.name === file.name ? 'selected' : ''}" onclick="selectFile('${file.name.replace(/'/g, "\\'")}')">
+            <div class="file-main-info">
+              <div class="file-icon-wrapper">${getFileIcon(file.type)}</div>
+              <div class="file-name" title="${file.name}">${file.name}</div>
+            </div>
+            <div class="file-meta-info">
+              <span style="min-width: 80px; text-transform: uppercase; font-size: 0.75rem;">${file.type}</span>
+              <span style="min-width: 80px; text-align: right;">${file.size}</span>
+              <span style="min-width: 90px; text-align: right;">${file.date}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    async function selectFile(fileName) {
+      const fileObj = filesState.find(f => f.name === fileName);
+      if (!fileObj) return;
+
+      if (fileObj.kind === 'directory') {
+        dirStack.push({ name: fileObj.name, handle: fileObj.handle });
+        openNativeDirectory(fileObj.handle, false);
+        return;
+      }
+
+      selectedFile = fileObj;
+      renderFiles();
+
+      let fileData = null;
+      try {
+        fileData = await fileObj.handle.getFile();
+      } catch (e) {
+        console.error("Failed to fetch file handle data", e);
+      }
+
+      await openPreviewDrawer(fileObj, fileData);
+    }
+
+    async function openPreviewDrawer(fileObj, fileData) {
+      const drawer = document.getElementById("previewDrawer");
+      const overlay = document.getElementById("drawerOverlay");
+      const content = document.getElementById("previewContent");
+
+      if (currentBlobUrl) {
+        URL.revokeObjectURL(currentBlobUrl);
+        currentBlobUrl = null;
+      }
+
+      let viewerHtml = '';
+
+      if (fileData) {
+        currentBlobUrl = URL.createObjectURL(fileData);
+        const type = fileObj.type;
+        const name = fileObj.name.toLowerCase();
+
+        if (type === 'images') {
+          viewerHtml = `
+            <div class="file-viewer-box">
+              <img src="${currentBlobUrl}" alt="${fileObj.name}" style="max-width:100%; max-height: 280px; border-radius: 8px; object-fit: contain;">
+            </div>
+          `;
+        } else if (type === 'code' || type === 'documents') {
+          if (name.endsWith('.pdf')) {
+            viewerHtml = `
+              <div class="file-viewer-box" style="height: 280px;">
+                <iframe src="${currentBlobUrl}" style="width:100%; height:100%; border:none; border-radius:8px;"></iframe>
+              </div>
+            `;
+          } else {
+            try {
+              const textContent = await fileData.text();
+              const safeText = textContent
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+              
+              viewerHtml = `
+                <div class="file-viewer-box">
+                  <pre style="background: rgba(0,0,0,0.3); padding: 14px; width:100%; border-radius: 8px; max-height: 280px; overflow: auto; font-family: monospace; font-size: 0.82rem; color: #e2e8f0; white-space: pre-wrap; word-break: break-all;"><code>${safeText}</code></pre>
+                </div>
+              `;
+            } catch (e) {
+              viewerHtml = `<p style="color:var(--text-muted); font-size:0.85rem; padding: 12px 0;">Binary or non-text file contents.</p>`;
+            }
+          }
+        } else if (type === 'audio') {
+          viewerHtml = `
+            <div class="file-viewer-box" style="padding: 16px;">
+              <audio controls src="${currentBlobUrl}" style="width:100%;"></audio>
+            </div>
+          `;
+        } else if (name.endsWith('.mp4') || name.endsWith('.webm')) {
+          viewerHtml = `
+            <div class="file-viewer-box">
+              <video controls src="${currentBlobUrl}" style="max-width:100%; max-height: 260px; border-radius: 8px;"></video>
+            </div>
+          `;
+        }
+      }
+
+      content.innerHTML = `
+        <div class="preview-header">
+          <div class="preview-icon">${getFileIcon(fileObj.type)}</div>
+          <h3 style="font-size:1.05rem; font-weight:700; color:var(--text); word-break: break-all;">${fileObj.name}</h3>
+        </div>
+
+        ${viewerHtml}
+
+        <div style="margin: 16px 0;">
+          <div class="preview-info-row">
+            <span class="preview-info-label">Type</span>
+            <span class="preview-info-value">${fileObj.type.toUpperCase()}</span>
+          </div>
+          <div class="preview-info-row">
+            <span class="preview-info-label">Size</span>
+            <span class="preview-info-value">${fileObj.size}</span>
+          </div>
+          <div class="preview-info-row">
+            <span class="preview-info-label">Modified</span>
+            <span class="preview-info-value">${fileObj.date}</span>
+          </div>
+        </div>
+
+        ${fileData ? `
+          <div style="display:flex; gap:10px; margin-top: 16px;">
+            <button class="btn-action btn-action-primary" style="flex:1; justify-content:center;" onclick="window.open('${currentBlobUrl}', '_blank')">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <span>Open File in Browser</span>
+            </button>
+          </div>
+        ` : ''}
+      `;
+
+      drawer.classList.add("open");
+      overlay.classList.add("open");
+    }
+
+    function closeDrawer() {
+      document.getElementById("previewDrawer").classList.remove("open");
+      document.getElementById("drawerOverlay").classList.remove("open");
+    }
+
+    /* View Switchers */
+    document.getElementById("gridViewBtn").addEventListener("click", () => {
+      activeView = "grid";
+      document.getElementById("gridViewBtn").classList.add("active");
+      document.getElementById("listViewBtn").classList.remove("active");
+      document.getElementById("fileContainer").className = "files-grid";
+      renderFiles();
+    });
+
+    document.getElementById("listViewBtn").addEventListener("click", () => {
+      activeView = "list";
+      document.getElementById("listViewBtn").classList.add("active");
+      document.getElementById("gridViewBtn").classList.remove("active");
+      document.getElementById("fileContainer").className = "files-list";
+      renderFiles();
+    });
+
+    document.getElementById("openFolderBtn").addEventListener("click", () => openNativeDirectory(null, true));
+    document.getElementById("drawerCloseBtn").addEventListener("click", closeDrawer);
+    document.getElementById("drawerOverlay").addEventListener("click", closeDrawer);
+    document.getElementById("fileSearchInput").addEventListener("input", renderFiles);
+
+    function switchCategory(cat, el) {
+      currentFilter = cat;
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+      el.classList.add("active");
+      renderFiles();
+    }
+
+    renderFiles();
+  </script>
+</body>
+</html>
