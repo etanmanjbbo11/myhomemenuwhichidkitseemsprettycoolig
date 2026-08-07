@@ -465,6 +465,91 @@ select option {
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
 }
 
+/* SETTINGS MODAL - MATCHES QUICK CONTROLS EXACTLY */
+#drawer {
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  
+  /* Glass backdrop identical to Quick Controls */
+  background: rgba(12, 16, 20, 0.75);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-left: none;
+  
+  /* Centered flex layout */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+  
+  /* Exact same fly-down spring transition */
+  transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: none;
+  z-index: 950;
+  gap: 0;
+}
+
+/* Slide down into view when opened */
+#drawer.open {
+  top: 0;
+  right: 0;
+}
+
+/* Position close button in top right corner */
+#drawer .drawer-close {
+  position: absolute;
+  top: 28px;
+  right: 32px;
+}
+
+/* Position ONLY the main modal close button in the top right */
+#drawer > .drawer-close,
+#drawerClose {
+  position: absolute;
+  top: 28px;
+  right: 32px;
+}
+
+/* Remove button for shortcut & app list items */
+.remove-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  color: #ff5555;
+  background: rgba(255, 85, 85, 0.1);
+}
+
+/* Header typography */
+#drawer h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+/* Centered 640px settings content container */
+#drawer .field-group {
+  width: 100%;
+  max-width: 640px;
+  text-align: left;
+  margin-bottom: 18px;
+}
+
 .drawer.open {
   right: 0;
 }
@@ -491,7 +576,7 @@ select option {
   height: 100vh;
   z-index: 9999;
 
-  background: rgba(10, 10, 14, 0.65);
+  background: rgba(12, 16, 20, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 
@@ -528,17 +613,18 @@ select option {
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Quick Access Sidebar - Matches standard drawer size (380px) */
 .pin-sidebar {
   width: 380px;
   max-width: 100vw;
   height: 100%;
-  background: rgba(20, 20, 28, 0.95);
+  background: rgba(12, 16, 20, 0.85);
   padding: 32px 24px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start; /* Keeps items at the top */
+  gap: 12px;                   /* Spacing between 'My Links' and 'Options' */
+  overflow-y: auto;           /* Allows scrolling if screen height is small */
 
   transform: translateX(0);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -959,4 +1045,54 @@ button.app-card.shutdown-card:hover {
   background: var(--btn-hover);
   border-color: var(--accent);
   transform: translateX(0px);
+}
+
+/* Unlock Button Styling */
+.unlock-btn {
+  width: 220px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  border-radius: 12px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #10151a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(221, 156, 71, 0.3);
+}
+
+.unlock-btn:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(221, 156, 71, 0.45);
+}
+
+.unlock-btn:active {
+  transform: translateY(0);
+}
+
+#settingsDrawer {
+  position: fixed;
+  top: -100%;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(12, 16, 20, 0.85);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto; /* Enables scrolling if settings content is tall */
+  transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+
+#settingsDrawer.open {
+  top: 0;
 }
