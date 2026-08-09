@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Particle Studio | Ethan's Home Menu</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏳</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Prevent page scrolling */
+    html, body {
+      height: 100%;
+      max-height: 100vh;
+      overflow: hidden !important;
+      margin: 0;
+      padding: 0;
+    }
+
+    .aquarium-workspace {
+      width: 100%;
+      max-width: 1350px;
+      margin: 69px auto 12px auto;
+      height: calc(100vh - 94px);
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 16px;
+      align-items: stretch;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 980px) {
+      .aquarium-workspace {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow-y: auto;
+      }
+      html, body {
+        overflow: auto !important;
+      }
+    }
+
+    /* Canvas Card */
+    .tank-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 16px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 100%;
+      box-sizing: border-box;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .tank-viewport {
+      width: 100%;
+      flex: 1;
+      min-height: 200px;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6);
+      background: #090d12;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+    }
+
+    .tank-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 4px;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-pill span {
+      color: var(--accent);
+    }
+
+    /* Sidebar Controls & Element Palette */
+    .sidebar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 18px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+      max-height: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+    }
+
+    .panel-header h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+
+    /* Element Palette Grid */
+    .element-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      overflow-y: auto;
+      max-height: 230px;
+      padding-right: 2px;
+    }
+
+    .element-grid::-webkit-scrollbar {
+      width: 5px;
+    }
+    .element-grid::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+    }
+
+    .elem-btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--text);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .elem-btn:hover {
+      background: var(--btn-hover);
+      border-color: rgba(221, 156, 71, 0.4);
+    }
+
+    .elem-btn.active {
+      background: rgba(221, 156, 71, 0.2);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 10px rgba(221, 156, 71, 0.3);
+    }
+
+    .elem-icon {
+      font-size: 1.2rem;
+    }
+
+    .btn-action {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .btn-action:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+    }
+
+    /* Slider Container */
+    .range-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .range-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .preset-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="version-tag" id="versionTag">Ethan's Particle Lab</div>
+
+  <div class="header-btns">
+    <a href="index.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="Home Menu" aria-label="Home Menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </button>
+
+   
+    </a>
+  </div>
+
+  <div class="aquarium-workspace">
+    <div class="tank-card">
+      <div class="tank-hud">
+        <div class="stat-pill">✨ Selected: <span id="selectedElemLabel">Sand</span></div>
+        <div class="stat-pill">⚡ Active Particles: <span id="particleCount">0</span></div>
+        <div class="stat-pill">⏱️ FPS: <span id="fpsCount">60</span></div>
+      </div>
+
+      <div class="tank-viewport" id="viewport">
+        <canvas id="sandCanvas"></canvas>
+      </div>
+
+      <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center;">
+        💡 <b>Click & Drag on the grid</b> to spawn elements! 🧬 <b>Cloner</b> learns and duplicates whatever element touches it!
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+     
+
+      <div class="element-grid" id="elementGrid">
+        </div>
+
+      <div class="range-group">
+        <div class="range-header">
+          <span>🖌️ Brush Size</span>
+          <span id="brushSizeVal">5px</span>
+        </div>
+        <input type="range" id="brushSlider" min="1" max="15" value="5">
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-action" id="pauseBtn">⏯️ Pause</button>
+        <button class="btn-action" id="clearBtn">🗑️ Clear Grid</button>
+        <button class="btn-action" id="resetGameBtn" style="margin-top: auto; background: rgba(239, 68, 68, 0.15); border-color: #ef4444; color: #fca5a5;">
+        ⚠️ Reset Sandbox
+      </button>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid var(--card-border); margin: 0;">
+
+      
+
+      <div class="preset-group">
+        <button class="btn-action" onclick="loadPreset('clonerFountain')">🧬 Cloner Flow</button>
+        <button class="btn-action" onclick="loadPreset('volcano')">🌋 Volcano</button>
+        <button class="btn-action" onclick="loadPreset('forestFire')">🌲 Forest Fire</button>
+        <button class="btn-action" onclick="loadPreset('acidRain')">🌧️ Acid Rain</button>
+      </div>
+
+      
+    </div>
+  </div>
+
+  <script>
+    /* Security Session Check */
+    function checkUnlock() {
+      if (sessionStorage.getItem("isUnlocked") !== "true") {
+        window.location.href = "index.html";
+      }
+    }
+    checkUnlock();
+
+    /* Element Definitions & IDs */
+    const ELEM = {
+      EMPTY: 0,
+      SAND: 1,
+      WATER: 2,
+      WALL: 3,
+      PLANT: 4,
+      FIRE: 5,
+      LAVA: 6,
+      ACID: 7,
+      OIL: 8,
+      GAS: 9,
+      C4: 10,
+      WOOD: 11,
+      GLASS: 12,
+      CLONER: 13,
+      ERASER: 255
+    };
+
+    const ELEMENTS = [
+      { id: ELEM.SAND, name: "Sand", icon: "⌛", color: [250, 204, 21] },
+      { id: ELEM.WATER, name: "Water", icon: "💧", color: [56, 189, 248] },
+      { id: ELEM.WALL, name: "Wall", icon: "🧱", color: [100, 116, 139] },
+      { id: ELEM.CLONER, name: "Cloner", icon: "🧬", color: [168, 85, 247] },
+      { id: ELEM.PLANT, name: "Plant", icon: "🌿", color: [34, 197, 94] },
+      { id: ELEM.FIRE, name: "Fire", icon: "🔥", color: [239, 68, 68] },
+      { id: ELEM.LAVA, name: "Lava", icon: "🌋", color: [249, 115, 22] },
+      { id: ELEM.ACID, name: "Acid", icon: "🧪", color: [163, 230, 53] },
+      { id: ELEM.OIL, name: "Oil", icon: "🛢️", color: [180, 83, 9] },
+      { id: ELEM.GAS, name: "Gas", icon: "💨", color: [192, 132, 252] },
+      { id: ELEM.C4, name: "C4", icon: "💣", color: [236, 72, 153] },
+      { id: ELEM.WOOD, name: "Wood", icon: "🪵", color: [120, 53, 15] },
+      { id: ELEM.GLASS, name: "Glass", icon: "🛡️", color: [224, 242, 254] },
+      { id: ELEM.ERASER, name: "Eraser", icon: "🧹", color: [15, 23, 42] }
+    ];
+
+    /* Engine Dimensions & Buffers */
+    const GW = 220; // Grid Width
+    const GH = 140; // Grid Height
+
+    let grid = new Uint8Array(GW * GH);
+    let life = new Uint8Array(GW * GH); // Stores lifetimes or Cloner target element IDs
+    let updated = new Uint8Array(GW * GH);
+
+    let selectedElement = ELEM.SAND;
+    let brushSize = 5;
+    let isPaused = false;
+    let isMouseDown = false;
+
+    /* Canvas Render Setup */
+    const viewport = document.getElementById("viewport");
+    const canvas = document.getElementById("sandCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Offscreen Canvas for Fast Direct Pixel Buffer Transfer
+    const offscreenCanvas = document.createElement("canvas");
+    offscreenCanvas.width = GW;
+    offscreenCanvas.height = GH;
+    const offCtx = offscreenCanvas.getContext("2d");
+    const imgData = offCtx.createImageData(GW, GH);
+    const buf32 = new Uint32Array(imgData.data.buffer);
+
+    function resizeCanvas() {
+      canvas.width = viewport.offsetWidth;
+      canvas.height = viewport.offsetHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    /* Render Element Palette UI */
+    const paletteGrid = document.getElementById("elementGrid");
+    ELEMENTS.forEach(elem => {
+      const btn = document.createElement("button");
+      btn.className = `elem-btn ${elem.id === selectedElement ? 'active' : ''}`;
+      btn.innerHTML = `<span class="elem-icon">${elem.icon}</span><span>${elem.name}</span>`;
+      btn.onclick = () => {
+        document.querySelectorAll('.elem-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedElement = elem.id;
+        document.getElementById("selectedElemLabel").textContent = elem.name;
+      };
+      paletteGrid.appendChild(btn);
+    });
+
+    /* Brush Size Control */
+    const brushSlider = document.getElementById("brushSlider");
+    brushSlider.addEventListener("input", (e) => {
+      brushSize = parseInt(e.target.value);
+      document.getElementById("brushSizeVal").textContent = `${brushSize}px`;
+    });
+
+    /* Mouse & Touch Drawing Handlers */
+    function spawnBrush(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = GW / rect.width;
+      const scaleY = GH / rect.height;
+
+      const gx = Math.floor((clientX - rect.left) * scaleX);
+      const gy = Math.floor((clientY - rect.top) * scaleY);
+
+      const r = brushSize;
+      for (let dy = -r; dy <= r; dy++) {
+        for (let dx = -r; dx <= r; dx++) {
+          if (dx*dx + dy*dy <= r*r) {
+            const nx = gx + dx;
+            const ny = gy + dy;
+            if (nx >= 0 && nx < GW && ny >= 0 && ny < GH) {
+              const idx = ny * GW + nx;
+              if (selectedElement === ELEM.ERASER) {
+                grid[idx] = ELEM.EMPTY;
+                life[idx] = 0;
+              } else if (grid[idx] === ELEM.EMPTY || selectedElement === ELEM.WALL || selectedElement === ELEM.GLASS || selectedElement === ELEM.CLONER) {
+                grid[idx] = selectedElement;
+                life[idx] = selectedElement === ELEM.FIRE ? Math.floor(Math.random() * 20 + 15) : 0;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    viewport.addEventListener("pointerdown", (e) => { isMouseDown = true; spawnBrush(e.clientX, e.clientY); });
+    window.addEventListener("pointermove", (e) => { if (isMouseDown) spawnBrush(e.clientX, e.clientY); });
+    window.addEventListener("pointerup", () => isMouseDown = false);
+
+    /* Explosion Helper for C4 and Gas */
+    function triggerExplosion(cx, cy, radius) {
+      for (let dy = -radius; dy <= radius; dy++) {
+        for (let dx = -radius; dx <= radius; dx++) {
+          if (dx*dx + dy*dy <= radius*radius) {
+            const nx = cx + dx;
+            const ny = cy + dy;
+            if (nx >= 0 && nx < GW && ny >= 0 && ny < GH) {
+              const idx = ny * GW + nx;
+              if (grid[idx] !== ELEM.GLASS) {
+                grid[idx] = Math.random() < 0.6 ? ELEM.FIRE : ELEM.EMPTY;
+                life[idx] = Math.floor(Math.random() * 30 + 10);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    /* Core Physics & Cellular Automata Simulation Step */
+    function updatePhysics() {
+      updated.fill(0);
+      let activeCount = 0;
+
+      // Scan bottom to top to handle gravity correctly
+      for (let y = GH - 1; y >= 0; y--) {
+        const dir = Math.random() < 0.5 ? 1 : -1;
+        const startX = dir === 1 ? 0 : GW - 1;
+        const endX = dir === 1 ? GW : -1;
+
+        for (let x = startX; x !== endX; x += dir) {
+          const idx = y * GW + x;
+          const type = grid[idx];
+
+          if (type === ELEM.EMPTY) continue;
+          activeCount++;
+
+          if (updated[idx]) continue;
+
+          const below = idx + GW;
+          const belowLeft = idx + GW - 1;
+          const belowRight = idx + GW + 1;
+          const left = idx - 1;
+          const right = idx + 1;
+          const above = idx - GW;
+
+          // 1. SAND
+          if (type === ELEM.SAND) {
+            if (y < GH - 1) {
+              if (grid[below] === ELEM.EMPTY) {
+                grid[below] = ELEM.SAND; grid[idx] = ELEM.EMPTY; updated[below] = 1;
+              } else if (grid[below] === ELEM.WATER || grid[below] === ELEM.OIL) {
+                const liquid = grid[below]; grid[below] = ELEM.SAND; grid[idx] = liquid; updated[below] = 1;
+              } else if (x > 0 && grid[belowLeft] === ELEM.EMPTY) {
+                grid[belowLeft] = ELEM.SAND; grid[idx] = ELEM.EMPTY; updated[belowLeft] = 1;
+              } else if (x < GW - 1 && grid[belowRight] === ELEM.EMPTY) {
+                grid[belowRight] = ELEM.SAND; grid[idx] = ELEM.EMPTY; updated[belowRight] = 1;
+              }
+            }
+          }
+
+          // 2. WATER
+          else if (type === ELEM.WATER) {
+            if (y < GH - 1 && grid[below] === ELEM.EMPTY) {
+              grid[below] = ELEM.WATER; grid[idx] = ELEM.EMPTY; updated[below] = 1;
+            } else if (y < GH - 1 && x > 0 && grid[belowLeft] === ELEM.EMPTY) {
+              grid[belowLeft] = ELEM.WATER; grid[idx] = ELEM.EMPTY; updated[belowLeft] = 1;
+            } else if (y < GH - 1 && x < GW - 1 && grid[belowRight] === ELEM.EMPTY) {
+              grid[belowRight] = ELEM.WATER; grid[idx] = ELEM.EMPTY; updated[belowRight] = 1;
+            } else if (x > 0 && grid[left] === ELEM.EMPTY && Math.random() < 0.6) {
+              grid[left] = ELEM.WATER; grid[idx] = ELEM.EMPTY; updated[left] = 1;
+            } else if (x < GW - 1 && grid[right] === ELEM.EMPTY && Math.random() < 0.6) {
+              grid[right] = ELEM.WATER; grid[idx] = ELEM.EMPTY; updated[right] = 1;
+            }
+          }
+
+          // 3. CLONER (Learns and duplicates adjacent elements)
+          else if (type === ELEM.CLONER) {
+            const targetType = life[idx];
+            const neighbors = [below, left, right, above];
+
+            if (targetType === 0) {
+              // Sense adjacent active material to clone
+              for (const n of neighbors) {
+                if (n >= 0 && n < GW * GH) {
+                  const nt = grid[n];
+                  if (nt !== ELEM.EMPTY && nt !== ELEM.WALL && nt !== ELEM.GLASS && nt !== ELEM.CLONER && nt !== ELEM.ERASER) {
+                    life[idx] = nt;
+                    break;
+                  }
+                }
+              }
+            } else {
+              // Duplicate target material into adjacent empty spots
+              if (Math.random() < 0.35) {
+                const emptyNeighbors = neighbors.filter(n => n >= 0 && n < GW * GH && grid[n] === ELEM.EMPTY);
+                if (emptyNeighbors.length > 0) {
+                  const spawnIdx = emptyNeighbors[Math.floor(Math.random() * emptyNeighbors.length)];
+                  grid[spawnIdx] = targetType;
+                  updated[spawnIdx] = 1;
+                  if (targetType === ELEM.FIRE) {
+                    life[spawnIdx] = Math.floor(Math.random() * 20 + 15);
+                  }
+                }
+              }
+            }
+          }
+
+          // 4. FIRE
+          else if (type === ELEM.FIRE) {
+            life[idx]--;
+            if (life[idx] <= 0) {
+              grid[idx] = ELEM.EMPTY;
+              continue;
+            }
+
+            if (y > 0 && grid[above] === ELEM.EMPTY && Math.random() < 0.5) {
+              grid[above] = ELEM.FIRE; life[above] = life[idx]; grid[idx] = ELEM.EMPTY; updated[above] = 1;
+            }
+
+            const neighbors = [below, left, right, above];
+            neighbors.forEach(n => {
+              if (n >= 0 && n < GW * GH) {
+                if (grid[n] === ELEM.PLANT || grid[n] === ELEM.WOOD || grid[n] === ELEM.OIL) {
+                  grid[n] = ELEM.FIRE; life[n] = Math.floor(Math.random() * 25 + 10);
+                } else if (grid[n] === ELEM.GAS || grid[n] === ELEM.C4) {
+                  triggerExplosion(n % GW, Math.floor(n / GW), grid[n] === ELEM.C4 ? 12 : 8);
+                }
+              }
+            });
+          }
+
+          // 5. LAVA
+          else if (type === ELEM.LAVA) {
+            if (y < GH - 1 && grid[below] === ELEM.EMPTY) {
+              grid[below] = ELEM.LAVA; grid[idx] = ELEM.EMPTY; updated[below] = 1;
+            } else if (x > 0 && grid[left] === ELEM.EMPTY && Math.random() < 0.3) {
+              grid[left] = ELEM.LAVA; grid[idx] = ELEM.EMPTY; updated[left] = 1;
+            } else if (x < GW - 1 && grid[right] === ELEM.EMPTY && Math.random() < 0.3) {
+              grid[right] = ELEM.LAVA; grid[idx] = ELEM.EMPTY; updated[right] = 1;
+            }
+
+            const neighbors = [below, left, right, above];
+            neighbors.forEach(n => {
+              if (n >= 0 && n < GW * GH) {
+                if (grid[n] === ELEM.WATER) {
+                  grid[n] = ELEM.WALL; grid[idx] = ELEM.FIRE; life[idx] = 10;
+                } else if (grid[n] === ELEM.SAND) {
+                  grid[n] = ELEM.GLASS;
+                } else if (grid[n] === ELEM.PLANT || grid[n] === ELEM.WOOD || grid[n] === ELEM.OIL) {
+                  grid[n] = ELEM.FIRE; life[n] = 30;
+                } else if (grid[n] === ELEM.C4 || grid[n] === ELEM.GAS) {
+                  triggerExplosion(n % GW, Math.floor(n / GW), 10);
+                }
+              }
+            });
+          }
+
+          // 6. ACID
+          else if (type === ELEM.ACID) {
+            if (y < GH - 1 && grid[below] === ELEM.EMPTY) {
+              grid[below] = ELEM.ACID; grid[idx] = ELEM.EMPTY; updated[below] = 1;
+            } else if (x > 0 && grid[left] === ELEM.EMPTY && Math.random() < 0.4) {
+              grid[left] = ELEM.ACID; grid[idx] = ELEM.EMPTY; updated[left] = 1;
+            } else if (x < GW - 1 && grid[right] === ELEM.EMPTY && Math.random() < 0.4) {
+              grid[right] = ELEM.ACID; grid[idx] = ELEM.EMPTY; updated[right] = 1;
+            }
+
+            const neighbors = [below, left, right];
+            for (const n of neighbors) {
+              if (n >= 0 && n < GW * GH && grid[n] !== ELEM.EMPTY && grid[n] !== ELEM.GLASS && grid[n] !== ELEM.ACID) {
+                grid[n] = ELEM.EMPTY; grid[idx] = ELEM.EMPTY; break;
+              }
+            }
+          }
+
+          // 7. OIL
+          else if (type === ELEM.OIL) {
+            if (y < GH - 1 && grid[below] === ELEM.EMPTY) {
+              grid[below] = ELEM.OIL; grid[idx] = ELEM.EMPTY; updated[below] = 1;
+            } else if (y < GH - 1 && grid[below] === ELEM.WATER) {
+              grid[below] = ELEM.OIL; grid[idx] = ELEM.WATER; updated[below] = 1;
+            } else if (x > 0 && grid[left] === ELEM.EMPTY && Math.random() < 0.5) {
+              grid[left] = ELEM.OIL; grid[idx] = ELEM.EMPTY; updated[left] = 1;
+            } else if (x < GW - 1 && grid[right] === ELEM.EMPTY && Math.random() < 0.5) {
+              grid[right] = ELEM.OIL; grid[idx] = ELEM.EMPTY; updated[right] = 1;
+            }
+          }
+
+          // 8. GAS
+          else if (type === ELEM.GAS) {
+            if (y > 0 && grid[above] === ELEM.EMPTY) {
+              grid[above] = ELEM.GAS; grid[idx] = ELEM.EMPTY; updated[above] = 1;
+            } else if (x > 0 && grid[left] === ELEM.EMPTY && Math.random() < 0.5) {
+              grid[left] = ELEM.GAS; grid[idx] = ELEM.EMPTY; updated[left] = 1;
+            } else if (x < GW - 1 && grid[right] === ELEM.EMPTY && Math.random() < 0.5) {
+              grid[right] = ELEM.GAS; grid[idx] = ELEM.EMPTY; updated[right] = 1;
+            }
+          }
+
+          // 9. PLANT
+          else if (type === ELEM.PLANT) {
+            const neighbors = [below, left, right, above];
+            neighbors.forEach(n => {
+              if (n >= 0 && n < GW * GH && grid[n] === ELEM.WATER && Math.random() < 0.05) {
+                grid[n] = ELEM.PLANT;
+              }
+            });
+          }
+        }
+      }
+
+      document.getElementById("particleCount").textContent = activeCount;
+    }
+
+    /* Rendering Loop using ImageData */
+    let lastTime = performance.now();
+    let frameCount = 0;
+
+    function renderLoop() {
+      const now = performance.now();
+      frameCount++;
+      if (now - lastTime >= 1000) {
+        document.getElementById("fpsCount").textContent = frameCount;
+        frameCount = 0;
+        lastTime = now;
+      }
+
+      if (!isPaused) {
+        updatePhysics();
+      }
+
+      // Render grid pixels to buffer
+      for (let i = 0; i < GW * GH; i++) {
+        const type = grid[i];
+        if (type === ELEM.EMPTY) {
+          buf32[i] = 0xff120d09; // Background #090d12
+        } else {
+          let c = [255, 255, 255];
+          const elem = ELEMENTS.find(e => e.id === type);
+          if (elem) c = elem.color;
+
+          // Special Glow effect for Cloner depending on active cloned material
+          if (type === ELEM.CLONER) {
+            const clonedType = life[i];
+            if (clonedType > 0) {
+              const targetElem = ELEMENTS.find(e => e.id === clonedType);
+              if (targetElem) {
+                // Blend Cloner color with target material color
+                c = [
+                  Math.floor((c[0] + targetElem.color[0]) / 2),
+                  Math.floor((c[1] + targetElem.color[1]) / 2),
+                  Math.floor((c[2] + targetElem.color[2]) / 2)
+                ];
+              }
+            }
+          }
+
+          // Add subtle flicker for fire/lava
+          if (type === ELEM.FIRE || type === ELEM.LAVA) {
+            const varColor = Math.floor(Math.random() * 40 - 20);
+            c = [Math.min(255, Math.max(0, c[0] + varColor)), Math.min(255, Math.max(0, c[1] + varColor)), c[2]];
+          }
+
+          buf32[i] = (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0];
+        }
+      }
+
+      offCtx.putImageData(imgData, 0, 0);
+
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
+
+      requestAnimationFrame(renderLoop);
+    }
+
+    /* Presets Loader */
+    function loadPreset(presetKey) {
+      grid.fill(ELEM.EMPTY);
+      life.fill(0);
+
+      if (presetKey === 'clonerFountain') {
+        // Place Cloner Block at Top Center
+        for (let y = 15; y <= 25; y++) {
+          for (let x = GW/2 - 8; x <= GW/2 + 8; x++) {
+            const idx = y * GW + x;
+            grid[idx] = ELEM.CLONER;
+            life[idx] = ELEM.WATER; // Pre-configured to Water
+          }
+        }
+        // Glass funnel underneath
+        for (let y = 35; y <= 70; y++) {
+          const dx = Math.floor((y - 35) * 0.6);
+          grid[y * GW + (GW/2 - 25 + dx)] = ELEM.GLASS;
+          grid[y * GW + (GW/2 + 25 - dx)] = ELEM.GLASS;
+        }
+      } else if (presetKey === 'volcano') {
+        for (let y = GH - 1; y > GH - 70; y--) {
+          const w = (GH - y) * 1.2;
+          for (let x = 0; x < GW; x++) {
+            if (x < GW/2 - w/2 || x > GW/2 + w/2) {
+              grid[y * GW + x] = ELEM.WALL;
+            }
+          }
+        }
+        for (let y = GH - 10; y > GH - 40; y--) {
+          for (let x = GW/2 - 20; x < GW/2 + 20; x++) {
+            grid[y * GW + x] = ELEM.LAVA;
+          }
+        }
+      } else if (presetKey === 'acidRain') {
+        for (let x = 10; x < GW - 10; x++) {
+          grid[(GH - 15) * GW + x] = ELEM.GLASS;
+          grid[(GH - 40) * GW + x] = ELEM.WOOD;
+        }
+        for (let y = 5; y < 25; y++) {
+          for (let x = 20; x < GW - 20; x++) {
+            if (Math.random() < 0.4) grid[y * GW + x] = ELEM.ACID;
+          }
+        }
+      } else if (presetKey === 'forestFire') {
+        for (let x = 0; x < GW; x++) {
+          for (let y = GH - 15; y < GH; y++) {
+            grid[y * GW + x] = ELEM.SAND;
+          }
+        }
+        for (let i = 0; i < 8; i++) {
+          const tx = 25 + i * 22;
+          for (let y = GH - 16; y > GH - 45; y--) grid[y * GW + tx] = ELEM.WOOD;
+          for (let dy = -15; dy <= 0; dy++) {
+            for (let dx = -10; dx <= 10; dx++) {
+              if (dx*dx + dy*dy <= 100) grid[(GH - 45 + dy) * GW + (tx + dx)] = ELEM.PLANT;
+            }
+          }
+        }
+        grid[(GH - 20) * GW + 25] = ELEM.FIRE;
+        life[(GH - 20) * GW + 25] = 40;
+      }
+    }
+
+    /* Controls Event Listeners */
+    document.getElementById("pauseBtn").addEventListener("click", () => {
+      isPaused = !isPaused;
+      document.getElementById("pauseBtn").textContent = isPaused ? "▶️ Play" : "⏯️ Pause";
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      grid.fill(ELEM.EMPTY);
+      life.fill(0);
+    });
+
+    document.getElementById("resetGameBtn").addEventListener("click", () => {
+      if (confirm("Reset particle simulation?")) {
+        grid.fill(ELEM.EMPTY);
+        life.fill(0);
+      }
+    });
+
+    // Start Engine
+    renderLoop();
+  </script>
+</body>
+</html>

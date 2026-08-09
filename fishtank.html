@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Aquarium | Ethan's Home Menu</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐠</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Prevent page scrolling */
+    html, body {
+      height: 100%;
+      max-height: 100vh;
+      overflow: hidden !important;
+      margin: 0;
+      padding: 0;
+    }
+
+    .aquarium-workspace {
+      width: 100%;
+      max-width: 1350px;
+      height: calc(100vh - 94px);
+      margin: 69px auto 12px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 16px;
+      align-items: stretch;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 980px) {
+      .aquarium-workspace {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow-y: auto;
+      }
+      html, body {
+        overflow: auto !important;
+      }
+    }
+
+    /* Canvas Aquarium Container */
+    .tank-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 20px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: 100%;
+      box-sizing: border-box;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .tank-viewport {
+      width: 100%;
+      flex: 1;
+      min-height: 200px;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* HUD Bar over Tank */
+    .tank-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 4px 10px 4px;
+      margin-bottom: 6px;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-pill span {
+      color: var(--accent);
+    }
+
+    /* Sidebar Controls & Shop */
+    .sidebar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 22px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      height: 100%;
+      max-height: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 14px;
+      margin-bottom: 8px;
+    }
+
+    .panel-header h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+
+    /* Shop Item Cards */
+    .shop-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .shop-list::-webkit-scrollbar {
+      width: 5px;
+    }
+    .shop-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+    }
+
+    .shop-item {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .shop-item:hover {
+      background: var(--btn-hover);
+      border-color: rgba(221, 156, 71, 0.4);
+    }
+
+    .item-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+/* UPDATED (MASK REMOVED) */
+.item-icon {
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+}
+
+    .item-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .item-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .btn-buy {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: #10151a;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-buy:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-buy:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-action {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .btn-action:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+    }
+
+    /* Cleanliness Progress Bar */
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #34d399;
+      width: 100%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    /* Floating Notification Toast */
+.gacha-toast {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: rgba(15, 23, 42, 0.9);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 100;
+}
+
+.gacha-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Gallery Modal Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #1e293b;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 20px;
+  width: 90%;
+  max-width: 480px;
+  color: var(--text);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 10px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-size: 1.3rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.gallery-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.gallery-icon {
+  font-size: 1.8rem;
+}
+
+.gallery-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.gallery-count {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.btn-delete-fish {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.btn-delete-fish:hover:not(:disabled) {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn-delete-fish:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: #666;
+  color: #888;
+}
+  </style>
+
+</head>
+<body>
+  <div class="version-tag" id="versionTag">Ethan's Aquarium Studio</div>
+
+  <div class="header-btns">
+    <a href="index.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="Home Menu" aria-label="Home Menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </button>
+    </a>
+  </div>
+
+  <div class="aquarium-workspace">
+    
+    <div class="tank-card">
+      <div class="tank-hud">
+        <div class="stat-pill">💰 Coins: <span id="coinCount">1000</span></div>
+        <div class="stat-pill">🐠 Fish: <span id="fishCount">0</span> / 2000</div>
+        <div class="stat-pill">🧼 Water: <span id="cleanText">100%</span></div>
+      </div>
+
+      <div class="tank-viewport" id="viewport">
+        <canvas id="aquariumCanvas"></canvas>
+        <div id="gachaToast" class="gacha-toast"></div>
+      </div>
+
+      <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center;">
+        💡 <b>Click inside the water</b> to feed fish! Uneaten food dissolves after 5s!
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+
+      <div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">
+          <span>TANK CLEANLINESS</span>
+          <span id="cleanPercent">100%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="cleanBar"></div>
+        </div>
+        <button class="btn-action" id="cleanTankBtn" style="margin-top: 8px;">
+          🧹 Clean Tank ($15)
+        </button>
+        <button class="btn-action" id="cleanTankFullBtn" style="margin-top: 8px;">
+          🧹 Clean Tank Fully ($1000)
+        </button>
+        <button class="btn-action" id="openGalleryBtn" style="margin-top: 8px;">
+  📖 Fish Gallery
+</button>
+<button class="btn-action" id="toggleCoinPopupsBtn" style="margin-top: 8px;">
+  🪙 Coin Popups: ON
+        <button class="btn-action" id="resetGameBtn" style="margin-top: 8px; color: #f87171; border-color: rgba(248,113,113,0.3);">
+        Reset Tank Data
+      </button>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid var(--card-border); margin: 0;">
+
+      <div class="shop-list">
+        <div class="shop-item">
+          <div class="item-meta">
+            <div class="item-icon">🥚</div>
+            <div>
+              <div class="item-title">Basic Gacha</div>
+              <div class="item-sub">70% Guppy, 25% Neon, 5% Angel</div>
+            </div>
+          </div>
+          <button class="btn-buy" onclick="rollGacha('basic', 30)">$30</button>
+        </div>
+
+        <div class="shop-item">
+          <div class="item-meta">
+            <div class="item-icon">💎</div>
+            <div>
+              <div class="item-title">Premium Gacha</div>
+              <div class="item-sub">20% Guppy, 50% Neon, 25% Angel, 5% Golden</div>
+            </div>
+          </div>
+          <button class="btn-buy" onclick="rollGacha('premium', 120)">$120</button>
+        </div>
+
+        <div class="shop-item">
+          <div class="item-meta">
+            <div class="item-icon">🔥</div>
+            <div>
+              <div class="item-title">Ultra Gacha</div>
+              <div class="item-sub">20% Neon, 50% Angel, 30% Golden</div>
+            </div>
+          </div>
+          <button class="btn-buy" onclick="rollGacha('ultra', 350)">$350</button>
+        </div>
+
+        <div class="shop-item">
+          <div class="item-meta">
+            <div class="item-icon">🫧</div>
+            <div>
+              <div class="item-title">Bubbler Pump</div>
+              <div class="item-sub">Keeps fish extra happy</div>
+            </div>
+          </div>
+          <button class="btn-buy" id="bubblerBtn" onclick="buyBubbler(100)">$100</button>
+        </div>
+
+
+      
+    </div>
+  </div>
+  <div id="galleryModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🐟 Fish Gallery</h2>
+      <button class="close-btn" id="closeGalleryBtn">&times;</button>
+    </div>
+    <div class="gallery-grid" id="galleryGrid">
+      </div>
+  </div>
+</div>
+
+  <script>
+    /* Session Lock Check */
+    function checkUnlock() {
+      if (sessionStorage.getItem("isUnlocked") !== "true") {
+        window.location.href = "index.html";
+      }
+    }
+    checkUnlock();
+
+    /* Game State & Save Data */
+    const STORAGE_KEY = "ethan_fishtank_save_v1";
+    
+let state = {
+  coins: 100,
+  cleanliness: 100,
+  hasBubbler: false,
+  hasAutoCollector: false,
+  disableCoinPopups: false, // <-- Add this state property
+  fishList: []
+};
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { state = Object.assign(state, JSON.parse(saved)); } catch(e){}
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    loadState();
+
+    /* Canvas Setup */
+    const viewport = document.getElementById("viewport");
+    const canvas = document.getElementById("aquariumCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let width = canvas.width = viewport.offsetWidth;
+    let height = canvas.height = viewport.offsetHeight;
+
+    function resizeCanvas() {
+      width = canvas.width = viewport.offsetWidth;
+      height = canvas.height = viewport.offsetHeight;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    setTimeout(resizeCanvas, 50);
+
+    /* Entity Collections */
+    let foodPellets = [];
+    let coins = [];
+    let bubbles = [];
+
+    /* Fish Species Configuration */
+    const FISH_SPECIES = {
+      guppy:  { color: "#f97316", secondary: "#fbbf24", speed: 1.8, dropVal: 1,  dropInterval: 3000 },
+      neon:   { color: "#38bdf8", secondary: "#ef4444", speed: 2.8, dropVal: 3,  dropInterval: 2000 },
+      angel:  { color: "#e879f9", secondary: "#f43f5e", speed: 1.2, dropVal: 8,  dropInterval: 1000 },
+      golden: { color: "#fbbf24", secondary: "#ffffff", speed: 2.2, dropVal: 25, dropInterval: 500 }
+    };
+
+    /* Gacha System Probabilities */
+    const GACHA_TIERS = {
+      basic: [
+        { type: 'guppy', weight: 70 },
+        { type: 'neon', weight: 25 },
+        { type: 'angel', weight: 5 }
+      ],
+      premium: [
+        { type: 'guppy', weight: 20 },
+        { type: 'neon', weight: 50 },
+        { type: 'angel', weight: 25 },
+        { type: 'golden', weight: 5 }
+      ],
+      ultra: [
+        { type: 'neon', weight: 20 },
+        { type: 'angel', weight: 50 },
+        { type: 'golden', weight: 30 }
+      ]
+    };
+
+    const FISH_NAMES = {
+      guppy: "Orange Guppy",
+      neon: "Neon Tetra",
+      angel: "Angel Fish",
+      golden: "Golden Koi"
+    };
+
+class Fish {
+  constructor(type, x, y) {
+    this.type = type;
+    this.spec = FISH_SPECIES[type] || FISH_SPECIES.guppy;
+    this.x = x || Math.random() * (width - 100) + 50;
+    this.y = y || Math.random() * (height - 100) + 50;
+    this.vx = (Math.random() - 0.5) * this.spec.speed;
+    this.vy = (Math.random() - 0.5) * (this.spec.speed * 0.5);
+    this.angle = 0;
+    this.wiggle = Math.random() * 100;
+    this.targetX = this.x;
+    this.targetY = this.y;
+    this.lastCoinTime = Date.now() + Math.random() * 5000;
+    this.size = this.type === 'angel' ? 24 : (this.type === 'golden' ? 26 : 18);
+    
+    this.speedBoost = 1.0; 
+  }
+
+  update() {
+    this.wiggle += 0.15;
+    const cleanFactor = Math.max(0.4, state.cleanliness / 100);
+
+    let nearestFood = null;
+    let minDst = 99999;
+
+    foodPellets.forEach(f => {
+      const dst = Math.hypot(f.x - this.x, f.y - this.y);
+      if (dst < minDst) {
+        minDst = dst;
+        nearestFood = f;
+      }
+    });
+
+    // Handle eating food pellet
+    if (nearestFood && minDst < this.size) {
+      foodPellets = foodPellets.filter(p => p !== nearestFood);
+      this.lastCoinTime = Date.now() - (this.spec.dropInterval * 0.6);
+      createBubbles(this.x, this.y, 3);
+
+      // Boost speed on eat (stackable up to 3x)
+      this.speedBoost = Math.min(3.0, this.speedBoost + 0.4);
+    } 
+    // Otherwise steer toward nearest food
+    else if (nearestFood && minDst < 250) {
+      const dx = nearestFood.x - this.x;
+      const dy = nearestFood.y - this.y;
+      const angle = Math.atan2(dy, dx);
+      this.vx += Math.cos(angle) * 0.12 * cleanFactor;
+      this.vy += Math.sin(angle) * 0.12 * cleanFactor;
+    } 
+    // Idle swimming
+    else {
+      if (Math.random() < 0.02) {
+        this.vx += (Math.random() - 0.5) * 0.5;
+        this.vy += (Math.random() - 0.5) * 0.3;
+      }
+    }
+
+    // Slowly decay speed boost back to normal over time
+    if (this.speedBoost > 1.0) {
+      this.speedBoost -= 0.0015; 
+    }
+
+    const speed = Math.hypot(this.vx, this.vy);
+    const maxSpeed = this.spec.speed * cleanFactor * this.speedBoost;
+
+    if (speed > maxSpeed) {
+      this.vx = (this.vx / speed) * maxSpeed;
+      this.vy = (this.vy / speed) * maxSpeed;
+    }
+
+    this.x += this.vx;
+    this.y += this.vy;
+
+    const margin = 40;
+    if (this.x < margin) { this.x = margin; this.vx *= -1; }
+    if (this.x > width - margin) { this.x = width - margin; this.vx *= -1; }
+    if (this.y < margin) { this.y = margin; this.vy *= -1; }
+    if (this.y > height - margin - 30) { this.y = height - margin - 30; this.vy *= -1; }
+
+    this.angle = Math.atan2(this.vy, this.vx);
+
+    // AFTER
+if (Date.now() - this.lastCoinTime > this.spec.dropInterval) {
+  if (state.disableCoinPopups) {
+    // Add coins directly to total balance without spawning floating popups
+    state.coins += this.spec.dropVal;
+  } else {
+    // Standard floating coin behavior
+    coins.push(new Coin(this.x, this.y, this.spec.dropVal));
+  }
+  this.lastCoinTime = Date.now();
+}
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    
+    const isFacingLeft = Math.cos(this.angle) < 0;
+    ctx.rotate(this.angle);
+    if (isFacingLeft) ctx.scale(1, -1);
+
+    const wiggleOffset = Math.sin(this.wiggle) * 4;
+
+    ctx.fillStyle = this.spec.secondary;
+    ctx.beginPath();
+    ctx.moveTo(-this.size, 0);
+    ctx.lineTo(-this.size - 12, -8 + wiggleOffset);
+    ctx.lineTo(-this.size - 12, 8 + wiggleOffset);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = this.spec.color;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(this.size * 0.5, -this.size * 0.15, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#000000";
+    ctx.beginPath();
+    ctx.arc(this.size * 0.55, -this.size * 0.15, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = this.spec.secondary;
+    ctx.beginPath();
+    ctx.moveTo(-2, -this.size * 0.5);
+    ctx.quadraticCurveTo(0, -this.size * 1.2, this.size * 0.3, -this.size * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+    class Food {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vy = 1.2;
+        this.bottomFrames = 0;
+        this.dissolved = false;
+      }
+      update() {
+        if (this.y < height - 35) {
+          this.y += this.vy;
+        } else {
+          this.bottomFrames++;
+          if (this.bottomFrames > 300) {
+            this.dissolved = true;
+          }
+        }
+      }
+      draw() {
+        ctx.save();
+        if (this.bottomFrames > 180) {
+          ctx.globalAlpha = Math.max(0, 1 - (this.bottomFrames - 180) / 120);
+        }
+        ctx.fillStyle = "#d97706";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    class Coin {
+      constructor(x, y, value) {
+        this.x = x;
+        this.y = y;
+        this.value = value;
+        this.vy = -0.8;
+        this.life = 1.0;
+        this.collected = false;
+      }
+      update() {
+        if (state.hasAutoCollector) {
+          this.x += (30 - this.x) * 0.08;
+          this.y += (20 - this.y) * 0.08;
+          if (this.x < 50 && this.y < 40) {
+            this.collected = true;
+            state.coins += this.value;
+            createBubbles(this.x, this.y, 2);
+            saveState();
+          }
+          return;
+        }
+
+        this.y += this.vy;
+        this.life -= 0.0015;
+
+        if (this.y <= 25) {
+          this.collected = true;
+          state.coins += this.value;
+          createBubbles(this.x, this.y, 3);
+          saveState();
+        }
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, this.life);
+        ctx.fillStyle = "#fbbf24";
+        ctx.strokeStyle = "#b45309";
+        ctx.lineWidth = 1.5;
+        
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 11, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#78350f";
+        ctx.font = "bold 10px Manrope, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`$${this.value}`, this.x, this.y + 0.5);
+        ctx.restore();
+      }
+    }
+
+    class Bubble {
+      constructor(x, y) {
+        this.x = x || Math.random() * width;
+        this.y = y || height - 20;
+        this.radius = Math.random() * 4 + 2;
+        this.vy = -(Math.random() * 1.5 + 0.8);
+      }
+      update() {
+        this.y += this.vy;
+        this.x += Math.sin(this.y * 0.05) * 0.5;
+      }
+      draw() {
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+
+    function createBubbles(x, y, count) {
+      for (let i = 0; i < count; i++) {
+        bubbles.push(new Bubble(x + (Math.random() * 10 - 5), y + (Math.random() * 10 - 5)));
+      }
+    }
+
+    /* Instantiate Active Fish */
+    let fishObjects = state.fishList.map(f => new Fish(f.type, f.x, f.y));
+
+    /* 1. Auto-save cleanliness every 5 seconds */
+setInterval(() => {
+  saveState();
+}, 5000);
+
+/* 2. Save cleanliness state immediately before the user leaves or refreshes the page */
+window.addEventListener("beforeunload", () => {
+  saveState();
+});
+
+/* 3. Add functionality & state saving to the Clean Tank Button */
+document.getElementById("cleanTankBtn").addEventListener("click", () => {
+  const CLEAN_COST = 15;
+  
+  if (state.cleanliness >= 100) {
+    alert("The tank is already completely clean!");
+    return;
+  }
+  
+  if (state.coins < CLEAN_COST) {
+    alert("Not enough coins to clean the tank!");
+    return;
+  }
+
+  state.coins -= CLEAN_COST;
+  state.cleanliness = 100;
+  saveState();
+  updateUI();
+});
+
+document.getElementById("cleanTankFullBtn").addEventListener("click", () => {
+  const CLEAN_COST = 1000;
+  
+  if (state.cleanliness >= 1000) {
+    alert("The tank is already completely clean!");
+    return;
+  }
+  
+  if (state.coins < CLEAN_COST) {
+    alert("Not enough coins to clean the tank!");
+    return;
+  }
+
+  state.coins -= CLEAN_COST;
+  state.cleanliness = 1000;
+  saveState();
+  updateUI();
+});
+    /* Primary Game Render Loop */
+
+    function renderLoop() {
+      const waterGrad = ctx.createLinearGradient(0, 0, 0, height);
+      const dirtyFactor = 1 - (state.cleanliness / 100);
+      const r = Math.round(14 + dirtyFactor * 30);
+      const g = Math.round(116 + dirtyFactor * 20);
+      const b = Math.round(144 - dirtyFactor * 80);
+
+      waterGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.85)`);
+      waterGrad.addColorStop(1, `rgba(8, 28, 44, 0.95)`);
+
+      ctx.fillStyle = waterGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = "#1e293b";
+      ctx.beginPath();
+      ctx.ellipse(width / 2, height, width * 0.6, 35, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (state.hasBubbler && Math.random() < 0.3) {
+        bubbles.push(new Bubble(80, height - 20));
+      } else if (Math.random() < 0.05) {
+        bubbles.push(new Bubble());
+      }
+
+      bubbles.forEach((b, idx) => {
+        b.update();
+        b.draw();
+        if (b.y < -10) bubbles.splice(idx, 1);
+      });
+
+      for (let idx = foodPellets.length - 1; idx >= 0; idx--) {
+        const f = foodPellets[idx];
+        f.update();
+        f.draw();
+
+        if (f.dissolved) {
+          state.cleanliness = Math.max(0, state.cleanliness - 1);
+          foodPellets.splice(idx, 1);
+        }
+      }
+
+      fishObjects.forEach(fish => {
+        fish.update();
+        fish.draw();
+      });
+
+      for (let idx = coins.length - 1; idx >= 0; idx--) {
+        const c = coins[idx];
+        c.update();
+        c.draw();
+
+        if (c.collected || c.life <= 0) {
+          coins.splice(idx, 1);
+        }
+      }
+// AFTER (more fish = faster dirtying)
+const baseDecay = 0.0005;                             // Small passive dirtiness (even with 0 fish)
+const decayPerFish = 0.0008;                           // Extra dirtiness added for EVERY fish in the tank
+const totalDecay = baseDecay + (fishObjects.length * decayPerFish);
+
+state.cleanliness = Math.max(0, state.cleanliness - totalDecay);
+      updateUI();
+
+      requestAnimationFrame(renderLoop);
+    }
+
+    viewport.addEventListener("mousemove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      coins.forEach((c) => {
+        if (!c.collected && Math.hypot(c.x - mouseX, c.y - mouseY) < 40) {
+          c.collected = true;
+          state.coins += c.value;
+          createBubbles(c.x, c.y, 3);
+          saveState();
+        }
+      });
+    });
+
+    viewport.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      foodPellets.push(new Food(clickX, clickY));
+    });
+
+    function updateUI() {
+
+       // Inside updateUI()
+const popupBtn = document.getElementById("toggleCoinPopupsBtn");
+if (popupBtn) {
+  popupBtn.textContent = state.disableCoinPopups 
+    ? "🚫 Coin Popups: OFF" 
+    : "🪙 Coin Popups: ON";
+}
+    document.getElementById("toggleCoinPopupsBtn").addEventListener("click", () => {
+  state.disableCoinPopups = !state.disableCoinPopups; // Toggle setting
+  saveState(); // Save preference
+  updateUI();  // Update button label
+});
+
+      document.getElementById("coinCount").textContent = state.coins;
+      document.getElementById("fishCount").textContent = fishObjects.length;
+      
+      const cleanVal = Math.round(state.cleanliness);
+      document.getElementById("cleanText").textContent = `${cleanVal}%`;
+      document.getElementById("cleanPercent").textContent = `${cleanVal}%`;
+      
+      const cleanBar = document.getElementById("cleanBar");
+      cleanBar.style.width = `${cleanVal}%`;
+      cleanBar.style.backgroundColor = cleanVal > 50 ? "#34d399" : (cleanVal > 25 ? "#fbbf24" : "#f87171");
+
+      const bubblerBtn = document.getElementById("bubblerBtn");
+      if (bubblerBtn) {
+        bubblerBtn.textContent = state.hasBubbler ? "Purchased" : "$100";
+        bubblerBtn.disabled = state.hasBubbler;
+      }
+
+      const magnetBtn = document.getElementById("magnetBtn");
+      if (magnetBtn) {
+        magnetBtn.textContent = state.hasAutoCollector ? "Purchased" : "$200";
+        magnetBtn.disabled = state.hasAutoCollector;
+      }
+    }
+
+    /* Gacha Roll Handler */
+    /* Floating Toast Helper */
+function showToast(message) {
+  const toast = document.getElementById("gachaToast");
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add("show");
+  
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+}
+
+   window.rollGacha = function(tier, price) {
+  if (state.coins < price) {
+    showToast("⚠️ Not enough coins!");
+    return;
+  }
+
+  if (fishObjects.length >= 2000) {
+    showToast("⚠️ Tank is full (Max 2000 Fish)!");
+    return;
+  }
+
+  state.coins -= price;
+
+  const pool = GACHA_TIERS[tier];
+  const rand = Math.random() * 100;
+  let cumulative = 0;
+  let wonType = pool[0].type;
+
+  for (const item of pool) {
+    cumulative += item.weight;
+    if (rand <= cumulative) {
+      wonType = item.type;
+      break;
+    }
+  }
+
+  const newFish = new Fish(wonType, width / 2, height / 2);
+  fishObjects.push(newFish);
+  state.fishList.push({ type: wonType, x: newFish.x, y: newFish.y });
+
+  createBubbles(width / 2, height / 2, 12);
+
+  saveState();
+  updateUI();
+
+  // Show unobtrusive notification toast
+  showToast(`🎉 Summoned: ${FISH_NAMES[wonType]}`);
+};
+
+    window.buyBubbler = function(price) {
+      if (state.coins >= price && !state.hasBubbler) {
+        state.coins -= price;
+        state.hasBubbler = true;
+        saveState();
+        updateUI();
+      }
+    };
+
+    window.buyMagnet = function(price) {
+      if (state.coins >= price && !state.hasAutoCollector) {
+        state.coins -= price;
+        state.hasAutoCollector = true;
+        saveState();
+        updateUI();
+      }
+    };
+
+    document.getElementById("cleanTankBtn").addEventListener("click", () => {
+      if (state.coins >= 15) {
+        state.coins -= 15;
+        state.cleanliness = 100;
+        saveState();
+        updateUI();
+      } else {
+        alert("Cleaning costs $15 coins!");
+      }
+    });
+
+    document.getElementById("cleanTankFullBtn").addEventListener("click", () => {
+      if (state.coins >= 15) {
+        state.coins -= 15;
+        state.cleanliness = 1000;
+        saveState();
+        updateUI();
+      } else {
+        alert("Cleaning costs $15 coins!");
+      }
+    });
+
+    document.getElementById("resetGameBtn")?.addEventListener("click", () => {
+  if (confirm("Reset tank progress, coins, and delete all fish?")) {
+    // 1. Reset state properties to defaults
+    state.coins = 100;          // Reset coin balance back to $100
+    state.cleanliness = 100;    // Reset cleanliness to 100%
+    state.hasBubbler = false;
+    state.hasAutoCollector = false;
+    state.disableCoinPopups = false;
+    state.fishList = [];
+
+    // 2. Clear runtime entities
+    fishObjects = [];
+    foodPellets = [];
+    coins = [];
+
+    // 3. Overwrite saved state in localStorage
+    saveState();
+
+    // 4. Refresh UI and reload page
+    updateUI();
+    location.reload();
+  }
+});
+
+    // Start Engine
+    updateUI();
+    renderLoop();
+
+    /* --- FISH GALLERY LOGIC --- */
+const galleryModal = document.getElementById("galleryModal");
+const openGalleryBtn = document.getElementById("openGalleryBtn");
+const closeGalleryBtn = document.getElementById("closeGalleryBtn");
+const galleryGrid = document.getElementById("galleryGrid");
+
+// Fish Icons lookup table
+const SPECIES_ICONS = {
+  guppy: "🐠",
+  neon: "🐟",
+  angel: "🐡",
+  golden: "✨"
+};
+
+// Render Gallery Cards with counts and delete buttons
+function renderGallery() {
+  const counts = { guppy: 0, neon: 0, angel: 0, golden: 0 };
+
+  // Count fish in tank
+  fishObjects.forEach(f => {
+    if (counts[f.type] !== undefined) counts[f.type]++;
+  });
+
+  // Render cards for each species
+  galleryGrid.innerHTML = Object.keys(FISH_SPECIES).map(type => {
+    const count = counts[type];
+    const name = FISH_NAMES[type] || type;
+    const icon = SPECIES_ICONS[type] || "🐟";
+
+    return `
+      <div class="gallery-card">
+        <div class="gallery-icon">${icon}</div>
+        <div class="gallery-title">${name}</div>
+        <div class="gallery-count">Available: ${count}</div>
+        <button 
+          class="btn-delete-fish" 
+          onclick="deleteFish('${type}')" 
+          ${count === 0 ? "disabled" : ""}>
+          🗑️ Delete 1
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+// Function to delete 1 fish of a specific species
+window.deleteFish = function(type) {
+  // Remove 1 matching fish object
+  const objIndex = fishObjects.findIndex(f => f.type === type);
+  if (objIndex !== -1) {
+    fishObjects.splice(objIndex, 1);
+  }
+
+  // Remove 1 matching item from save state array
+  const stateIndex = state.fishList.findIndex(f => f.type === type);
+  if (stateIndex !== -1) {
+    state.fishList.splice(stateIndex, 1);
+  }
+
+  saveState();
+  updateUI();
+  renderGallery(); // Refresh gallery counts
+};
+
+// Event Listeners to Open & Close Modal
+openGalleryBtn.addEventListener("click", () => {
+  renderGallery();
+  galleryModal.style.display = "flex";
+});
+
+closeGalleryBtn.addEventListener("click", () => {
+  galleryModal.style.display = "none";
+});
+
+// Close modal when clicking outside content area
+galleryModal.addEventListener("click", (e) => {
+  if (e.target === galleryModal) {
+    galleryModal.style.display = "none";
+  }
+});
+  </script>
+  
+</body>
+</html>

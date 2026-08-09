@@ -660,18 +660,7 @@
   </div>
 
   <script>
-    // --- DIRECT ACCESS PROTECTION ---
-    (function verifyAccess() {
-      const isAuthorized = sessionStorage.getItem('authorized_access');
-
-      if (!isAuthorized) {
-        // Redirect back to index.html immediately if opened directly
-        window.location.replace('index.html');
-      } else {
-        // Clear token so re-entry without index.html is blocked
-        sessionStorage.removeItem('authorized_access');
-      }
-    })();
+   
 
     const DEFAULT_TASKS = [
       { id: 1, title: "Organize daily study schedule", completed: false, category: "school", priority: "high" },

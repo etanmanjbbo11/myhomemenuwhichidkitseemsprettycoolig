@@ -1037,6 +1037,8 @@ button.app-card.shutdown-card:hover {
   gap: 8px;
 }
 
+
+
 #ctrlFullscreenBtn {
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }

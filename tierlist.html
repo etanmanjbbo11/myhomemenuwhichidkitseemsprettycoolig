@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tier List Maker | Ethan's Site</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas-pro@1.5.0/dist/html2canvas-pro.min.js"></script>
+
+  <style>
+    /* Custom Tier List Specific Styles */
+    .tier-container {
+      width: 100%;
+      max-width: 960px;
+      margin: 90px auto 40px auto;
+      padding: 0 20px;
+      z-index: 1;
+    }
+
+    .tier-header-title {
+      font-family: 'Fraunces', serif;
+      font-size: 2.8rem;
+      font-weight: 400;
+      text-align: center;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .tier-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(var(--glass-blur));
+      padding: 16px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+
+    .toolbar-btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .toolbar-btn:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .toolbar-btn.primary {
+      background: var(--accent);
+      color: #10151a;
+      border-color: var(--accent);
+    }
+
+    .toolbar-btn.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Tier Rows Table */
+    .tier-board {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: rgba(12, 16, 20, 0.8);
+      border: 1px solid var(--card-border);
+      padding: 12px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .tier-row {
+      display: flex;
+      min-height: 90px;
+      background: rgba(20, 26, 32, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: background 0.2s ease;
+    }
+
+    .tier-label {
+      width: 100px;
+      min-width: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: #10151a;
+      text-transform: uppercase;
+      padding: 8px;
+      text-align: center;
+      word-break: break-word;
+      outline: none;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .tier-dropzone {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 8px;
+      padding: 10px;
+      min-height: 90px;
+      transition: background 0.2s ease;
+    }
+
+    .tier-dropzone.drag-over {
+      background: rgba(221, 156, 71, 0.15);
+    }
+
+    .tier-controls {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px;
+      background: rgba(10, 14, 18, 0.6);
+      border-left: 1px solid var(--card-border);
+    }
+
+    .ctrl-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--btn-hover);
+      color: var(--text);
+    }
+
+    .ctrl-btn.delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    /* Unranked Pool */
+    .pool-section {
+      margin-top: 24px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(var(--glass-blur));
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .pool-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .pool-dropzone {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 100px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 2px dashed var(--card-border);
+      border-radius: 12px;
+    }
+
+    /* Tier Items */
+    .tier-item {
+      width: 80px;
+      height: 80px;
+      background: var(--sky-a);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .tier-item:active {
+      cursor: grabbing;
+    }
+
+    .tier-item:hover {
+      transform: scale(1.05);
+      border-color: var(--accent);
+      z-index: 5;
+    }
+
+    .tier-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .tier-item .item-text {
+      padding: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .tier-item .item-remove {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 18px;
+      height: 18px;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .tier-item:hover .item-remove {
+      display: flex;
+    }
+
+    /* File Input Hidden */
+    #imageInput {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="version-tag">Ethan's Tier List Maker</div>
+
+  <div class="header-btns">
+    <a href="index.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="Return to Home" aria-label="Return to Home">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </button>
+    </a>
+  </div>
+
+  <div class="tier-container">
+    <h1 class="tier-header-title">Tier List Maker</h1>
+    <p class="tier-subtitle">Drag & drop items, customize rows, and export your personal rankings.</p>
+
+    <div class="toolbar">
+      <button class="toolbar-btn primary" onclick="document.getElementById('imageInput').click()">
+        ➕ Add Images
+      </button>
+      <input type="file" id="imageInput" accept="image/*" multiple onchange="handleImageUpload(event)">
+
+      <button class="toolbar-btn" onclick="addTextItem()">
+        📝 Add Text
+      </button>
+
+      <button class="toolbar-btn" onclick="addNewTier()">
+        ➕ Add Tier Row
+      </button>
+
+      <button class="toolbar-btn" onclick="exportTierList()">
+        📸 Export PNG
+      </button>
+
+      <button class="toolbar-btn" onclick="resetBoard()" style="color: #ef4444;">
+        🔄 Reset
+      </button>
+    </div>
+
+    <div class="tier-board" id="tierBoard">
+      </div>
+
+    <div class="pool-section">
+      <div class="pool-title">Unranked Item Pool</div>
+      <div class="pool-dropzone" id="itemPool" ondragover="allowDrop(event)" ondrop="drop(event)">
+        </div>
+    </div>
+  </div>
+
+  <script>
+    // Default Tier Definitions
+    const DEFAULT_TIERS = [
+      { id: 'tier-s', label: 'S', color: '#ff7f7f' },
+      { id: 'tier-a', label: 'A', color: '#ffbf7f' },
+      { id: 'tier-b', label: 'B', color: '#ffdf7f' },
+      { id: 'tier-c', label: 'C', color: '#ffff7f' },
+      { id: 'tier-d', label: 'D', color: '#7fff7f' },
+      { id: 'tier-f', label: 'F', color: '#7fbfff' }
+    ];
+
+    let draggedItem = null;
+
+    // Initialize Page
+    document.addEventListener("DOMContentLoaded", () => {
+      loadBoard();
+    });
+
+    function loadBoard() {
+      const board = document.getElementById("tierBoard");
+      board.innerHTML = "";
+      
+      const savedTiers = JSON.parse(localStorage.getItem("ethan_tier_config")) || DEFAULT_TIERS;
+      savedTiers.forEach(t => createTierRow(t.label, t.color, t.id));
+
+      // Restore saved items if any
+      const savedPool = localStorage.getItem("ethan_tier_pool");
+      if (savedPool) {
+        document.getElementById("itemPool").innerHTML = savedPool;
+        reattachItemEvents();
+      } else {
+        // Add default sample items
+        addSampleItems();
+      }
+    }
+
+    function createTierRow(label = 'NEW', color = '#dd9c47', id = null) {
+      const tierId = id || 'tier-' + Date.now();
+      const board = document.getElementById("tierBoard");
+
+      const row = document.createElement("div");
+      row.className = "tier-row";
+      row.dataset.id = tierId;
+
+      row.innerHTML = `
+        <div class="tier-label" style="background-color: ${color};" contenteditable="true" onblur="saveState()">${label}</div>
+        <div class="tier-dropzone" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="drop(event)"></div>
+        <div class="tier-controls">
+          <button class="ctrl-btn" title="Move Up" onclick="moveRow(this, -1)">▲</button>
+          <button class="ctrl-btn" title="Change Color" onclick="changeColor(this)">🎨</button>
+          <button class="ctrl-btn" title="Move Down" onclick="moveRow(this, 1)">▼</button>
+          <button class="ctrl-btn delete" title="Delete Tier" onclick="deleteRow(this)">✕</button>
+        </div>
+      `;
+
+      board.appendChild(row);
+      saveState();
+    }
+
+    function addSampleItems() {
+      const pool = document.getElementById("itemPool");
+      const samples = ["🚀", "🎮", "🎵", "📚", "☕", "🍕"];
+      samples.forEach(emoji => {
+        const item = createItemElement(null, emoji);
+        pool.appendChild(item);
+      });
+    }
+
+    function createItemElement(imgSrc, textContent) {
+      const item = document.createElement("div");
+      item.className = "tier-item";
+      item.draggable = true;
+      item.id = "item-" + Date.now() + "-" + Math.random().toString(36).substr(2, 4);
+
+      if (imgSrc) {
+        const img = document.createElement("img");
+        img.src = imgSrc;
+        item.appendChild(img);
+      } else {
+        const span = document.createElement("span");
+        span.className = "item-text";
+        span.textContent = textContent || "Item";
+        item.appendChild(span);
+      }
+
+      const removeBtn = document.createElement("div");
+      removeBtn.className = "item-remove";
+      removeBtn.innerHTML = "✕";
+      removeBtn.onclick = (e) => {
+        e.stopPropagation();
+        item.remove();
+        saveState();
+      };
+      item.appendChild(removeBtn);
+
+      item.addEventListener("dragstart", dragStart);
+      item.addEventListener("dragend", dragEnd);
+
+      return item;
+    }
+
+    /* Drag and Drop Handlers */
+    function dragStart(e) {
+      draggedItem = this;
+      setTimeout(() => this.style.opacity = "0.4", 0);
+    }
+
+    function dragEnd(e) {
+      this.style.opacity = "1";
+      draggedItem = null;
+      saveState();
+    }
+
+    function allowDrop(e) {
+      e.preventDefault();
+    }
+
+    function dragEnter(e) {
+      e.preventDefault();
+      if (e.target.classList.contains("tier-dropzone")) {
+        e.target.classList.add("drag-over");
+      }
+    }
+
+    function dragLeave(e) {
+      if (e.target.classList.contains("tier-dropzone")) {
+        e.target.classList.remove("drag-over");
+      }
+    }
+
+    function drop(e) {
+      e.preventDefault();
+      let targetZone = e.target;
+      
+      if (!targetZone.classList.contains("tier-dropzone") && !targetZone.classList.contains("pool-dropzone")) {
+        targetZone = targetZone.closest(".tier-dropzone") || targetZone.closest(".pool-dropzone");
+      }
+
+      if (targetZone && draggedItem) {
+        targetZone.classList.remove("drag-over");
+        targetZone.appendChild(draggedItem);
+        saveState();
+      }
+    }
+
+    /* Toolbar Functions */
+    function handleImageUpload(event) {
+      const files = event.target.files;
+      const pool = document.getElementById("itemPool");
+
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const item = createItemElement(e.target.result, null);
+          pool.appendChild(item);
+          saveState();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function addTextItem() {
+      const text = prompt("Enter item label/emoji:");
+      if (text) {
+        const pool = document.getElementById("itemPool");
+        const item = createItemElement(null, text);
+        pool.appendChild(item);
+        saveState();
+      }
+    }
+
+    function addNewTier() {
+      const name = prompt("Enter Tier Name:", "NEW");
+      if (name) {
+        createTierRow(name, '#dd9c47');
+      }
+    }
+
+    function moveRow(btn, direction) {
+      const row = btn.closest(".tier-row");
+      if (direction === -1 && row.previousElementSibling) {
+        row.parentNode.insertBefore(row, row.previousElementSibling);
+      } else if (direction === 1 && row.nextElementSibling) {
+        row.parentNode.insertBefore(row.nextElementSibling, row);
+      }
+      saveState();
+    }
+
+    function changeColor(btn) {
+      const label = btn.closest(".tier-row").querySelector(".tier-label");
+      const newColor = prompt("Enter HEX color code:", label.style.backgroundColor || "#dd9c47");
+      if (newColor) {
+        label.style.backgroundColor = newColor;
+        saveState();
+      }
+    }
+
+    function deleteRow(btn) {
+      if (confirm("Delete this tier row? Items inside will return to the pool.")) {
+        const row = btn.closest(".tier-row");
+        const dropzone = row.querySelector(".tier-dropzone");
+        const pool = document.getElementById("itemPool");
+        
+        while (dropzone.firstChild) {
+          pool.appendChild(dropzone.firstChild);
+        }
+        row.remove();
+        saveState();
+      }
+    }
+
+    function resetBoard() {
+      if (confirm("Reset the entire tier list to default?")) {
+        localStorage.removeItem("ethan_tier_config");
+        localStorage.removeItem("ethan_tier_pool");
+        loadBoard();
+      }
+    }
+
+    function exportTierList() {
+      const board = document.getElementById("tierBoard");
+      html2canvas(board, {
+        backgroundColor: "#0c1014",
+        scale: 2
+      }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "my-tier-list.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+
+    /* State Persistence */
+    function saveState() {
+      const tiers = [];
+      document.querySelectorAll(".tier-row").forEach(row => {
+        const label = row.querySelector(".tier-label");
+        tiers.push({
+          id: row.dataset.id,
+          label: label.textContent,
+          color: label.style.backgroundColor
+        });
+      });
+      localStorage.setItem("ethan_tier_config", JSON.stringify(tiers));
+      localStorage.setItem("ethan_tier_pool", document.getElementById("itemPool").innerHTML);
+    }
+
+    function reattachItemEvents() {
+      document.querySelectorAll(".tier-item").forEach(item => {
+        item.draggable = true;
+        item.addEventListener("dragstart", dragStart);
+        item.addEventListener("dragend", dragEnd);
+        const removeBtn = item.querySelector(".item-remove");
+        if (removeBtn) {
+          removeBtn.onclick = (e) => {
+            e.stopPropagation();
+            item.remove();
+            saveState();
+          };
+        }
+      });
+    }
+  </script>
+</body>
+</html>

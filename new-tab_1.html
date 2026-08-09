@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Tab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16232c;
+    --paper:#f6f1e6;
+    --paper-2:#efe7d6;
+    --line: rgba(22,35,44,0.12);
+    --muted:#5f6f76;
+    --gold:#dd9c47;
+    --teal:#3e6e71;
+    --deep:#16323e;
+    --card:#ffffffcc;
+    --shadow: 0 20px 60px rgba(16,30,38,0.18);
+    --radius: 18px;
+    --sky-a:#f7ecd9;
+    --sky-b:#eadfca;
+    --sky-c:#dccdb3;
+  }
+  [data-theme="dark"]{
+    --ink:#eef2f0;
+    --paper:#0d1a20;
+    --paper-2:#0a1418;
+    --line: rgba(238,242,240,0.12);
+    --muted:#93a3a8;
+    --card:#12222aeb;
+    --shadow: 0 20px 60px rgba(0,0,0,0.5);
+    --sky-a:#0c1a22;
+    --sky-b:#0a141a;
+    --sky-c:#081114;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:'Manrope',sans-serif;
+    color:var(--ink);
+    background: linear-gradient(180deg, var(--sky-a) 0%, var(--sky-b) 55%, var(--sky-c) 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+    transition: background 1.2s ease, color .4s ease;
+    position:relative;
+  }
+  /* ambient grain */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(22,35,44,0.045) 1px, transparent 0);
+    background-size: 22px 22px;
+    pointer-events:none;
+    opacity:.6;
+    z-index:0;
+  }
+  [data-theme="dark"] body::before{
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+  }
+
+  .wrap{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding: 48px 24px 0;
+  }
+
+  /* settings trigger */
+  .gear-btn{
+    position:fixed; top:22px; right:24px; z-index:20;
+    width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--card);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    backdrop-filter: blur(6px);
+    transition: transform .35s cubic-bezier(.2,.9,.3,1.3), background .3s;
+  }
+  .gear-btn:hover{ transform: rotate(45deg); }
+  .gear-btn svg{ width:19px; height:19px; stroke:var(--ink); }
+
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:700;
+    margin-bottom:6px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow .dot{ width:5px; height:5px; border-radius:50%; background:var(--gold); }
+
+  .clock{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:400;
+    font-size: clamp(64px, 13vw, 128px);
+    line-height:1;
+    letter-spacing:-.02em;
+    margin:0;
+  }
+  .clock .sec{ font-size:0.32em; color:var(--muted); font-weight:400; margin-left:6px; }
+  .date-line{
+    font-size:15px;
+    color:var(--muted);
+    margin-top:10px;
+    font-weight:600;
+  }
+
+  .greeting{
+    margin-top:34px;
+    font-size:20px;
+    font-weight:700;
+  }
+  .message{
+    margin-top:6px;
+    font-size:15px;
+    color:var(--muted);
+    max-width:520px;
+    text-align:center;
+    min-height:22px;
+    font-style:italic;
+    transition: opacity .5s ease;
+  }
+
+  /* search */
+  .search-block{
+    margin-top:34px;
+    width:100%;
+    max-width:560px;
+  }
+  .engine-toggle{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
+    margin-bottom:12px;
+  }
+  .engine-toggle button{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--muted);
+    font-family:'Manrope',sans-serif;
+    font-weight:700;
+    font-size:11.5px;
+    letter-spacing:.04em;
+    padding:6px 12px;
+    border-radius:999px;
+    cursor:pointer;
+    transition: all .25s ease;
+  }
+  .engine-toggle button svg{ width:13px; height:13px; flex-shrink:0; }
+  .engine-toggle button.active{
+    background:var(--deep);
+    color:#f6f1e6;
+    border-color:var(--deep);
+  }
+  .search-form{
+    display:flex;
+    align-items:center;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:999px;
+    box-shadow:var(--shadow);
+    padding:6px 6px 6px 20px;
+    backdrop-filter: blur(8px);
+  }
+  .search-form input{
+    flex:1;
+    border:none;
+    outline:none;
+    background:transparent;
+    font-family:'Manrope',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    padding:10px 8px;
+  }
+  .search-form input::placeholder{ color:var(--muted); }
+  .search-form button{
+    display:flex; align-items:center; justify-content:center;
+    width:40px; height:40px;
+    border-radius:50%;
+    border:none;
+    background:var(--gold);
+    cursor:pointer;
+    flex-shrink:0;
+    transition: transform .2s ease;
+  }
+  .search-form button:hover{ transform: scale(1.06); }
+  .search-form button svg{ width:17px; height:17px; stroke:#16232c; }
+  .search-caption{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:9px;
+    letter-spacing:.03em;
+  }
+
+  /* shortcuts */
+  .shortcuts{
+    margin-top:44px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    justify-content:center;
+    max-width:640px;
+  }
+  .shortcut{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    text-decoration:none;
+    color:var(--ink);
+    width:64px;
+  }
+  .shortcut .icon{
+    width:46px; height:46px;
+    border-radius:14px;
+    background:var(--card);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:17px;
+    overflow:hidden;
+    transition: transform .25s cubic-bezier(.2,.9,.3,1.3), box-shadow .25s;
+  }
+  .shortcut .icon img{ width:22px; height:22px; }
+  .shortcut:hover .icon{ transform: translateY(-4px); box-shadow: 0 10px 20px rgba(16,30,38,.18); }
+  .shortcut span{
+    font-size:11px;
+    font-weight:600;
+    color:var(--muted);
+    text-align:center;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:64px;
+  }
+
+  /* horizon */
+  .horizon{
+    position:relative;
+    width:100%;
+    height:130px;
+    margin-top:56px;
+    flex-shrink:0;
+    overflow:hidden;
+  }
+  .horizon-line{
+    position:absolute;
+    left:0; right:0; top:78px;
+    height:1px;
+    background:var(--line);
+  }
+  .lighthouse{
+    position:absolute;
+    left:48px; bottom:52px;
+    width:78px;
+    height:auto;
+    overflow:visible;
+    display:block;
+  }
+  .beam{
+    transform-origin: 35px 22px;
+    animation: sweep 7s ease-in-out infinite;
+    opacity:.5;
+  }
+  @keyframes sweep{
+    0%{ transform: rotate(-24deg); }
+    50%{ transform: rotate(24deg); }
+    100%{ transform: rotate(-24deg); }
+  }
+  .powered{
+    position:absolute;
+    bottom:14px; right:20px;
+    font-size:10.5px;
+    letter-spacing:.08em;
+    color:var(--muted);
+    font-weight:700;
+    text-transform:uppercase;
+    display:flex; align-items:center; gap:6px;
+    opacity:.75;
+  }
+  .powered .spark{ width:5px; height:5px; border-radius:50%; background:var(--gold); }
+
+  @media (prefers-reduced-motion: reduce){
+    .beam{ animation:none; }
+    .gear-btn{ transition:none; }
+  }
+
+  /* settings drawer */
+  .overlay{
+    position:fixed; inset:0;
+    background: rgba(10,18,22,0.42);
+    backdrop-filter: blur(2px);
+    z-index:30;
+    opacity:0; pointer-events:none;
+    transition: opacity .3s ease;
+  }
+  .overlay.open{ opacity:1; pointer-events:auto; }
+
+  .drawer{
+    position:fixed; top:0; right:0; bottom:0;
+    width:min(380px, 90vw);
+    background:var(--paper);
+    border-left:1px solid var(--line);
+    z-index:31;
+    transform: translateX(100%);
+    transition: transform .38s cubic-bezier(.2,.85,.3,1);
+    overflow-y:auto;
+    padding:26px 22px 40px;
+  }
+  .drawer.open{ transform: translateX(0); }
+  .drawer h2{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:24px;
+    margin:6px 0 2px;
+  }
+  .drawer .sub{ font-size:12.5px; color:var(--muted); margin-bottom:22px; }
+  .drawer-close{
+    position:absolute; top:22px; right:20px;
+    width:32px; height:32px; border-radius:50%;
+    border:1px solid var(--line); background:var(--card);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .drawer-close svg{ width:14px; height:14px; stroke:var(--ink); }
+
+  .field-group{ margin-bottom:26px; }
+  .field-group label{
+    display:block;
+    font-size:11.5px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:9px;
+  }
+  .field-group input[type="text"], .field-group input[type="url"]{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--card);
+    font-family:'Manrope',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    outline:none;
+  }
+  .segmented{
+    display:flex;
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .segmented button{
+    flex:1;
+    padding:9px 4px;
+    border:none;
+    background:var(--card);
+    font-family:'Manrope',sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--muted);
+    cursor:pointer;
+    border-right:1px solid var(--line);
+  }
+  .segmented button:last-child{ border-right:none; }
+  .segmented button.active{ background:var(--deep); color:#f6f1e6; }
+
+  .list-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:8px 10px;
+    margin-bottom:8px;
+  }
+  .list-row .row-text{ flex:1; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .list-row .row-sub{ font-size:11px; color:var(--muted); display:block; }
+  .icon-btn{
+    width:26px; height:26px; border-radius:50%;
+    border:none; background:transparent; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--muted);
+    flex-shrink:0;
+  }
+  .icon-btn:hover{ color:#c0524a; }
+  .icon-btn svg{ width:14px; height:14px; }
+
+  .add-form{
+    display:flex; flex-direction:column; gap:8px;
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed var(--line);
+  }
+  .add-form .row2{ display:flex; gap:8px; }
+  .add-btn{
+    margin-top:4px;
+    padding:9px;
+    border-radius:10px;
+    border:none;
+    background:var(--gold);
+    color:#16232c;
+    font-weight:800;
+    font-size:12.5px;
+    letter-spacing:.04em;
+    cursor:pointer;
+  }
+  .add-btn:hover{ filter:brightness(1.05); }
+  .reset-btn{
+    width:100%;
+    padding:11px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--muted);
+    font-weight:700;
+    font-size:12.5px;
+    cursor:pointer;
+    margin-top:8px;
+  }
+  .reset-btn:hover{ border-color:#c0524a; color:#c0524a; }
+
+  ::selection{ background: var(--gold); color:#16232c; }
+
+  @media (max-width: 480px){
+    .clock{ font-size: clamp(48px, 16vw, 84px); }
+    .shortcut{ width:56px; }
+    .shortcut .icon{ width:42px; height:42px; }
+  }
+</style>
+</head>
+<body>
+
+<button class="gear-btn" id="gearBtn" aria-label="Settings">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3"></circle>
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+  </svg>
+</button>
+
+<div class="wrap">
+  <div class="eyebrow"><span class="dot"></span><span id="tzLabel">Local time</span></div>
+  <h1 class="clock" id="clock">00:00<span class="sec" id="clockSec">:00</span></h1>
+  <div class="date-line" id="dateLine">Loading date…</div>
+
+  <div class="greeting" id="greeting">Hello</div>
+  <div class="message" id="message"></div>
+
+  <div class="search-block">
+    <div class="engine-toggle" id="engineToggle">
+      <button data-engine="google">Google</button>
+      <button data-engine="youtube">YouTube</button>
+      <button data-engine="youtube_music">YT Music</button>
+      <button data-engine="tiktok">TikTok</button>
+      <button data-engine="instagram">Instagram</button>
+      <button data-engine="bible_en">Bible (EN)</button>
+      <button data-engine="bible_id">Alkitab (ID)</button>
+    </div>
+    <form class="search-form" id="searchForm">
+      <input type="text" id="searchInput" placeholder="Search the Bible… e.g. John 3:16, faith, kasih" autocomplete="off">
+      <button type="submit" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+    </form>
+    <div class="search-caption" id="searchCaption">Opens results on BibleGateway in a new tab</div>
+  </div>
+
+  <div class="shortcuts" id="shortcuts"></div>
+
+  <div class="horizon">
+    <div class="horizon-line"></div>
+    <svg class="lighthouse" viewBox="0 0 70 80" style="overflow:visible">
+      <rect x="25" y="42" width="20" height="38" rx="2" fill="var(--deep)"></rect>
+      <polygon points="25,42 45,42 35,28" fill="var(--deep)"></polygon>
+      <rect x="32" y="16" width="6" height="12" fill="var(--gold)"></rect>
+      <g class="beam">
+        <polygon points="35,20 210,-70 210,100" fill="var(--gold)" opacity="0.35"></polygon>
+      </g>
+    </svg>
+    <div class="powered"><span class="spark"></span>Powered by Claude</div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" id="drawerClose" aria-label="Close settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  </button>
+  <h2>Settings</h2>
+  <div class="sub">Pengaturan halaman new tab kamu</div>
+
+  <div class="field-group">
+    <label>Your name / Nama kamu</label>
+    <input type="text" id="setName" placeholder="e.g. Keke">
+  </div>
+
+  <div class="field-group">
+    <label>Appearance</label>
+    <div class="segmented" id="themeSeg">
+      <button data-theme="auto" class="active">Auto</button>
+      <button data-theme="light">Light</button>
+      <button data-theme="dark">Dark</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Default search engine</label>
+    <div class="engine-toggle" id="engineSeg">
+      <button data-engine="google">Google</button>
+      <button data-engine="youtube">YouTube</button>
+      <button data-engine="youtube_music">YT Music</button>
+      <button data-engine="tiktok">TikTok</button>
+      <button data-engine="instagram">Instagram</button>
+      <button data-engine="bible_en">Bible (EN)</button>
+      <button data-engine="bible_id">Alkitab (ID)</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Interface language / Bahasa antarmuka</label>
+    <div class="segmented" id="uiLangSeg">
+      <button data-lang="en" class="active">English</button>
+      <button data-lang="id">Indonesia</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Shortcuts</label>
+    <div id="shortcutList"></div>
+    <div class="add-form">
+      <input type="text" id="newShortcutName" placeholder="Name — e.g. Notion">
+      <input type="url" id="newShortcutUrl" placeholder="URL — e.g. https://notion.so">
+      <button class="add-btn" id="addShortcut">+ Add shortcut</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Bible verses (verse of the day)</label>
+    <div id="messageList"></div>
+    <div class="add-form">
+      <input type="text" id="newVerseRef" placeholder="Reference — e.g. Psalm 121:2">
+      <input type="text" id="newVerseEn" placeholder="English text">
+      <input type="text" id="newVerseId" placeholder="Teks Indonesia (optional)">
+      <button class="add-btn" id="addMessage">+ Add verse</button>
+    </div>
+  </div>
+
+  <button class="reset-btn" id="resetBtn">Reset everything to default</button>
+</div>
+
+<script>
+(function(){
+  const STORE_KEY = 'ntp_dashboard_settings_v1';
+
+  const DEFAULTS = {
+    name: '',
+    theme: 'auto',
+    uiLang: 'en',
+    searchEngine: 'bible_en',
+    shortcuts: [
+      {name:'Gmail', url:'https://mail.google.com'},
+      {name:'Calendar', url:'https://calendar.google.com'},
+      {name:'Drive', url:'https://drive.google.com'},
+      {name:'WhatsApp', url:'https://web.whatsapp.com'},
+      {name:'YouTube', url:'https://youtube.com'},
+      {name:'Notion', url:'https://notion.so'}
+    ],
+    verses: [
+      {refEn:'John 3:16', refId:'Yohanes 3:16', en:'God loved the world so much He gave His only Son.', id:'Allah begitu mengasihi dunia sehingga Ia memberikan Anak-Nya yang tunggal.'},
+      {refEn:'Philippians 4:13', refId:'Filipi 4:13', en:"Through Christ's strength, I can do anything He calls me to.", id:'Melalui kekuatan Kristus, aku sanggup melakukan apa pun yang Ia percayakan.'},
+      {refEn:'Proverbs 3:5', refId:'Amsal 3:5', en:'Trust God with your whole heart, not just your own reasoning.', id:'Percayalah kepada Tuhan dengan segenap hatimu, bukan hanya akal budimu.'},
+      {refEn:'Psalm 23:1', refId:'Mazmur 23:1', en:'The Lord is my shepherd; I lack nothing I truly need.', id:'Tuhan adalah gembalaku; aku tidak kekurangan apa pun yang kubutuhkan.'},
+      {refEn:'Joshua 1:9', refId:'Yosua 1:9', en:'Be strong and courageous — God goes with you always.', id:'Jadilah kuat dan berani — Tuhan senantiasa menyertaimu.'},
+      {refEn:'Isaiah 41:10', refId:'Yesaya 41:10', en:'Do not fear, for God is with you and upholds you.', id:'Jangan takut, sebab Tuhan menyertaimu dan menopangmu.'},
+      {refEn:'Romans 8:28', refId:'Roma 8:28', en:'God works all things for good for those who love Him.', id:'Tuhan turut bekerja dalam segala sesuatu untuk kebaikan orang yang mengasihi-Nya.'},
+      {refEn:'Matthew 6:34', refId:'Matius 6:34', en:"Don't worry about tomorrow; today has enough of its own.", id:'Jangan kuatir akan hari esok; hari ini cukup dengan kesusahannya sendiri.'},
+      {refEn:'Psalm 118:24', refId:'Mazmur 118:24', en:'This is the day the Lord has made — rejoice in it.', id:'Inilah hari yang dijadikan Tuhan — mari bersukacita di dalamnya.'},
+      {refEn:'Colossians 3:23', refId:'Kolose 3:23', en:'Whatever you do, work at it as if for the Lord.', id:'Apa pun yang kau kerjakan, kerjakanlah seperti untuk Tuhan.'},
+      {refEn:'James 1:5', refId:'Yakobus 1:5', en:'If you lack wisdom, ask God — He gives generously.', id:'Jika kau kekurangan hikmat, mintalah kepada Tuhan — Ia memberi dengan limpah.'},
+      {refEn:'Lamentations 3:23', refId:'Ratapan 3:23', en:'His mercies are new every single morning; great is His faithfulness.', id:'Rahmat-Nya baru setiap pagi; besar kesetiaan-Nya.'},
+      {refEn:'Psalm 46:1', refId:'Mazmur 46:1', en:'God is our refuge and strength, ready to help in trouble.', id:'Tuhan adalah tempat perlindungan dan kekuatan kita, penolong yang selalu siap sedia.'},
+      {refEn:'Proverbs 16:3', refId:'Amsal 16:3', en:'Commit your plans to the Lord, and they will succeed.', id:'Serahkanlah segala rencanamu kepada Tuhan, maka semuanya akan berhasil.'}
+    ]
+  };
+
+  function loadSettings(){
+    try{
+      const raw = localStorage.getItem(STORE_KEY);
+      if(!raw) return structuredClone(DEFAULTS);
+      const parsed = JSON.parse(raw);
+      return Object.assign(structuredClone(DEFAULTS), parsed);
+    }catch(e){
+      return structuredClone(DEFAULTS);
+    }
+  }
+  function saveSettings(){
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  }
+
+  let state = loadSettings();
+
+  // ---------- Clock ----------
+  const clockEl = document.getElementById('clock');
+  const clockSecEl = document.getElementById('clockSec');
+  const dateLineEl = document.getElementById('dateLine');
+  const tzLabelEl = document.getElementById('tzLabel');
+
+  function pad(n){ return n.toString().padStart(2,'0'); }
+
+  function updateClock(){
+    const now = new Date();
+    clockEl.firstChild.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
+    clockSecEl.textContent = ':' + pad(now.getSeconds());
+    const dateFmt = new Intl.DateTimeFormat(state.uiLang === 'id' ? 'id-ID' : 'en-US', {
+      weekday:'long', year:'numeric', month:'long', day:'numeric'
+    });
+    dateLineEl.textContent = dateFmt.format(now);
+    try{
+      tzLabelEl.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }catch(e){ tzLabelEl.textContent = 'Local time'; }
+    applyThemeAuto(now.getHours());
+  }
+  setInterval(updateClock, 1000);
+
+  // ---------- Theme ----------
+  function skyForHour(h){
+    if(h>=5 && h<8) return ['#f7ecd9','#f0d9b8','#e3b98c']; // dawn
+    if(h>=8 && h<17) return ['#eaf3f4','#dcecec','#cfe3e2']; // day
+    if(h>=17 && h<19) return ['#f3d8b8','#e0a978','#a86a54']; // dusk
+    return ['#0c1a22','#0a141a','#081114']; // night
+  }
+  function applyThemeAuto(hour){
+    if(state.theme !== 'auto') return;
+    const [a,b,c] = skyForHour(hour);
+    document.documentElement.style.setProperty('--sky-a', a);
+    document.documentElement.style.setProperty('--sky-b', b);
+    document.documentElement.style.setProperty('--sky-c', c);
+    document.body.removeAttribute('data-theme');
+    if(hour < 6 || hour >= 19){ document.body.setAttribute('data-theme','dark'); }
+  }
+  function applyThemeFixed(){
+    if(state.theme === 'light'){
+      document.body.removeAttribute('data-theme');
+      document.documentElement.style.setProperty('--sky-a', '#f7ecd9');
+      document.documentElement.style.setProperty('--sky-b', '#eadfca');
+      document.documentElement.style.setProperty('--sky-c', '#dccdb3');
+    } else if(state.theme === 'dark'){
+      document.body.setAttribute('data-theme','dark');
+      document.documentElement.style.setProperty('--sky-a', '#0c1a22');
+      document.documentElement.style.setProperty('--sky-b', '#0a141a');
+      document.documentElement.style.setProperty('--sky-c', '#081114');
+    }
+  }
+  function refreshTheme(){
+    if(state.theme === 'auto'){ applyThemeAuto(new Date().getHours()); }
+    else{ applyThemeFixed(); }
+  }
+
+  // ---------- Greeting + message ----------
+  const greetingEl = document.getElementById('greeting');
+  const messageEl = document.getElementById('message');
+
+  function greetingText(){
+    const h = new Date().getHours();
+    const lang = state.uiLang;
+    const name = state.name ? (', ' + state.name) : '';
+    if(lang === 'id'){
+      if(h<11) return 'Selamat pagi' + name;
+      if(h<15) return 'Selamat siang' + name;
+      if(h<18) return 'Selamat sore' + name;
+      return 'Selamat malam' + name;
+    }
+    if(h<12) return 'Good morning' + name;
+    if(h<17) return 'Good afternoon' + name;
+    return 'Good evening' + name;
+  }
+  function renderGreeting(){ greetingEl.textContent = greetingText(); }
+
+  function dayOfYear(d){
+    const start = new Date(d.getFullYear(), 0, 0);
+    const diff = d - start;
+    return Math.floor(diff / 86400000);
+  }
+  function renderMessage(){
+    const list = state.verses.length ? state.verses : DEFAULTS.verses;
+    const idx = dayOfYear(new Date()) % list.length;
+    const v = list[idx];
+    const text = state.uiLang === 'id' ? (v.id || v.en) : (v.en || v.id);
+    const ref = state.uiLang === 'id' ? (v.refId || v.refEn) : (v.refEn || v.refId);
+    messageEl.style.opacity = 0;
+    setTimeout(()=>{
+      messageEl.textContent = ref ? (ref + ' — ' + text) : text;
+      messageEl.style.opacity = 1;
+    }, 260);
+  }
+
+  // ---------- Search ----------
+  const searchForm = document.getElementById('searchForm');
+  const searchInput = document.getElementById('searchInput');
+  const searchCaption = document.getElementById('searchCaption');
+  const engineToggle = document.getElementById('engineToggle');
+
+  const ENGINES = {
+    google: {
+      label: 'Google',
+      placeholder: {en:'Search Google…', id:'Cari di Google…'},
+      caption: {en:'Opens Google results in a new tab', id:'Membuka hasil Google pada tab baru'},
+      build: q => 'https://www.google.com/search?q=' + encodeURIComponent(q)
+    },
+    youtube: {
+      label: 'YouTube',
+      placeholder: {en:'Search YouTube…', id:'Cari di YouTube…'},
+      caption: {en:'Opens YouTube results in a new tab', id:'Membuka hasil YouTube pada tab baru'},
+      build: q => 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q)
+    },
+    youtube_music: {
+      label: 'YT Music',
+      placeholder: {en:'Search YouTube Music…', id:'Cari di YouTube Music…'},
+      caption: {en:'Opens YouTube Music results in a new tab', id:'Membuka hasil YouTube Music pada tab baru'},
+      build: q => 'https://music.youtube.com/search?q=' + encodeURIComponent(q)
+    },
+    tiktok: {
+      label: 'TikTok',
+      placeholder: {en:'Search TikTok…', id:'Cari di TikTok…'},
+      caption: {en:'Opens TikTok results in a new tab', id:'Membuka hasil TikTok pada tab baru'},
+      build: q => 'https://www.tiktok.com/search?q=' + encodeURIComponent(q)
+    },
+    instagram: {
+      label: 'Instagram',
+      placeholder: {en:'Search Instagram hashtags…', id:'Cari tagar Instagram…'},
+      caption: {en:'Opens a matching hashtag on Instagram (spaces removed)', id:'Membuka tagar terkait di Instagram (spasi dihapus)'},
+      build: q => 'https://www.instagram.com/explore/tags/' + encodeURIComponent(q.toLowerCase().replace(/[^a-z0-9]+/g,''))
+    },
+    bible_en: {
+      label: 'Bible (EN)',
+      placeholder: {en:'Search the Bible… e.g. John 3:16, faith, love', id:'Search the Bible… e.g. John 3:16, faith, love'},
+      caption: {en:'Opens results on BibleGateway in a new tab', id:'Membuka hasil di BibleGateway pada tab baru'},
+      build: q => 'https://www.biblegateway.com/quicksearch/?quicksearch=' + encodeURIComponent(q) + '&qs_version=NIV'
+    },
+    bible_id: {
+      label: 'Alkitab (ID)',
+      placeholder: {en:'Cari di Alkitab… mis. Yohanes 3:16, iman, kasih', id:'Cari di Alkitab… mis. Yohanes 3:16, iman, kasih'},
+      caption: {en:'Opens results on Alkitab SABDA in a new tab', id:'Membuka hasil di Alkitab SABDA pada tab baru'},
+      build: q => 'https://alkitab.sabda.org/searchbox.php?s=' + encodeURIComponent(q)
+    }
+  };
+
+  function setEngine(engine, persist){
+    if(!ENGINES[engine]) engine = 'google';
+    state.searchEngine = engine;
+    const meta = ENGINES[engine];
+    const uiLang = state.uiLang === 'id' ? 'id' : 'en';
+    engineToggle.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.dataset.engine===engine));
+    searchInput.placeholder = meta.placeholder[uiLang];
+    searchCaption.textContent = meta.caption[uiLang];
+    if(persist){ saveSettings(); syncSettingsUI(); }
+  }
+  engineToggle.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', ()=> setEngine(btn.dataset.engine, true));
+  });
+
+  function setUiLang(lang, persist){
+    state.uiLang = (lang === 'id') ? 'id' : 'en';
+    document.documentElement.lang = state.uiLang;
+    renderGreeting();
+    renderMessage();
+    setEngine(state.searchEngine, false);
+    if(persist){ saveSettings(); syncSettingsUI(); }
+  }
+
+  searchForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const q = searchInput.value.trim();
+    if(!q) return;
+    const meta = ENGINES[state.searchEngine] || ENGINES.google;
+    const url = meta.build(q);
+    window.open(url, '_blank', 'noopener');
+    searchInput.value = '';
+  });
+
+  // ---------- Shortcuts ----------
+  const shortcutsEl = document.getElementById('shortcuts');
+  function faviconFor(url){
+    try{
+      const u = new URL(url);
+      return 'https://www.google.com/s2/favicons?domain=' + u.hostname + '&sz=64';
+    }catch(e){ return ''; }
+  }
+  function renderShortcuts(){
+    shortcutsEl.innerHTML = '';
+    state.shortcuts.forEach(sc=>{
+      const a = document.createElement('a');
+      a.className = 'shortcut';
+      a.href = sc.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      const icon = document.createElement('div');
+      icon.className = 'icon';
+      const img = document.createElement('img');
+      img.src = faviconFor(sc.url);
+      img.alt = '';
+      img.onerror = function(){ icon.textContent = (sc.name||'?').charAt(0).toUpperCase(); };
+      icon.appendChild(img);
+      const label = document.createElement('span');
+      label.textContent = sc.name;
+      a.appendChild(icon);
+      a.appendChild(label);
+      shortcutsEl.appendChild(a);
+    });
+  }
+
+  // ---------- Drawer ----------
+  const gearBtn = document.getElementById('gearBtn');
+  const overlay = document.getElementById('overlay');
+  const drawer = document.getElementById('drawer');
+  const drawerClose = document.getElementById('drawerClose');
+
+  function openDrawer(){ overlay.classList.add('open'); drawer.classList.add('open'); }
+  function closeDrawer(){ overlay.classList.remove('open'); drawer.classList.remove('open'); }
+  gearBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+
+  const setName = document.getElementById('setName');
+  setName.addEventListener('input', function(){
+    state.name = setName.value;
+    saveSettings();
+    renderGreeting();
+  });
+
+  const themeSeg = document.getElementById('themeSeg');
+  themeSeg.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', function(){
+      themeSeg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      state.theme = btn.dataset.theme;
+      saveSettings();
+      refreshTheme();
+    });
+  });
+
+  const engineSeg = document.getElementById('engineSeg');
+  engineSeg.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', function(){
+      setEngine(btn.dataset.engine, true);
+    });
+  });
+
+  const uiLangSeg = document.getElementById('uiLangSeg');
+  uiLangSeg.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', function(){
+      uiLangSeg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      setUiLang(btn.dataset.lang, true);
+    });
+  });
+
+  function svgTrash(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>';
+  }
+
+  const shortcutListEl = document.getElementById('shortcutList');
+  function renderShortcutManager(){
+    shortcutListEl.innerHTML = '';
+    state.shortcuts.forEach((sc, i)=>{
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      row.innerHTML = '<div class="row-text">'+sc.name+'<span class="row-sub">'+sc.url+'</span></div><button class="icon-btn" data-i="'+i+'">'+svgTrash()+'</button>';
+      row.querySelector('button').addEventListener('click', function(){
+        state.shortcuts.splice(i,1);
+        saveSettings();
+        syncSettingsUI();
+        renderShortcuts();
+      });
+      shortcutListEl.appendChild(row);
+    });
+  }
+  document.getElementById('addShortcut').addEventListener('click', function(){
+    const nameEl = document.getElementById('newShortcutName');
+    const urlEl = document.getElementById('newShortcutUrl');
+    let url = urlEl.value.trim();
+    const name = nameEl.value.trim();
+    if(!name || !url) return;
+    if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    state.shortcuts.push({name, url});
+    saveSettings();
+    nameEl.value = ''; urlEl.value = '';
+    syncSettingsUI();
+    renderShortcuts();
+  });
+
+  const messageListEl = document.getElementById('messageList');
+  function renderMessageManager(){
+    messageListEl.innerHTML = '';
+    state.verses.forEach((v, i)=>{
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      const ref = v.refEn || v.refId || '';
+      const text = v.en || v.id || '';
+      row.innerHTML = '<div class="row-text">'+ref+'<span class="row-sub">'+text+'</span></div><button class="icon-btn" data-i="'+i+'">'+svgTrash()+'</button>';
+      row.querySelector('button').addEventListener('click', function(){
+        state.verses.splice(i,1);
+        saveSettings();
+        syncSettingsUI();
+      });
+      messageListEl.appendChild(row);
+    });
+  }
+  document.getElementById('addMessage').addEventListener('click', function(){
+    const refEl = document.getElementById('newVerseRef');
+    const enEl = document.getElementById('newVerseEn');
+    const idEl = document.getElementById('newVerseId');
+    const ref = refEl.value.trim();
+    const en = enEl.value.trim();
+    const id = idEl.value.trim();
+    if(!ref || !en) return;
+    state.verses.push({refEn:ref, refId:ref, en:en, id: id || en});
+    saveSettings();
+    refEl.value=''; enEl.value=''; idEl.value='';
+    syncSettingsUI();
+    renderMessage();
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    if(!confirm(state.uiLang==='id' ? 'Kembalikan semua pengaturan ke default?' : 'Reset all settings to default?')) return;
+    state = structuredClone(DEFAULTS);
+    saveSettings();
+    syncSettingsUI();
+    renderShortcuts();
+    setUiLang(state.uiLang, false);
+    refreshTheme();
+  });
+
+  function syncSettingsUI(){
+    setName.value = state.name || '';
+    themeSeg.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.dataset.theme===state.theme));
+    engineSeg.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.dataset.engine===state.searchEngine));
+    uiLangSeg.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.dataset.lang===state.uiLang));
+    renderShortcutManager();
+    renderMessageManager();
+  }
+
+  // ---------- Init ----------
+  renderShortcuts();
+  setEngine(state.searchEngine, false);
+  setUiLang(state.uiLang, false);
+  refreshTheme();
+  syncSettingsUI();
+  updateClock();
+  renderMessage();
+})();
+</script>
+</body>
+</html>

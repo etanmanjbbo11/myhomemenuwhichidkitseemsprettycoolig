@@ -105,43 +105,6 @@
   </div>
 
   <div class="header-btns">
-    <a href="photobooth.html" style="text-decoration: none;">
-  <button class="icon-btn-circle" id="galleryBtn" title="Photo Booth" aria-label="Photo Booth"> 
-    <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor"> 
-      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect> 
-      <circle cx="8.5" cy="8.5" r="1.5"></circle> 
-      <polyline points="21 15 16 10 5 21"></polyline> 
-    </svg> 
-  </button>
-</a>
-
-<a href="filemanager.html" style="text-decoration: none;">
-  <button class="icon-btn-circle" id="fileExplorerBtn" title="File Explorer" aria-label="File Explorer"> 
-    <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor"> 
-      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path> 
-    </svg> 
-  </button>
-</a>
-
-    <button class="icon-btn-circle" id="classroomBtn" title="Classroom Launcher" aria-label="Classroom Launcher">
-  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-    <path d="M12 6v6l4 2"></path>
-  </svg>
-</button>
-    <button class="icon-btn-circle" id="journalBtn" aria-label="Journal" title="Journal">
-      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-      </svg>
-    </button>
-    <button class="icon-btn-circle" id="todoBtn" aria-label="To-Do List" title="To-Do List">
-      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
-        <polyline points="9 11 12 14 22 4"></polyline>
-        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-      </svg>
-    </button>
     <button class="icon-btn-circle" id="appGridBtn" aria-label="App Grid" title="App Grid">
       <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
         <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
@@ -149,6 +112,14 @@
         <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
         <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
       </svg>
+    </button>
+    <button class="icon-btn-circle" id="quickControls2Btn" aria-label="Quick Controls" title="Quick Controls">
+    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+  <line x1="3" y1="9" x2="21" y2="9"></line>
+  <line x1="7" y1="6.5" x2="7.01" y2="6.5"></line>
+  <line x1="10" y1="6.5" x2="10.01" y2="6.5"></line>
+</svg>
     </button>
     <button class="icon-btn-circle" id="quickControlsBtn" aria-label="Quick Controls" title="Quick Controls">
       <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
@@ -194,6 +165,192 @@
   </div>
 
   <div class="overlay" id="overlay"></div>
+
+  <div class="drawer" id="quickControls2Modal">
+    <button class="drawer-close" id="quickControls2Close" aria-label="Close">
+      <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h2>Apps I Develop</h2>
+    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">These Are My Web-Apps!</div>
+
+<div class="field-group">
+      <label>Interactive & Simulations</label>
+      <div class="actions-grid">
+        <a href="periodictable.html" class="app-card">
+  <div class="app-icon">
+    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="5" height="5" rx="1"></rect>
+      <rect x="16" y="4" width="5" height="5" rx="1"></rect>
+      <rect x="3" y="10" width="5" height="5" rx="1"></rect>
+      <rect x="9.5" y="10" width="5" height="5" rx="1"></rect>
+      <rect x="16" y="10" width="5" height="5" rx="1"></rect>
+      <rect x="3" y="16" width="5" height="5" rx="1"></rect>
+      <rect x="9.5" y="16" width="5" height="5" rx="1"></rect>
+      <rect x="16" y="16" width="5" height="5" rx="1"></rect>
+    </svg>
+  </div>
+  <div class="app-name">Periodic Table</div>
+</a>
+        <a href="waterflow.html" class="app-card">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6" cy="6" r="2"></circle>
+              <circle cx="18" cy="6" r="2"></circle>
+              <circle cx="12" cy="12" r="2.5"></circle>
+              <circle cx="6" cy="18" r="2"></circle>
+              <circle cx="18" cy="18" r="2"></circle>
+              <line x1="7.5" y1="7.5" x2="10.5" y2="10.5"></line>
+              <line x1="16.5" y1="7.5" x2="13.5" y2="10.5"></line>
+              <line x1="7.5" y1="16.5" x2="10.5" y2="13.5"></line>
+              <line x1="16.5" y1="16.5" x2="13.5" y2="13.5"></line>
+            </svg>
+          </div>
+          <div class="app-name">Particle Simulator</div>
+        </a>
+
+        <a href="fishtank.html" class="app-card">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"></path>
+              <path d="M6.5 12c1.5 2 3.5 2 5.5 0 2-2 4-2 5.5 0"></path>
+              <circle cx="12" cy="8" r="1.5"></circle>
+            </svg>
+          </div>
+          <div class="app-name">Virtual Fish Tank</div>
+        </a>
+      </div>
+    </div>
+      <div class="field-group">
+      <label>Personal</label>
+      <div class="actions-grid">
+        <a href="journal.html" class="app-card">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              <line x1="8" y1="7" x2="16" y2="7"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </div>
+          <div class="app-name">My Journal</div>
+        </a>
+
+        <a href="todolist.html" class="app-card">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"></polyline>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </div>
+          <div class="app-name">My Reminders</div>
+        </a>
+         <a href="calendar.html" class="app-card">
+        <div class="app-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div class="app-name">Calendar App</div>
+      </a>
+      </div>
+    </div>
+    <div class="field-group">
+         
+      <label>Tools</label>
+      <div class="actions-grid">
+        <a href="worldclock.html" class="app-card">
+         <div class="app-icon">
+           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+             <circle cx="12" cy="12" r="10"></circle>
+             <polyline points="12 6 12 12 16 14"></polyline>
+           </svg>
+        </div>
+        <div class="app-name">World Clock</div>
+      </a>
+
+      <a href="filemanager.html" class="app-card">
+        <div class="app-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <div class="app-name">File Manager</div>
+      </a>
+
+      <a href="drivesearch.html" class="app-card">
+         <div class="app-icon">
+           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+           </svg>
+        </div>
+        <div class="app-name">Google Drive Explorer</div>
+      </a>
+
+      <a href="classroomlaunch.html" class="app-card">
+         <div class="app-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            <path d="M12 6v6l4 2"></path>
+          </svg>
+        </div>
+        <div class="app-name">Class Launcher</div>
+      </a>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Multimedia</label>
+      <div class="actions-grid">
+        <a href="photobooth.html" class="app-card">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+          </div>
+          <div class="app-name">Photo Booth</div>
+        </a>
+
+        <a href="collage.html" class="app-card">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="12" y1="3" x2="12" y2="21"></line>
+              <line x1="12" y1="12" x2="21" y2="12"></line>
+            </svg>
+          </div>
+          <div class="app-name">Collage Maker</div>
+        </a>
+
+        <a href="tierlist.html" class="app-card">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="3" y1="15" x2="21" y2="15"></line>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+            </svg>
+          </div>
+          <div class="app-name">Tierlist Maker</div>
+        </a>
+
+        <a href="music.html" class="app-card">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13"></path>
+              <circle cx="6" cy="18" r="3"></circle>
+              <circle cx="18" cy="16" r="3"></circle>
+            </svg>
+          </div>
+          <div class="app-name">Music Player</div>
+        </a>
+      </div>
+    </div>
+    </div>
 
   <div class="drawer" id="quickControlsModal">
     <button class="drawer-close" id="quickControlsClose" aria-label="Close">
@@ -384,7 +541,7 @@
       { name: "Instagram", cat: "media", icon: "https://cdn.simpleicons.org/instagram/white", url: "https://www.instagram.com", desc: "Social Media" },
       { name: "SoundCloud", cat: "media", icon: "https://cdn.simpleicons.org/soundcloud/white", url: "https://www.soundcloud.com", desc: "Music" },
       { name: "WhatsApp Web", cat: "productivity", icon: "https://cdn.simpleicons.org/whatsapp/white", url: "https://web.whatsapp.com", desc: "Web Messaging" },
-      { name: "Canva", cat: "productivity", icon: "https://cdn.simpleicons.org/canva/white", url: "https://www.canva.com", desc: "Design Tool"  }
+      { name: "Canva", cat: "productivity", icon: "https://cdn.simpleicons.org/chai/white", url: "https://www.canva.com", desc: "Design Tool"  }
     ];
 
     const CATEGORY_LABELS = {
@@ -451,8 +608,11 @@
     const drawerClose = document.getElementById("drawerClose");
 
     const quickControlsModal = document.getElementById("quickControlsModal");
+    const quickControls2Modal = document.getElementById("quickControls2Modal");
     const quickControlsBtn = document.getElementById("quickControlsBtn");
+    const quickControls2Btn = document.getElementById("quickControls2Btn");
     const quickControlsClose = document.getElementById("quickControlsClose");
+    const quickControls2Close = document.getElementById("quickControls2Close");
 
     const appModal = document.getElementById("appModal");
     const appGridBtn = document.getElementById("appGridBtn");
@@ -463,6 +623,7 @@
       overlay.classList.remove("open");
       drawer.classList.remove("open");
       quickControlsModal.classList.remove("open");
+      quickControls2Modal.classList.remove("open");
       appModal.classList.remove("open");
     }
 
@@ -479,6 +640,13 @@
       quickControlsModal.classList.add("open");
     });
 
+    quickControls2Btn.addEventListener("click", () => {
+      closeAllDrawers();
+      overlay.classList.add("open");
+      quickControls2Modal.classList.add("open");
+    });
+
+
     appGridBtn.addEventListener("click", () => {
       renderAppGrid();
       closeAllDrawers();
@@ -488,6 +656,7 @@
 
     drawerClose.addEventListener("click", closeAllDrawers);
     quickControlsClose.addEventListener("click", closeAllDrawers);
+    quickControls2Close.addEventListener("click", closeAllDrawers);
     appModalClose.addEventListener("click", closeAllDrawers);
     overlay.addEventListener("click", closeAllDrawers);
 

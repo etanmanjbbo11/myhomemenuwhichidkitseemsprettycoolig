@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collage Maker | Ethan's Home Menu</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Custom Collage Workspace Styling */
+    .collage-workspace {
+      width: 100%;
+      max-width: 1240px;
+      margin: 80px auto 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .collage-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
+    }
+
+    .panel-header h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .control-group select, 
+    .control-group input[type="color"] {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .range-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .range-wrap input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    .range-val {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* Template Grid selector */
+    .template-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .template-btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-muted);
+    }
+
+    .template-btn:hover, .template-btn.active {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .template-icon {
+      width: 36px;
+      height: 36px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      display: grid;
+      gap: 2px;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    /* Template Icons CSS */
+    .icon-2-vert { grid-template-columns: 1fr 1fr; }
+    .icon-2-horiz { grid-template-rows: 1fr 1fr; }
+    .icon-3-hero { grid-template-columns: 1.5fr 1fr; grid-template-rows: 1fr 1fr; }
+    .icon-3-hero div:first-child { grid-row: span 2; }
+    .icon-3-cols { grid-template-columns: 1fr 1fr 1fr; }
+    .icon-4-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .icon-6-grid { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+
+    .template-icon div {
+      background: currentColor;
+      border-radius: 1px;
+      opacity: 0.6;
+    }
+
+    /* Upload & Image Tray */
+    .upload-box {
+      border: 2px dashed var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .upload-box:hover {
+      border-color: var(--accent);
+      background: rgba(221, 156, 71, 0.05);
+    }
+
+    .image-tray {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-height: 140px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .tray-thumb {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      object-fit: cover;
+      width: 100%;
+      cursor: grab;
+      border: 1px solid var(--card-border);
+      transition: transform 0.2s ease;
+    }
+
+    .tray-thumb:hover {
+      transform: scale(1.05);
+      border-color: var(--accent);
+    }
+
+    /* Preview Canvas Wrapper */
+    .preview-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 500px;
+    }
+
+    .collage-stage {
+      width: 100%;
+      max-width: 600px;
+      background: #10151a;
+      border-radius: 12px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+      display: grid;
+      gap: 10px;
+      padding: 10px;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Dynamic Grid Layouts */
+    .stage-2-vert { grid-template-columns: 1fr 1fr; }
+    .stage-2-horiz { grid-template-rows: 1fr 1fr; }
+    .stage-3-hero { grid-template-columns: 1.5fr 1fr; grid-template-rows: 1fr 1fr; }
+    .stage-3-hero .cell:nth-child(1) { grid-row: span 2; }
+    .stage-3-cols { grid-template-columns: 1fr 1fr 1fr; }
+    .stage-4-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .stage-6-grid { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+
+    .cell {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      min-height: 120px;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .cell:hover {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .cell.drag-over {
+      border-color: var(--accent);
+      background: rgba(221, 156, 71, 0.2);
+    }
+
+    .cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .cell-placeholder {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 8px;
+      user-select: none;
+    }
+
+    .cell-actions {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      display: none;
+      gap: 4px;
+    }
+
+    .cell:hover .cell-actions {
+      display: flex;
+    }
+
+    .cell-btn {
+      background: rgba(0,0,0,0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cell-btn:hover {
+      background: var(--accent);
+      color: #10151a;
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: #10151a;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .btn-accent:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-secondary:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="version-tag" id="versionTag">Ethan's Collage Maker</div>
+
+  <div class="header-btns">
+    <a href="index.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="Home Menu" aria-label="Home Menu">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </button>
+    </a>
+    <a href="photobooth.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="Photo Booth" aria-label="Photo Booth">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+          <circle cx="12" cy="13" r="4"></circle>
+        </svg>
+      </button>
+    </a>
+    <a href="filemanager.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="File Explorer" aria-label="File Explorer">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </button>
+    </a>
+  </div>
+
+  <div class="collage-workspace">
+    <div class="panel-card">
+      <div class="panel-header">
+        <h2>Collage Studio</h2>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Canvas</span>
+      </div>
+
+      <div class="control-group">
+        <label>1. Select Photos</label>
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+          <span style="font-size: 1.5rem;">📁</span>
+          <div style="font-size: 0.85rem; font-weight: 600; margin-top: 4px;">Click to Upload Images</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Supports PNG, JPG, WebP</div>
+        </div>
+        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+      </div>
+
+      <div class="control-group" id="trayGroup" style="display: none;">
+        <label>Uploaded Photos (Drag to Cell)</label>
+        <div class="image-tray" id="imageTray"></div>
+      </div>
+
+      <div class="control-group">
+        <label>2. Choose Template</label>
+        <div class="template-selector">
+          <div class="template-btn active" data-layout="2-vert" title="2 Columns">
+            <div class="template-icon icon-2-vert"><div></div><div></div></div>
+            <span style="font-size: 0.7rem;">2 Split</span>
+          </div>
+          <div class="template-btn" data-layout="2-horiz" title="2 Rows">
+            <div class="template-icon icon-2-horiz"><div></div><div></div></div>
+            <span style="font-size: 0.7rem;">2 Stack</span>
+          </div>
+          <div class="template-btn" data-layout="3-hero" title="1 Hero + 2 Side">
+            <div class="template-icon icon-3-hero"><div></div><div></div><div></div></div>
+            <span style="font-size: 0.7rem;">3 Hero</span>
+          </div>
+          <div class="template-btn" data-layout="3-cols" title="3 Columns">
+            <div class="template-icon icon-3-cols"><div></div><div></div><div></div></div>
+            <span style="font-size: 0.7rem;">3 Strip</span>
+          </div>
+          <div class="template-btn" data-layout="4-grid" title="2x2 Grid">
+            <div class="template-icon icon-4-grid"><div></div><div></div><div></div><div></div></div>
+            <span style="font-size: 0.7rem;">2x2 Grid</span>
+          </div>
+          <div class="template-btn" data-layout="6-grid" title="3x2 Grid">
+            <div class="template-icon icon-6-grid"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+            <span style="font-size: 0.7rem;">3x2 Grid</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="aspectSelect">Aspect Ratio</label>
+        <select id="aspectSelect">
+          <option value="1/1">1:1 Square (Instagram)</option>
+          <option value="4/5">4:5 Portrait (Social)</option>
+          <option value="16/9">16:9 Landscape</option>
+          <option value="9/16">9:16 Story / Mobile</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>Gap Size <span class="range-val" id="gapVal">10px</span></label>
+        <div class="range-wrap">
+          <input type="range" id="gapInput" min="0" max="30" value="10">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Corner Roundness <span class="range-val" id="radiusVal">8px</span></label>
+        <div class="range-wrap">
+          <input type="range" id="radiusInput" min="0" max="30" value="8">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="bgColorInput">Canvas Background Color</label>
+        <input type="color" id="bgColorInput" value="#10151a">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <button class="btn-accent" id="exportBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export Collage (PNG)
+        </button>
+        <button class="btn-secondary" id="clearAllBtn">Clear All Cells</button>
+      </div>
+    </div>
+
+    <div class="preview-card">
+      <div class="collage-stage stage-2-vert" id="collageStage" style="aspect-ratio: 1/1;">
+        </div>
+    </div>
+  </div>
+
+  <canvas id="exportCanvas" style="display: none;"></canvas>
+
+  <script>
+    /* Authorization / Protected Page Check */
+    function checkUnlock() {
+      if (sessionStorage.getItem("isUnlocked") !== "true") {
+        window.location.href = "index.html";
+      }
+    }
+    checkUnlock();
+
+    /* Layout Definitions */
+    const LAYOUT_COUNTS = {
+      "2-vert": 2,
+      "2-horiz": 2,
+      "3-hero": 3,
+      "3-cols": 3,
+      "4-grid": 4,
+      "6-grid": 6
+    };
+
+    /* App State */
+    let currentLayout = "2-vert";
+    let uploadedImages = []; // Stores DataURLs
+    let cellImages = {}; // Map of cellIndex -> image DataURL
+    let draggedImageSrc = null;
+
+    /* DOM Elements */
+    const collageStage = document.getElementById("collageStage");
+    const fileInput = document.getElementById("fileInput");
+    const imageTray = document.getElementById("imageTray");
+    const trayGroup = document.getElementById("trayGroup");
+    const aspectSelect = document.getElementById("aspectSelect");
+    const gapInput = document.getElementById("gapInput");
+    const gapVal = document.getElementById("gapVal");
+    const radiusInput = document.getElementById("radiusInput");
+    const radiusVal = document.getElementById("radiusVal");
+    const bgColorInput = document.getElementById("bgColorInput");
+    const exportBtn = document.getElementById("exportBtn");
+    const clearAllBtn = document.getElementById("clearAllBtn");
+
+    /* Render Stage Cells */
+    function renderStage() {
+      collageStage.className = `collage-stage stage-${currentLayout}`;
+      collageStage.style.aspectRatio = aspectSelect.value;
+      collageStage.style.gap = `${gapInput.value}px`;
+      collageStage.style.padding = `${gapInput.value}px`;
+      collageStage.style.backgroundColor = bgColorInput.value;
+
+      const cellCount = LAYOUT_COUNTS[currentLayout];
+      collageStage.innerHTML = "";
+
+      for (let i = 0; i < cellCount; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.style.borderRadius = `${radiusInput.value}px`;
+        cell.dataset.index = i;
+
+        const imageSrc = cellImages[i];
+
+        if (imageSrc) {
+          cell.innerHTML = `
+            <img src="${imageSrc}" alt="Collage Photo">
+            <div class="cell-actions">
+              <button class="cell-btn" title="Remove" onclick="removeCellImage(event, ${i})">✕</button>
+            </div>
+          `;
+        } else {
+          cell.innerHTML = `
+            <div class="cell-placeholder">
+              <span style="font-size: 1.2rem; display: block; margin-bottom: 2px;">+</span>
+              Drop photo here
+            </div>
+          `;
+        }
+
+        /* Drag & Drop onto cells */
+        cell.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          cell.classList.add("drag-over");
+        });
+
+        cell.addEventListener("dragleave", () => {
+          cell.classList.remove("drag-over");
+        });
+
+        cell.addEventListener("drop", (e) => {
+          e.preventDefault();
+          cell.classList.remove("drag-over");
+          if (draggedImageSrc) {
+            cellImages[i] = draggedImageSrc;
+            renderStage();
+          }
+        });
+
+        /* Click cell to pick from uploaded tray */
+        cell.addEventListener("click", () => {
+          if (!cellImages[i] && uploadedImages.length > 0) {
+            // Find first unassigned image or pick the latest
+            const unused = uploadedImages.find(img => !Object.values(cellImages).includes(img)) || uploadedImages[0];
+            cellImages[i] = unused;
+            renderStage();
+          }
+        });
+
+        collageStage.appendChild(cell);
+      }
+    }
+
+    /* File Upload Handler */
+    fileInput.addEventListener("change", (e) => {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
+
+      let loadedCount = 0;
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const src = evt.target.result;
+          uploadedImages.push(src);
+          loadedCount++;
+
+          // Auto-assign to empty cells
+          autoFillEmptyCells();
+
+          if (loadedCount === files.length) {
+            renderTray();
+            renderStage();
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    function autoFillEmptyCells() {
+      const cellCount = LAYOUT_COUNTS[currentLayout];
+      let imgIdx = 0;
+      for (let i = 0; i < cellCount; i++) {
+        if (!cellImages[i] && uploadedImages[imgIdx]) {
+          cellImages[i] = uploadedImages[imgIdx];
+        }
+        imgIdx++;
+      }
+    }
+
+    /* Render Photo Tray */
+    function renderTray() {
+      if (uploadedImages.length === 0) {
+        trayGroup.style.display = "none";
+        return;
+      }
+
+      trayGroup.style.display = "flex";
+      imageTray.innerHTML = "";
+
+      uploadedImages.forEach((src) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.className = "tray-thumb";
+        img.draggable = true;
+
+        img.addEventListener("dragstart", () => {
+          draggedImageSrc = src;
+        });
+
+        imageTray.appendChild(img);
+      });
+    }
+
+    function removeCellImage(event, cellIdx) {
+      event.stopPropagation();
+      delete cellImages[cellIdx];
+      renderStage();
+    }
+
+    /* Layout Change Listeners */
+    document.querySelectorAll(".template-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".template-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentLayout = btn.dataset.layout;
+        renderStage();
+      });
+    });
+
+    aspectSelect.addEventListener("change", renderStage);
+
+    gapInput.addEventListener("input", () => {
+      gapVal.textContent = `${gapInput.value}px`;
+      renderStage();
+    });
+
+    radiusInput.addEventListener("input", () => {
+      radiusVal.textContent = `${radiusInput.value}px`;
+      renderStage();
+    });
+
+    bgColorInput.addEventListener("input", renderStage);
+
+    clearAllBtn.addEventListener("click", () => {
+      cellImages = {};
+      renderStage();
+    });
+
+    /* High Resolution Canvas Export */
+    exportBtn.addEventListener("click", async () => {
+      const canvas = document.getElementById("exportCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // Determine dimensions (High-res 2000px base)
+      const aspectParts = aspectSelect.value.split("/").map(Number);
+      const aspect = aspectParts[0] / aspectParts[1];
+
+      const exportWidth = 2000;
+      const exportHeight = Math.round(exportWidth / aspect);
+
+      canvas.width = exportWidth;
+      canvas.height = exportHeight;
+
+      const gap = (parseInt(gapInput.value) / collageStage.offsetWidth) * exportWidth;
+      const radius = (parseInt(radiusInput.value) / collageStage.offsetWidth) * exportWidth;
+
+      // Fill Background
+      ctx.fillStyle = bgColorInput.value;
+      ctx.fillRect(0, 0, exportWidth, exportHeight);
+
+      // Render Cells onto Canvas
+      const cells = collageStage.querySelectorAll(".cell");
+      const stageRect = collageStage.getBoundingClientRect();
+
+      for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i];
+        const cellRect = cell.getBoundingClientRect();
+
+        // Calculate proportions relative to export size
+        const x = ((cellRect.left - stageRect.left) / stageRect.width) * exportWidth;
+        const y = ((cellRect.top - stageRect.top) / stageRect.height) * exportHeight;
+        const w = (cellRect.width / stageRect.width) * exportWidth;
+        const h = (cellRect.height / stageRect.height) * exportHeight;
+
+        const imgSrc = cellImages[i];
+        if (imgSrc) {
+          await drawCellImage(ctx, imgSrc, x, y, w, h, radius);
+        }
+      }
+
+      // Trigger Download
+      const link = document.createElement("a");
+      link.download = `collage-${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+
+    /* Helper: Draw image with object-fit: cover and rounded corners on HTML5 Canvas */
+    function drawCellImage(ctx, src, x, y, w, h, radius) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          ctx.save();
+
+          // Rounded Rectangle Clipping Path
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(x, y, w, h, radius);
+          } else {
+            ctx.rect(x, y, w, h);
+          }
+          ctx.clip();
+
+          // Calculate Aspect Cover Math
+          const imgAspect = img.width / img.height;
+          const rectAspect = w / h;
+          let renderW, renderH, renderX, renderY;
+
+          if (imgAspect > rectAspect) {
+            renderH = h;
+            renderW = h * imgAspect;
+            renderX = x - (renderW - w) / 2;
+            renderY = y;
+          } else {
+            renderW = w;
+            renderH = w / imgAspect;
+            renderX = x;
+            renderY = y - (renderH - h) / 2;
+          }
+
+          ctx.drawImage(img, renderX, renderY, renderW, renderH);
+          ctx.restore();
+          resolve();
+        };
+        img.src = src;
+      });
+    }
+
+    /* Initialize Stage */
+    renderStage();
+  </script>
+</body>
+</html>

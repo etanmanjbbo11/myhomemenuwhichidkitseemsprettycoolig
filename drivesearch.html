@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Drive Searcher | Ethan's Home Menu</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📁</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Custom layout extensions matching style.css theme */
+    .drive-container {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 100px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .drive-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .drive-header h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 2.8rem;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+      margin-top: 6px;
+      color: var(--text);
+    }
+
+    .drive-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(var(--glass-blur));
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .filter-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .drive-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .check-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+
+    .check-tag:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+    }
+
+    .check-tag input[type="checkbox"] {
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Preset Chips */
+    .presets-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .chip-btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .chip-btn:hover {
+      background: var(--btn-hover);
+      color: var(--text);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* Live Syntax Display */
+    .syntax-box {
+      width: 100%;
+      background: rgba(12, 16, 20, 0.6);
+      border: 1px dashed var(--card-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      word-break: break-all;
+      margin-top: 16px;
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      margin-left: 10px;
+      transition: color 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      color: var(--text);
+    }
+
+    /* Recent Searches */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      transition: all 0.2s ease;
+    }
+
+    .history-item:hover {
+      background: var(--btn-hover);
+      border-color: var(--card-border);
+    }
+
+    .history-query {
+      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .history-query:hover {
+      color: var(--accent);
+    }
+
+    .clear-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .clear-btn:hover {
+      color: #ff5555;
+    }
+  </style>
+</head>
+<body>
+  <div class="version-tag" id="versionTag">Ethan's Drive Searcher</div>
+
+  <div class="header-btns">
+    <a href="index.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="Home Menu" aria-label="Home Menu">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </button>
+    </a>
+    <a href="filemanager.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="File Explorer" aria-label="File Explorer"> 
+        <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor"> 
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path> 
+        </svg> 
+      </button>
+    </a>
+    <a href="https://drive.google.com" target="_blank" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="Open Google Drive" aria-label="Open Google Drive">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+      </button>
+    </a>
+  </div>
+
+  <div class="drive-container">
+    <div class="drive-header">
+      <div class="eyebrow"><span class="dot"></span>Cloud Workspace</div>
+      <h1>Google Drive Searcher</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;">Filter and search your Google Drive with precise query operators</p>
+    </div>
+
+    <div class="presets-wrap">
+      <button class="chip-btn" onclick="applyPreset('pdf')">📄 PDFs</button>
+      <button class="chip-btn" onclick="applyPreset('sheets')">📊 Spreadsheets</button>
+      <button class="chip-btn" onclick="applyPreset('docs')">📝 Google Docs</button>
+      <button class="chip-btn" onclick="applyPreset('slides')">🎨 Presentations</button>
+      <button class="chip-btn" onclick="applyPreset('images')">🖼️ Images & Photos</button>
+      <button class="chip-btn" onclick="applyPreset('starred')">⭐ Starred Files</button>
+      <button class="chip-btn" onclick="applyPreset('trash')">🗑️ Trash Bin</button>
+    </div>
+
+    <div class="drive-card">
+      <form id="driveSearchForm" onsubmit="executeDriveSearch(event)">
+        <div class="search-form" style="max-width: 100%;">
+          <input type="text" id="driveQuery" placeholder="Search file titles, text, or keywords..." autocomplete="off">
+          <button type="submit" aria-label="Search Drive" title="Search Google Drive">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <circle cx="11" cy="11" r="7"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label for="fileType">File Type</label>
+            <select id="fileType" onchange="updateSyntaxPreview()">
+              <option value="">Any Type</option>
+              <option value="document">Documents (Docs / Word)</option>
+              <option value="spreadsheet">Spreadsheets (Sheets / Excel)</option>
+              <option value="presentation">Presentations (Slides / PPT)</option>
+              <option value="pdf">PDF Files</option>
+              <option value="image">Images / Photos</option>
+
+              <option value="video">Videos</option>
+              <option value="audio">Audio Files</option>
+              <option value="folder">Folders</option>
+              <option value="archive">Zip / Archives</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="fileOwner">Ownership</label>
+            <select id="fileOwner" onchange="updateSyntaxPreview()">
+              <option value="">Anyone</option>
+              <option value="me">Owned by me</option>
+              <option value="not_me">Not owned by me</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="dateModified">Date Modified</label>
+            <select id="dateModified" onchange="updateSyntaxPreview()">
+              <option value="">Any time</option>
+              <option value="today">Today</option>
+              <option value="7days">Past 7 days</option>
+              <option value="30days">Past 30 days</option>
+              <option value="year">This year</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="drive-checkboxes">
+          <label class="check-tag">
+            <input type="checkbox" id="checkTitleOnly" onchange="updateSyntaxPreview()"> Title Only (`title:`)
+          </label>
+          <label class="check-tag">
+            <input type="checkbox" id="checkStarred" onchange="updateSyntaxPreview()"> Starred (`is:starred`)
+          </label>
+          <label class="check-tag">
+            <input type="checkbox" id="checkTrashed" onchange="updateSyntaxPreview()"> In Trash (`is:trashed`)
+          </label>
+        </div>
+
+        <div class="syntax-box">
+          <span id="syntaxText">Query preview: (empty)</span>
+          <button type="button" class="copy-btn" onclick="copySyntax()" title="Copy Drive Search Syntax">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="drive-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <div style="font-weight: 700; font-size: 0.95rem; color: var(--text);">Recent Drive Searches</div>
+        <button class="clear-btn" onclick="clearHistory()">Clear History</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 12px;">No recent searches yet</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Build Google Drive query based on inputs
+    function buildQuery() {
+      const rawText = document.getElementById("driveQuery").value.trim();
+      const type = document.getElementById("fileType").value;
+      const owner = document.getElementById("fileOwner").value;
+      const date = document.getElementById("dateModified").value;
+      const titleOnly = document.getElementById("checkTitleOnly").checked;
+      const starred = document.getElementById("checkStarred").checked;
+      const trashed = document.getElementById("checkTrashed").checked;
+
+      const terms = [];
+
+      if (rawText) {
+        if (titleOnly) {
+          terms.push(`name contains '${rawText.replace(/'/g, "\\'")}'`);
+        } else {
+          terms.push(`fullText contains '${rawText.replace(/'/g, "\\'")}'`);
+        }
+      }
+
+      if (type) {
+        terms.push(`type:${type}`);
+      }
+
+      if (owner === "me") {
+        terms.push(`'me' in owners`);
+      } else if (owner === "not_me") {
+        terms.push(`not 'me' in owners`);
+      }
+
+      if (starred) {
+        terms.push(`starred = true`);
+      }
+
+      if (trashed) {
+        terms.push(`trashed = true`);
+      } else {
+        terms.push(`trashed = false`);
+      }
+
+      // Date modified calculation
+      if (date) {
+        const now = new Date();
+        if (date === "today") {
+          const yyyy = now.getFullYear();
+          const mm = String(now.getMonth() + 1).padStart(2, '0');
+          const dd = String(now.getDate()).padStart(2, '0');
+          terms.push(`modifiedTime > '${yyyy}-${mm}-${dd}'`);
+        } else if (date === "7days") {
+          const past = new Date(now.setDate(now.getDate() - 7));
+          terms.push(`modifiedTime > '${past.toISOString().split('T')[0]}'`);
+        } else if (date === "30days") {
+          const past = new Date(now.setDate(now.getDate() - 30));
+          terms.push(`modifiedTime > '${past.toISOString().split('T')[0]}'`);
+        } else if (date === "year") {
+          terms.push(`modifiedTime > '${now.getFullYear()}-01-01'`);
+        }
+      }
+
+      return terms.join(" ");
+    }
+
+    function updateSyntaxPreview() {
+      const q = buildQuery();
+      const syntaxText = document.getElementById("syntaxText");
+      syntaxText.textContent = q ? `q = ${q}` : "Query preview: (all files)";
+    }
+
+    function executeDriveSearch(event) {
+      if (event) event.preventDefault();
+      const q = buildQuery();
+      const rawText = document.getElementById("driveQuery").value.trim();
+
+      // Save to search history
+      saveHistory(rawText || q || "All Files");
+
+      // Open Google Drive search target
+      const driveSearchUrl = `https://drive.google.com/drive/search?q=${encodeURIComponent(q)}`;
+      window.open(driveSearchUrl, "_blank");
+    }
+
+    function applyPreset(presetKey) {
+      // Reset form
+      document.getElementById("driveSearchForm").reset();
+
+      switch (presetKey) {
+        case 'pdf':
+          document.getElementById("fileType").value = "pdf";
+          break;
+        case 'sheets':
+          document.getElementById("fileType").value = "spreadsheet";
+          break;
+        case 'docs':
+          document.getElementById("fileType").value = "document";
+          break;
+        case 'slides':
+          document.getElementById("fileType").value = "presentation";
+          break;
+        case 'images':
+          document.getElementById("fileType").value = "image";
+          break;
+        case 'starred':
+          document.getElementById("checkStarred").checked = true;
+          break;
+        case 'trash':
+          document.getElementById("checkTrashed").checked = true;
+          break;
+      }
+
+      updateSyntaxPreview();
+      executeDriveSearch();
+    }
+
+    function copySyntax() {
+      const q = buildQuery();
+      navigator.clipboard.writeText(q).then(() => {
+        const syntaxText = document.getElementById("syntaxText");
+        const original = syntaxText.textContent;
+        syntaxText.textContent = "Copied to clipboard!";
+        setTimeout(() => syntaxText.textContent = original, 1500);
+      });
+    }
+
+    // Local Storage History Management
+    function getHistory() {
+      try {
+        return JSON.parse(localStorage.getItem("ethan_drive_history")) || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveHistory(term) {
+      if (!term) return;
+      let history = getHistory();
+      history = history.filter(item => item !== term);
+      history.unshift(term);
+      if (history.length > 8) history.pop();
+      localStorage.setItem("ethan_drive_history", JSON.stringify(history));
+      renderHistory();
+    }
+
+    function clearHistory() {
+      localStorage.removeItem("ethan_drive_history");
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById("historyList");
+      const history = getHistory();
+
+      if (history.length === 0) {
+        list.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 12px;">No recent searches yet</div>`;
+        return;
+      }
+
+      list.innerHTML = "";
+      history.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "history-item";
+
+        const label = document.createElement("a");
+        label.className = "history-query";
+        label.textContent = item;
+        label.onclick = () => {
+          document.getElementById("driveQuery").value = item;
+          updateSyntaxPreview();
+          executeDriveSearch();
+        };
+
+        row.appendChild(label);
+        list.appendChild(row);
+      });
+    }
+
+    // Attach listeners
+    document.getElementById("driveQuery").addEventListener("input", updateSyntaxPreview);
+
+    // Initial setup
+    updateSyntaxPreview();
+    renderHistory();
+  </script>
+</body>
+</html>

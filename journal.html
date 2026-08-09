@@ -901,18 +901,7 @@
     // INIT
     renderEntries();
 
-    // --- DIRECT ACCESS PROTECTION ---
-(function verifyAccess() {
-  const isAuthorized = sessionStorage.getItem('authorized_access');
-
-  if (!isAuthorized) {
-    // Redirect back to index.html immediately if opened directly
-    window.location.replace('index.html');
-  } else {
-    // Clear token so re-entry without index.html is blocked
-    sessionStorage.removeItem('authorized_access');
-  }
-})();
+  
   </script>
 </body>
 </html>

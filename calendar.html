@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar - Ethan's Home Menu</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Custom Calendar Layout Styles */
+    .calendar-container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 80px auto 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      z-index: 1;
+    }
+
+    @media (max-width: 900px) {
+      .calendar-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .calendar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .calendar-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .calendar-title h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+    }
+
+    .calendar-nav-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: #10151a;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-accent:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 8px 12px 8px 36px;
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-muted);
+    }
+
+    /* Grid Layout */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .day-header {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      padding: 8px 0;
+      letter-spacing: 0.5px;
+    }
+
+    .day-cell {
+      min-height: 85px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .day-cell:hover {
+      background: var(--btn-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .day-cell.other-month {
+      opacity: 0.3;
+    }
+
+    .day-cell.today {
+      border-color: var(--accent);
+      background: rgba(221, 156, 71, 0.08);
+    }
+
+    .day-cell.selected {
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .day-number {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .day-cell.sunday .day-number {
+      color: #ef4444;
+    }
+
+    /* Event Badges */
+    .event-badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .badge-holiday {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-cuti {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-personal {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .badge-work {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Sidebar Details Panel */
+    .sidebar-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 20px;
+      backdrop-filter: blur(var(--glass-blur));
+    }
+
+    .panel-header {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .event-item {
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .event-item-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .event-item-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Modal Styling */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #12161c;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 440px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="version-tag" id="versionTag">Ethan's Home Menu</div>
+
+  <div class="header-btns">
+    <a href="index.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="Home Menu" aria-label="Home Menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </button>
+    </a>
+    <a href="todolist.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="To-Do List" aria-label="To-Do List">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor">
+          <polyline points="9 11 12 14 22 4"></polyline>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+      </button>
+    </a>
+    <a href="journal.html" style="text-decoration: none;">
+      <button class="icon-btn-circle" title="Journal" aria-label="Journal">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+      </button>
+    </a>
+  </div>
+
+  <div class="calendar-container">
+    
+    <div class="calendar-card">
+      <div class="calendar-header">
+        <div class="calendar-title">
+          <h2 id="monthYearDisplay">January 2026</h2>
+        </div>
+        <div class="calendar-nav-btns">
+          <button class="btn-secondary" id="todayBtn">Today</button>
+          <button class="btn-secondary" id="prevMonthBtn" aria-label="Previous Month">‹ Prev</button>
+          <button class="btn-secondary" id="nextMonthBtn" aria-label="Next Month">Next ›</button>
+          <button class="btn-accent" id="addEventBtn">+ Add Event</button>
+        </div>
+      </div>
+
+      <div class="controls-bar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search events or holidays...">
+        </div>
+        <div style="width: 180px;">
+          <select id="categoryFilter">
+            <option value="all">All Categories</option>
+            <option value="holiday">Public Holidays</option>
+            <option value="cuti">Cuti Bersama</option>
+            <option value="personal">Personal</option>
+            <option value="work">Work / School</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="calendar-grid" id="calendarGrid">
+        <div class="day-header">Sun</div>
+        <div class="day-header">Mon</div>
+        <div class="day-header">Tue</div>
+        <div class="day-header">Wed</div>
+        <div class="day-header">Thu</div>
+        <div class="day-header">Fri</div>
+        <div class="day-header">Sat</div>
+        </div>
+    </div>
+
+    <div class="sidebar-panel">
+      
+      <div class="panel-card">
+        <div class="panel-header">
+          <span>Selected Date</span>
+          <span id="selectedDateLabel" style="color: var(--accent);">Today</span>
+        </div>
+        <div class="event-list" id="selectedDateEvents">
+          <div style="font-size: 0.85rem; color: var(--text-muted); padding: 12px 0;">Select a date to view events</div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <span>Upcoming Holidays</span>
+        </div>
+        <div class="event-list" id="upcomingEvents">
+          </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal" id="eventModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add New Event</h3>
+        <button class="remove-btn" id="closeModalBtn" style="font-size: 1.2rem;">✕</button>
+      </div>
+      <form id="eventForm">
+        <div class="form-group">
+          <label for="eventTitle">Event Title</label>
+          <input type="text" id="eventTitle" placeholder="e.g. Project Meeting" required>
+        </div>
+        <div class="form-group">
+          <label for="eventDate">Date</label>
+          <input type="date" id="eventDate" required>
+        </div>
+        <div class="form-group">
+          <label for="eventCategory">Category</label>
+          <select id="eventCategory">
+            <option value="personal">Personal</option>
+            <option value="work">Work / School</option>
+            <option value="holiday">Holiday</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="eventNotes">Description / Notes</label>
+          <textarea id="eventNotes" rows="3" placeholder="Add optional details..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancelModalBtn">Cancel</button>
+          <button type="submit" class="btn-accent">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /* Security Check & Authorization */
+    function checkUnlock() {
+      if (sessionStorage.getItem("isUnlocked") !== "true") {
+        window.location.href = "index.html";
+      }
+    }
+    checkUnlock();
+
+    /* Dataset: Indonesian National Holidays & Cuti Bersama (2026 Sample Set) */
+    const NATIONAL_EVENTS = [
+      { date: "2026-01-01", title: "New Year's Day 2026", cat: "holiday" },
+      { date: "2026-01-16", title: "Isra Mi'raj Nabi Muhammad SAW", cat: "holiday" },
+      { date: "2026-02-17", title: "Tahun Baru Imlek 2577", cat: "holiday" },
+      { date: "2026-02-16", title: "Cuti Bersama Imlek", cat: "cuti" },
+      { date: "2026-03-19", title: "Hari Raya Nyepi 1948", cat: "holiday" },
+      { date: "2026-03-20", title: "Hari Raya Idul Fitri 1447 H", cat: "holiday" },
+      { date: "2026-03-21", title: "Hari Raya Idul Fitri 1447 H", cat: "holiday" },
+      { date: "2026-03-22", title: "Cuti Bersama Idul Fitri", cat: "cuti" },
+      { date: "2026-03-23", title: "Cuti Bersama Idul Fitri", cat: "cuti" },
+      { date: "2026-04-03", title: "Good Friday (Wafat Yesus Kristus)", cat: "holiday" },
+      { date: "2026-05-01", title: "International Labor Day", cat: "holiday" },
+      { date: "2026-05-14", title: "Ascension Day of Jesus Christ", cat: "holiday" },
+      { date: "2026-05-27", title: "Hari Raya Waisak 2570", cat: "holiday" },
+      { date: "2026-06-01", title: "Pancasila Day", cat: "holiday" },
+      { date: "2026-05-28", title: "Hari Raya Idul Adha 1447 H", cat: "holiday" },
+      { date: "2026-06-16", title: "Islamic New Year 1448 H", cat: "holiday" },
+      { date: "2026-08-17", title: "Indonesian Independence Day", cat: "holiday" },
+      { date: "2026-08-25", title: "Maulid Nabi Muhammad SAW", cat: "holiday" },
+      { date: "2026-12-25", title: "Christmas Day", cat: "holiday" },
+      { date: "2026-12-26", title: "Cuti Bersama Christmas", cat: "cuti" }
+    ];
+
+    /* App State */
+    let currentDate = new Date();
+    let selectedDateStr = formatDateKey(new Date());
+    let userEvents = JSON.parse(localStorage.getItem("ethan_calendar_events") || "[]");
+
+    /* Elements */
+    const monthYearDisplay = document.getElementById("monthYearDisplay");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const prevMonthBtn = document.getElementById("prevMonthBtn");
+    const nextMonthBtn = document.getElementById("nextMonthBtn");
+    const todayBtn = document.getElementById("todayBtn");
+    const addEventBtn = document.getElementById("addEventBtn");
+    const eventModal = document.getElementById("eventModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const eventForm = document.getElementById("eventForm");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const searchInput = document.getElementById("searchInput");
+    const selectedDateLabel = document.getElementById("selectedDateLabel");
+    const selectedDateEvents = document.getElementById("selectedDateEvents");
+    const upcomingEvents = document.getElementById("upcomingEvents");
+
+    const MONTH_NAMES = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    function formatDateKey(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+
+      monthYearDisplay.textContent = `${MONTH_NAMES[month]} ${year}`;
+
+      // Reset grid keeping day headers
+      calendarGrid.innerHTML = `
+        <div class="day-header">Sun</div>
+        <div class="day-header">Mon</div>
+        <div class="day-header">Tue</div>
+        <div class="day-header">Wed</div>
+        <div class="day-header">Thu</div>
+        <div class="day-header">Fri</div>
+        <div class="day-header">Sat</div>
+      `;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+      const todayStr = formatDateKey(new Date());
+      const filterCat = categoryFilter.value;
+      const searchQ = searchInput.value.toLowerCase().trim();
+
+      // Combined All Events
+      const allEvents = [...NATIONAL_EVENTS, ...userEvents];
+
+      // Previous Month Days padding
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const prevDayNum = daysInPrevMonth - i;
+        const prevDate = new Date(year, month - 1, prevDayNum);
+        const cell = createDayCell(prevDate, true, todayStr, allEvents, filterCat, searchQ);
+        calendarGrid.appendChild(cell);
+      }
+
+      // Current Month Days
+      for (let day = 1; day <= daysInMonth; day++) {
+        const thisDate = new Date(year, month, day);
+        const cell = createDayCell(thisDate, false, todayStr, allEvents, filterCat, searchQ);
+        calendarGrid.appendChild(cell);
+      }
+
+      // Next Month Days padding to complete grid
+      const totalCells = (firstDay + daysInMonth);
+      const nextPadding = Math.ceil(totalCells / 7) * 7 - totalCells;
+      for (let i = 1; i <= nextPadding; i++) {
+        const nextDate = new Date(year, month + 1, i);
+        const cell = createDayCell(nextDate, true, todayStr, allEvents, filterCat, searchQ);
+        calendarGrid.appendChild(cell);
+      }
+
+      renderSidebarEvents();
+    }
+
+    function createDayCell(date, isOtherMonth, todayStr, allEvents, filterCat, searchQ) {
+      const cell = document.createElement("div");
+      const dateStr = formatDateKey(date);
+      const dayNum = date.getDate();
+      const isSunday = date.getDay() === 0;
+
+      cell.className = `day-cell ${isOtherMonth ? 'other-month' : ''} ${dateStr === todayStr ? 'today' : ''} ${dateStr === selectedDateStr ? 'selected' : ''} ${isSunday ? 'sunday' : ''}`;
+      
+      const numSpan = document.createElement("span");
+      numSpan.className = "day-number";
+      numSpan.textContent = dayNum;
+      cell.appendChild(numSpan);
+
+      // Filter events for this cell
+      const dayEvents = allEvents.filter(e => {
+        const matchDate = e.date === dateStr;
+        const matchCat = filterCat === "all" || e.cat === filterCat;
+        const matchSearch = !searchQ || e.title.toLowerCase().includes(searchQ);
+        return matchDate && matchCat && matchSearch;
+      });
+
+      dayEvents.forEach(e => {
+        const badge = document.createElement("div");
+        badge.className = `event-badge badge-${e.cat}`;
+        badge.textContent = e.title;
+        cell.appendChild(badge);
+      });
+
+      cell.addEventListener("click", () => {
+        selectedDateStr = dateStr;
+        renderCalendar();
+      });
+
+      return cell;
+    }
+
+    function renderSidebarEvents() {
+      // Update Selected Date Label
+      const selDate = new Date(selectedDateStr + "T00:00:00");
+      selectedDateLabel.textContent = selDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+      // Selected Day's Events
+      const allEvents = [...NATIONAL_EVENTS, ...userEvents];
+      const selectedEvents = allEvents.filter(e => e.date === selectedDateStr);
+
+      selectedDateEvents.innerHTML = "";
+      if (selectedEvents.length === 0) {
+        selectedDateEvents.innerHTML = `<div style="font-size: 0.85rem; color: var(--text-muted); padding: 8px 0;">No events scheduled for this date.</div>`;
+      } else {
+        selectedEvents.forEach(e => {
+          const item = document.createElement("div");
+          item.className = "event-item";
+          item.innerHTML = `
+            <div class="event-item-title">${e.title}</div>
+            <div class="event-item-meta">
+              <span class="event-badge badge-${e.cat}">${e.cat.toUpperCase()}</span>
+              <span>${e.notes || ''}</span>
+            </div>
+          `;
+          selectedDateEvents.appendChild(item);
+        });
+      }
+
+      // Upcoming Holidays List
+      const todayKey = formatDateKey(new Date());
+      const upcoming = NATIONAL_EVENTS
+        .filter(e => e.date >= todayKey)
+        .slice(0, 5);
+
+      upcomingEvents.innerHTML = "";
+      upcoming.forEach(e => {
+        const d = new Date(e.date + "T00:00:00");
+        const dateFormatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const item = document.createElement("div");
+        item.className = "event-item";
+        item.innerHTML = `
+          <div class="event-item-title">${e.title}</div>
+          <div class="event-item-meta">
+            <span>${dateFormatted}</span>
+            <span class="event-badge badge-${e.cat}">${e.cat === 'cuti' ? 'Cuti Bersama' : 'Holiday'}</span>
+          </div>
+        `;
+        upcomingEvents.appendChild(item);
+      });
+    }
+
+    /* Event Listeners */
+    prevMonthBtn.addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar();
+    });
+
+    nextMonthBtn.addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar();
+    });
+
+    todayBtn.addEventListener("click", () => {
+      currentDate = new Date();
+      selectedDateStr = formatDateKey(currentDate);
+      renderCalendar();
+    });
+
+    categoryFilter.addEventListener("change", renderCalendar);
+    searchInput.addEventListener("input", renderCalendar);
+
+    /* Modal Controls */
+    addEventBtn.addEventListener("click", () => {
+      document.getElementById("eventDate").value = selectedDateStr;
+      eventModal.classList.add("open");
+    });
+
+    function closeModal() {
+      eventModal.classList.remove("open");
+      eventForm.reset();
+    }
+
+    closeModalBtn.addEventListener("click", closeModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+
+    eventForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = document.getElementById("eventTitle").value.trim();
+      const date = document.getElementById("eventDate").value;
+      const cat = document.getElementById("eventCategory").value;
+      const notes = document.getElementById("eventNotes").value.trim();
+
+      if (!title || !date) return;
+
+      const newEvt = { title, date, cat, notes };
+      userEvents.push(newEvt);
+      localStorage.setItem("ethan_calendar_events", JSON.stringify(userEvents));
+
+      closeModal();
+      renderCalendar();
+    });
+
+    /* Init */
+    renderCalendar();
+  </script>
+</body>
+</html>
