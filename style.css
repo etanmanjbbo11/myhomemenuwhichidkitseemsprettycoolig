@@ -691,14 +691,7 @@ button.app-card.shutdown-card:hover {
   background: rgba(239, 68, 68, 0.15);
   border-color: rgba(239, 68, 68, 0.4);
 }
-/* Time & Date Display inside Sidebar Top */
-.pin-datetime {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.4;
-  text-align: left;
-}
+
 
 .sidebar-title {
   font-size: 0.75rem;
@@ -786,11 +779,13 @@ button.app-card.shutdown-card:hover {
 .pin-datetime {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  right: 23px;
   text-align: right;
   font-size: 0.9rem;
   color: var(--text-muted);
   z-index: 2001;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 /* Actions Grid */
