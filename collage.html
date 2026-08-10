@@ -474,13 +474,7 @@
   <canvas id="exportCanvas" style="display: none;"></canvas>
 
   <script>
-    /* Authorization / Protected Page Check */
-    function checkUnlock() {
-      if (sessionStorage.getItem("isUnlocked") !== "true") {
-        window.location.href = "index.html";
-      }
-    }
-    checkUnlock();
+  
 
     /* Layout Definitions */
     const LAYOUT_COUNTS = {
