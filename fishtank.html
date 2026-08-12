@@ -439,11 +439,8 @@
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="cleanBar"></div>
         </div>
-        <button class="btn-action" id="cleanTankBtn" style="margin-top: 8px;">
-          🧹 Clean Tank ($15)
-        </button>
         <button class="btn-action" id="cleanTankFullBtn" style="margin-top: 8px;">
-          🧹 Clean Tank Fully ($1000)
+          🧹 Clean Tank Fully ($0 - $1000)
         </button>
         <button class="btn-action" id="openGalleryBtn" style="margin-top: 8px;">
   📖 Fish Gallery
@@ -518,13 +515,6 @@
 </div>
 
   <script>
-    /* Session Lock Check */
-    function checkUnlock() {
-      if (sessionStorage.getItem("isUnlocked") !== "true") {
-        window.location.href = "index.html";
-      }
-    }
-    checkUnlock();
 
     /* Game State & Save Data */
     const STORAGE_KEY = "ethan_fishtank_save_v1";
@@ -871,24 +861,7 @@ window.addEventListener("beforeunload", () => {
 });
 
 /* 3. Add functionality & state saving to the Clean Tank Button */
-document.getElementById("cleanTankBtn").addEventListener("click", () => {
-  const CLEAN_COST = 15;
-  
-  if (state.cleanliness >= 100) {
-    alert("The tank is already completely clean!");
-    return;
-  }
-  
-  if (state.coins < CLEAN_COST) {
-    alert("Not enough coins to clean the tank!");
-    return;
-  }
 
-  state.coins -= CLEAN_COST;
-  state.cleanliness = 100;
-  saveState();
-  updateUI();
-});
 
 document.getElementById("cleanTankFullBtn").addEventListener("click", () => {
   const CLEAN_COST = 1000;
@@ -899,7 +872,7 @@ document.getElementById("cleanTankFullBtn").addEventListener("click", () => {
   }
   
   if (state.coins < CLEAN_COST) {
-    alert("Not enough coins to clean the tank!");
+    alert("I'll allow you to clean it fully, but beware on $1000!");
     return;
   }
 
@@ -1109,25 +1082,14 @@ function showToast(message) {
       }
     };
 
-    document.getElementById("cleanTankBtn").addEventListener("click", () => {
-      if (state.coins >= 15) {
-        state.coins -= 15;
-        state.cleanliness = 100;
-        saveState();
-        updateUI();
-      } else {
-        alert("Cleaning costs $15 coins!");
-      }
-    });
-
     document.getElementById("cleanTankFullBtn").addEventListener("click", () => {
-      if (state.coins >= 15) {
-        state.coins -= 15;
+      if (state.coins >= 0) {
+        state.coins -= 0;
         state.cleanliness = 1000;
         saveState();
         updateUI();
       } else {
-        alert("Cleaning costs $15 coins!");
+        alert("Cleaning costs 0 coins!");
       }
     });
 
