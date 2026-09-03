@@ -16,9 +16,9 @@
     /* Custom Tier List Specific Styles */
     .tier-container {
       width: 100%;
-      max-width: 960px;
-      margin: 90px auto 40px auto;
-      padding: 0 20px;
+      max-width: 1280px;
+      margin: 70px auto 40px auto;
+      padding: 0 50px;
       z-index: 1;
     }
 
@@ -38,50 +38,18 @@
       margin-bottom: 24px;
     }
 
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-      align-items: center;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(var(--glass-blur));
-      padding: 16px;
-      border-radius: 16px;
-      margin-bottom: 24px;
+    /* Side-by-Side Main Layout */
+    .tier-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+      align-items: start;
     }
 
-    .toolbar-btn {
-      background: var(--btn-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-    }
-
-    .toolbar-btn:hover {
-      background: var(--btn-hover);
-      border-color: var(--accent);
-      transform: translateY(-2px);
-    }
-
-    .toolbar-btn.primary {
-      background: var(--accent);
-      color: #10151a;
-      border-color: var(--accent);
-    }
-
-    .toolbar-btn.primary:hover {
-      background: var(--accent-hover);
+    @media (max-width: 900px) {
+      .tier-layout {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Tier Rows Table */
@@ -98,7 +66,7 @@
 
     .tier-row {
       display: flex;
-      min-height: 90px;
+      min-height: 65px;
       background: rgba(20, 26, 32, 0.5);
       border: 1px solid var(--card-border);
       border-radius: 10px;
@@ -107,13 +75,13 @@
     }
 
     .tier-label {
-      width: 100px;
-      min-width: 100px;
+     width: 80px; /* Default was 100px */
+  min-width: 80px;
+  font-size: 1.1rem;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 1.4rem;
       color: #10151a;
       text-transform: uppercase;
       padding: 8px;
@@ -129,9 +97,11 @@
       display: flex;
       flex-wrap: wrap;
       align-content: flex-start;
-      gap: 8px;
-      padding: 10px;
-      min-height: 90px;
+
+      min-height: 85px; /* Default was 90px */
+  padding: 6px;
+  gap: 6px;
+
       transition: background 0.2s ease;
     }
 
@@ -174,14 +144,15 @@
       color: #ef4444;
     }
 
-    /* Unranked Pool */
+    /* Unranked Pool - Right Column */
     .pool-section {
-      margin-top: 24px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       backdrop-filter: blur(var(--glass-blur));
       border-radius: 16px;
-      padding: 16px;
+      padding: 16px 12px;
+      position: sticky;
+      top: 20px;
     }
 
     .pool-title {
@@ -191,23 +162,79 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 12px;
+      text-align: center;
     }
 
     .pool-dropzone {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      min-height: 100px;
-      padding: 12px;
+      gap: 8px;
+      min-height: 200px;
+      max-height: 50vh;
+      overflow-y: auto;
+      padding: 8px;
       background: rgba(0, 0, 0, 0.2);
       border: 2px dashed var(--card-border);
       border-radius: 12px;
+      align-content: flex-start;
     }
 
-    /* Tier Items */
+    /* Resized items specifically for the unranked pool to fit 3 per row */
+    .pool-dropzone .tier-item {
+      width: 72px;
+      height: 72px;
+    }
+
+    /* Toolbar styling positioned beneath the pool */
+    .toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      padding: 12px;
+      border-radius: 12px;
+    }
+
+    .toolbar-btn {
+      width: 100%;
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .toolbar-btn:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .toolbar-btn.primary {
+      background: var(--accent);
+      color: #10151a;
+      border-color: var(--accent);
+    }
+
+    .toolbar-btn.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Standard Tier Items (when dragged onto board) */
     .tier-item {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       background: var(--sky-a);
       border: 1px solid var(--card-border);
       border-radius: 10px;
@@ -289,39 +316,36 @@
   </div>
 
   <div class="tier-container">
-    <h1 class="tier-header-title">Tier List Maker</h1>
-    <p class="tier-subtitle">Drag & drop items, customize rows, and export your personal rankings.</p>
 
-    <div class="toolbar">
-      <button class="toolbar-btn primary" onclick="document.getElementById('imageInput').click()">
-        ➕ Add Images
-      </button>
-      <input type="file" id="imageInput" accept="image/*" multiple onchange="handleImageUpload(event)">
 
-      <button class="toolbar-btn" onclick="addTextItem()">
-        📝 Add Text
-      </button>
+    <div class="tier-layout">
+      <div class="tier-board" id="tierBoard"></div>
 
-      <button class="toolbar-btn" onclick="addNewTier()">
-        ➕ Add Tier Row
-      </button>
+      <div class="pool-section">
+        <div class="pool-title">Unranked Item Pool</div>
+        <div class="pool-dropzone" id="itemPool" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
 
-      <button class="toolbar-btn" onclick="exportTierList()">
-        📸 Export PNG
-      </button>
+        <div class="toolbar">
+          <button class="toolbar-btn primary" onclick="document.getElementById('imageInput').click()">
+            ➕ Add Images
+          </button>
+          <input type="file" id="imageInput" accept="image/*" multiple onchange="handleImageUpload(event)">
 
-      <button class="toolbar-btn" onclick="resetBoard()" style="color: #ef4444;">
-        🔄 Reset
-      </button>
-    </div>
+       
 
-    <div class="tier-board" id="tierBoard">
-      </div>
+          <button class="toolbar-btn" onclick="addNewTier()">
+            ➕ Add Tier Row
+          </button>
 
-    <div class="pool-section">
-      <div class="pool-title">Unranked Item Pool</div>
-      <div class="pool-dropzone" id="itemPool" ondragover="allowDrop(event)" ondrop="drop(event)">
+          <button class="toolbar-btn" onclick="exportTierList()">
+            📸 Export PNG
+          </button>
+
+          <button class="toolbar-btn" onclick="resetBoard()" style="color: #ef4444;">
+            🔄 Reset
+          </button>
         </div>
+      </div>
     </div>
   </div>
 
@@ -332,8 +356,7 @@
       { id: 'tier-a', label: 'A', color: '#ffbf7f' },
       { id: 'tier-b', label: 'B', color: '#ffdf7f' },
       { id: 'tier-c', label: 'C', color: '#ffff7f' },
-      { id: 'tier-d', label: 'D', color: '#7fff7f' },
-      { id: 'tier-f', label: 'F', color: '#7fbfff' }
+      { id: 'tier-d', label: 'D', color: '#7fff7f' }
     ];
 
     let draggedItem = null;
@@ -356,8 +379,7 @@
         document.getElementById("itemPool").innerHTML = savedPool;
         reattachItemEvents();
       } else {
-        // Add default sample items
-        addSampleItems();
+
       }
     }
 
@@ -384,14 +406,7 @@
       saveState();
     }
 
-    function addSampleItems() {
-      const pool = document.getElementById("itemPool");
-      const samples = ["🚀", "🎮", "🎵", "📚", "☕", "🍕"];
-      samples.forEach(emoji => {
-        const item = createItemElement(null, emoji);
-        pool.appendChild(item);
-      });
-    }
+
 
     function createItemElement(imgSrc, textContent) {
       const item = document.createElement("div");
