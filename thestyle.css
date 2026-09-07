@@ -1,0 +1,179 @@
+:root {
+  --bg: #0c1014;
+  --sky-a: #10151a; 
+  --sky-b: #0c1013; 
+  --sky-c: #080a0d; 
+  --card-bg: rgba(20, 26, 32, 0.7); 
+  --card-border: rgba(255, 255, 255, 0.08);
+  --text: #f3f4f6;
+  --text-muted: #8b95a1;
+  --accent: #dd9c47;
+  --deep: #16232c;
+  --btn-bg: rgba(255, 255, 255, 0.05);
+  --btn-hover: rgba(255, 255, 255, 0.1);
+  --glass-blur: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: linear-gradient(180deg, var(--sky-a) 0%, var(--sky-b) 55%, var(--sky-c) 100%);
+  color: var(--text);
+  font-family: 'Manrope', -apple-system, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Changed from center to flex-start */
+  overflow-x: hidden;
+  position: relative;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 680px;
+  padding: 80px 20px 40px 20px; /* Adjust top padding (e.g. 20px or 30px) to pull everything higher */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Changed from center to flex-start */
+  text-align: center;
+  margin: 0 auto; /* Removed auto vertical centering */
+  z-index: 1;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 22px 22px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.header-btns {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+
+.icon-btn-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--btn-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.icon-btn-circle:hover {
+  background: var(--btn-hover);
+  transform: translateY(-2px);
+}
+
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.eyebrow .dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+}
+
+.clock {
+  font-family: 'Fraunces', serif;
+  font-size: 4.5rem;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+}
+
+.clock .sec {
+  font-size: 2rem;
+  color: var(--text-muted);
+}
+
+.date-line {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.greeting {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.message {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  max-width: 540px;
+  margin: 0 auto 32px auto;
+  line-height: 1.5;
+}
+
+/* Matching inspiration App Card Layout for Feeds */
+.actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.app-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  backdrop-filter: blur(var(--glass-blur));
+  color: var(--text);
+  width: 100%;
+  transition: border-color 0.2s ease;
+}
+
+.app-card:hover {
+  border-color: var(--accent);
+}
+
+.app-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.app-card small {
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.app-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}

@@ -567,21 +567,21 @@ select option {
   height: 24px;
   stroke: currentColor;
 }
-/* Full-screen backdrop blur and container */
-/* Fullscreen Backdrop Blur Overlay - Blocks clicks on background elements */
+
+/* Fullscreen Backdrop Blur Overlay */
 .pin-overlay {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   z-index: 9999;
-
   background: rgba(12, 16, 20, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-
+  
   display: flex;
-  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
   opacity: 1;
   visibility: visible;
@@ -596,54 +596,58 @@ select option {
   pointer-events: none;
 }
 
-/* Main PIN Entry Panel - Takes up all remaining screen space */
+/* Main PIN Entry Panel Box */
 .pin-card {
-  flex: 1;
-  height: 100%;
+  width: 100%;
+  max-width: 450px;
+  max-height: 90vh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  background: rgba(15, 15, 22, 0.85);
-  border-right: 1px solid var(--card-border);
-  padding: 40px;
+  background: rgba(15, 18, 22, 0.85);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 32px 32px;
   box-sizing: border-box;
 
-  transform: translateX(0);
+  transform: scale(1) translateY(0);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Scale down and fade out on unlock */
+.pin-overlay.hidden .pin-card {
+  transform: scale(0.95) translateY(-20px);
+}
+
+/* Sidebar Options container (retained for layout consistency) */
+.pin-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .pin-sidebar {
   width: 380px;
   max-width: 100vw;
-  height: 100%;
+  height: 600px; /* Replaces height: 100% */
+  border-radius: 0 20px 20px 0; /* Rounds the right side */
   background: rgba(12, 16, 20, 0.85);
   padding: 32px 24px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Keeps items at the top */
-  gap: 12px;                   /* Spacing between 'My Links' and 'Options' */
-  overflow-y: auto;           /* Allows scrolling if screen height is small */
-
+  justify-content: flex-start;
+  gap: 12px;
+  overflow-y: auto;
   transform: translateX(0);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Slide direction on unlock */
-.pin-overlay.hidden .pin-card {
-  transform: translateX(-100%);
-}
 
 .pin-overlay.hidden .pin-sidebar {
-  transform: translateX(100%);
-}
-
-/* Sidebar Options container */
-.pin-options {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  transform: translateX(100vw);
 }
 
 /* Enable pointer cursor for Quick Control buttons */
@@ -1092,4 +1096,55 @@ button.app-card.shutdown-card:hover {
 
 #settingsDrawer.open {
   top: 0;
+}
+
+/* Accordion Toggle Buttons */
+.accordion-toggle {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--card-border);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 12px 0 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s ease;
+}
+
+.accordion-toggle:hover {
+  color: var(--text);
+}
+
+/* Arrow Rotation */
+.accordion-toggle .chevron {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  transition: transform 0.3s ease;
+}
+
+.accordion-toggle.active .chevron {
+  transform: rotate(180deg);
+}
+
+/* Hidden Content Container */
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+}
+
+.accordion-content.open {
+  max-height: 400px; /* Adjust if your content gets taller */
+  opacity: 1;
 }

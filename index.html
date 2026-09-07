@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <div class="version-tag" id="versionTag">Ethan's Home Menu</div>
@@ -16,93 +17,61 @@
   <div id="pinOverlay" class="pin-overlay">
     <div class="pin-card" id="pinCard">
       <div class="pin-icon" style="font-size: 3.5rem; margin-bottom: 12px;">🚀</div>
-      <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 6px;">Hi There!</h2>
-      <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 24px;">To Start, Press The ENTER SITE Button</p>
-      <button type="button" id="unlockBtn" class="unlock-btn">ENTER SITE</button>
-    </div>
+      <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 6px;">Ethan's Home Menu</h2>
+      
+  
 
-   <div class="pin-sidebar">
-      <div class="field-group">
-        <label>My Links</label>
-        <div class="pin-shortcuts">
-          <a href="https://github.com/etanmanjbbo11/myhomemenuwhichidkitseemsprettycoolig" target="_blank" class="app-card">
-            <div class="app-icon">
-              <img src="https://cdn.simpleicons.org/github/white" alt="GitHub">
-            </div>
-            <div class="app-info">
-              <div class="app-name">GitHub</div>
-              <span class="app-desc">View My GitHub Repository!</span>
-            </div>
-          </a>
-
-          <a href="https://www.instagram.com/ethanman.25" target="_blank" class="app-card">
-            <div class="app-icon">
-              <img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram">
-            </div>
-            <div class="app-info">
-              <div class="app-name">Instagram</div>
-              <span class="app-desc">Visit My Instagram!</span>
-            </div>
-          </a>
-
-          <a href="https://soundcloud.com/ethan-isaiah-manumpil/" target="_blank" class="app-card">
-            <div class="app-icon">
-              <img src="https://cdn.simpleicons.org/soundcloud/white" alt="SoundCloud">
-            </div>
-            <div class="app-info">
-              <div class="app-name">SoundCloud</div>
-              <span class="app-desc">Yeah, I Make Music Too...</span>
-            </div>
-          </a>
-        </div>
+<!-- ASSIGNMENT BROADCASTER (PIN SCREEN) -->
+<div class="app-card sidebar-action-btn active-broadcast-card" style="margin-top: 16px; flex-direction: column; align-items: flex-start; gap: 10px; cursor: default; width: 100%;">
+  
+  <!-- Header Row -->
+  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <!-- ROUNDED SQUARE ICON CONTAINER -->
+      <div class="app-icon" style="background: rgba(221, 156, 71, 0.15); color: var(--accent, #dd9c47); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"></path>
+          <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"></path>
+          <circle cx="12" cy="12" r="2"></circle>
+          <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"></path>
+          <path d="M19.1 4.9c3.9 3.9 3.9 10.2 0 14.1"></path>
+        </svg>
       </div>
-
-      <div class="field-group">
-        <label>Options</label>
-        <div class="pin-shortcuts">
-          <button type="button" class="app-card sidebar-action-btn" id="ctrlFullscreenBtn">
-            <div class="app-icon">
-              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-              </svg>
-            </div>
-            <div class="app-info">
-              <div class="app-name">Fullscreen</div>
-              <span class="app-desc">Enter Fullscreen Mode</span>
-            </div>
-          </button>
-
-          <button type="button" class="app-card sidebar-action-btn" id="pinRefreshBtn">
-            <div class="app-icon">
-              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="23 4 23 10 17 10"></polyline>
-                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-              </svg>
-            </div>
-            <div class="app-info">
-              <div class="app-name">Reload Page</div>
-              <span class="app-desc">Refresh Session</span>
-            </div>
-          </button>
-
-          <button type="button" class="app-card sidebar-action-btn shutdown-card" id="pinCloseBtn">
-            <div class="app-icon">
-              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                <line x1="12" y1="2" x2="12" y2="12"></line>
-              </svg>
-            </div>
-            <div class="app-info">
-              <div class="app-name">Shut Down</div>
-              <span class="app-desc">Exit Session</span>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <div class="pin-datetime" id="pinDateTime">Loading...</div>
+      <span style="font-weight: 600; font-size: 14px;">Latest Updates</span>
     </div>
   </div>
+
+  <!-- Dynamic Supabase Broadcast Stream Container -->
+  <div id="pinBroadcastContainer" style="width: 100%; max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+    <p style="margin: 0; font-size: 13px; color: var(--text-muted, #8b95a1);">Connecting to broadcaster stream...</p>
+  </div>
+
+  <!-- Direct Link Footer -->
+  <a href="assignmentbroadcaster.html" style="font-size: 12px; font-weight: 600; color: var(--accent, #dd9c47); text-decoration: none; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px;">
+    Open Assignment Broadcaster &rarr;
+  </a>
+
+</div>
+
+     <div class="pin-shortcuts" style="width: 100%; margin-top: 24px; margin-bottom: 0px;">
+        <button type="button" id="unlockBtn" class="app-card sidebar-action-btn" style="cursor: pointer;">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+          </div>
+          <div class="app-info">
+            <div class="app-name">Enter Site</div>
+            <span class="app-desc">Click here to go to the home menu...</span>
+          </div>
+        </button>
+      </div>
+</div>
+      </div>
+  </div> 
+
 
   <div class="header-btns">
     <button class="icon-btn-circle" id="appGridBtn" aria-label="App Grid" title="App Grid">
@@ -120,7 +89,23 @@
   <line x1="7" y1="6.5" x2="7.01" y2="6.5"></line>
   <line x1="10" y1="6.5" x2="10.01" y2="6.5"></line>
 </svg>
+
     </button>
+   
+    <a href="assignmentbroadcaster.html" class="icon-btn-circle" id="broadcastsBtn" aria-label="Broadcasts" title="Broadcasts & Updates" style="text-decoration: none;">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"></path>
+        <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"></path>
+        <circle cx="12" cy="12" r="2"></circle>
+        <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"></path>
+        <path d="M19.1 4.9c3.9 3.9 3.9 10.2 0 14.1"></path>
+      </svg>
+    </a>
+   <a href="adminpanel.html" class="icon-btn-circle" id="adminBtn" aria-label="Admin Control Panel" title="Admin Panel" style="text-decoration: none;">
+  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+  </svg>
+</a>
     <button class="icon-btn-circle" id="quickControlsBtn" aria-label="Quick Controls" title="Quick Controls">
       <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
@@ -523,6 +508,14 @@
   </div>
 
   <script>
+    function toggleAccordion(contentId, btnElement) {
+  const content = document.getElementById(contentId);
+  // Toggle the content visibility
+  content.classList.toggle('open');
+  // Toggle the arrow rotation on the button
+  btnElement.classList.toggle('active');
+}
+
     const APPS_CATALOG = [
       { name: "Gmail", cat: "google", icon: "https://cdn.simpleicons.org/gmail/white", url: "https://mail.google.com", desc: "Email" },
       { name: "Drive", cat: "google", icon: "https://cdn.simpleicons.org/googledrive/white", url: "https://drive.google.com", desc: "Cloud Storage" },
@@ -697,7 +690,6 @@
     });
 
     /* ACTION BUTTONS */
-    document.getElementById("pinRefreshBtn")?.addEventListener("click", () => location.reload());
     document.getElementById("pinCloseBtn")?.addEventListener("click", () => location.href = "about:blank");
     document.getElementById("ctrlReloadBtn")?.addEventListener("click", () => location.reload());
     document.getElementById("ctrlShutdownBtn")?.addEventListener("click", () => location.href = "about:blank");
@@ -1051,6 +1043,88 @@
 
     const versionTag = document.getElementById("versionTag");
     if (versionTag) versionTag.style.display = isVersionVisible ? "flex" : "none";
+
+    // Supabase Project Credentials
+const SUPABASE_URL = 'https://wmfjqnzxnyperjetckuq.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtZmpxbnp4bnlwZXJqZXRja3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3NjE3NDQsImV4cCI6MjEwNDMzNzc0NH0.k-r5SOY_2GpHL5kS3-9lathbGYMUzecy-X8INLAk_Tw';
+
+const pinSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Fetch broadcasts from Supabase database
+async function fetchPinAssignments() {
+  const container = document.getElementById('pinBroadcastContainer');
+  const statusPill = document.getElementById('pinSyncStatus');
+
+  try {
+    const { data, error } = await pinSupabase
+      .from('assignments')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      container.innerHTML = `<p style="margin: 0; font-size: 13px; color: var(--text-muted, #8b95a1);">No active broadcast assignments.</p>`;
+      if (statusPill) statusPill.textContent = 'IDLE';
+      return;
+    }
+
+    if (statusPill) statusPill.textContent = `${data.length} `;
+
+    // Render assignment items using title, timestamp, and content fields
+    container.innerHTML = data.slice(0, 3).map(item => `
+      <div style="padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--card-border, rgba(255,255,255,0.08)); font-size: 13px; text-align: left;">
+        <span style="font-size: 10px; color: var(--accent, #dd9c47); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 2px;">
+          ${escapeHtml(item.timestamp || '')}
+        </span>
+        <div style="font-weight: 600; font-size: 13px; color: var(--text, #f3f4f6); margin-bottom: 2px;">
+          ${escapeHtml(item.title || '')}
+        </div>
+        <p style="margin: 0; font-size: 12px; color: var(--text-muted, #8b95a1); line-height: 1.3;">
+          ${escapeHtml(item.content || '')}
+        </p>
+      </div>
+    `).join('');
+
+  } catch (err) {
+    console.error('Fetch error:', err);
+    if (statusPill) {
+      statusPill.textContent = 'OFFLINE';
+      statusPill.style.color = '#ef4444';
+    }
+    container.innerHTML = `<p style="margin: 0; font-size: 12px; color: #ef4444;">Failed to sync broadcasts.</p>`;
+  }
+}
+
+// Subscribe to Realtime Supabase updates
+function subscribePinBroadcasts() {
+  pinSupabase
+    .channel('public:assignments:pin')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'assignments' },
+      () => {
+        fetchPinAssignments();
+      }
+    )
+    .subscribe();
+}
+
+// Utility function to avoid HTML injection
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Initialize on page ready
+document.addEventListener('DOMContentLoaded', () => {
+  fetchPinAssignments();
+  subscribePinBroadcasts();
+});
   </script>
 </body>
 </html>
