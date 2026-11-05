@@ -7,73 +7,25 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="version-tag" id="versionTag">Ethan's Home Menu</div>
-
-  <div id="pinOverlay" class="pin-overlay">
-    <div class="pin-card" id="pinCard">
-      <div class="pin-icon" style="font-size: 3.5rem; margin-bottom: 12px;">🚀</div>
-      <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 6px;">Ethan's Home Menu</h2>
-      
-  
-
-<!-- ASSIGNMENT BROADCASTER (PIN SCREEN) -->
-<div class="app-card sidebar-action-btn active-broadcast-card" style="margin-top: 16px; flex-direction: column; align-items: flex-start; gap: 10px; cursor: default; width: 100%;">
-  
-  <!-- Header Row -->
-  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <!-- ROUNDED SQUARE ICON CONTAINER -->
-      <div class="app-icon" style="background: rgba(221, 156, 71, 0.15); color: var(--accent, #dd9c47); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"></path>
-          <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"></path>
-          <circle cx="12" cy="12" r="2"></circle>
-          <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"></path>
-          <path d="M19.1 4.9c3.9 3.9 3.9 10.2 0 14.1"></path>
-        </svg>
-      </div>
-      <span style="font-weight: 600; font-size: 14px;">Latest Updates</span>
-    </div>
+  <div class="bg" aria-hidden="true">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span>
+    <span class="confetti c1"></span><span class="confetti c2"></span><span class="confetti c3"></span><span class="confetti c4"></span>
   </div>
 
-  <!-- Dynamic Supabase Broadcast Stream Container -->
-  <div id="pinBroadcastContainer" style="width: 100%; max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-    <p style="margin: 0; font-size: 13px; color: var(--text-muted, #8b95a1);">Connecting to broadcaster stream...</p>
-  </div>
-
-  <!-- Direct Link Footer -->
-  <a href="assignmentbroadcaster.html" style="font-size: 12px; font-weight: 600; color: var(--accent, #dd9c47); text-decoration: none; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px;">
-    Open Assignment Broadcaster &rarr;
-  </a>
-
-</div>
-
-     <div class="pin-shortcuts" style="width: 100%; margin-top: 24px; margin-bottom: 0px;">
-        <button type="button" id="unlockBtn" class="app-card sidebar-action-btn" style="cursor: pointer;">
-          <div class="app-icon">
-            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-              <polyline points="10 17 15 12 10 7"></polyline>
-              <line x1="15" y1="12" x2="3" y2="12"></line>
-            </svg>
-          </div>
-          <div class="app-info">
-            <div class="app-name">Enter Site</div>
-            <span class="app-desc">Click here to go to the home menu...</span>
-          </div>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand" id="versionTag">
+        <button type="button" class="brand-mark" id="homeBtn" aria-label="Home Menu">
+          <span class="bm-rocket" aria-hidden="true">🚀</span>
+          <svg class="bm-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M6 10v9.5h12V10"/><path d="M10 19.5V14h4v5.5"/></svg>
         </button>
+        <div class="brand-text"><b>Ethan's Home Menu</b></div>
       </div>
-</div>
-      </div>
-  </div> 
-
-
-  <div class="header-btns">
+      <div class="header-btns">
     <button class="icon-btn-circle" id="appGridBtn" aria-label="App Grid" title="App Grid">
       <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
         <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
@@ -82,30 +34,8 @@
         <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
       </svg>
     </button>
-    <button class="icon-btn-circle" id="quickControls2Btn" aria-label="Quick Controls" title="Quick Controls">
-    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <rect x="3" y="4" width="18" height="16" rx="2"></rect>
-  <line x1="3" y1="9" x2="21" y2="9"></line>
-  <line x1="7" y1="6.5" x2="7.01" y2="6.5"></line>
-  <line x1="10" y1="6.5" x2="10.01" y2="6.5"></line>
-</svg>
-
-    </button>
    
-    <a href="assignmentbroadcaster.html" class="icon-btn-circle" id="broadcastsBtn" aria-label="Broadcasts" title="Broadcasts & Updates" style="text-decoration: none;">
-      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
-        <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"></path>
-        <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"></path>
-        <circle cx="12" cy="12" r="2"></circle>
-        <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"></path>
-        <path d="M19.1 4.9c3.9 3.9 3.9 10.2 0 14.1"></path>
-      </svg>
-    </a>
-   <a href="adminpanel.html" class="icon-btn-circle" id="adminBtn" aria-label="Admin Control Panel" title="Admin Panel" style="text-decoration: none;">
-  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-  </svg>
-</a>
+
     <button class="icon-btn-circle" id="quickControlsBtn" aria-label="Quick Controls" title="Quick Controls">
       <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
@@ -117,17 +47,23 @@
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
       </svg>
     </button>
-  </div>
+      </div>
+    </header>
 
-  <div class="wrap">
-    <div class="eyebrow"><span class="dot"></span><span id="tzLabel">Welcome</span></div>
-    <h1 class="clock" id="clock"><span id="clockMain">00:00</span><span class="sec" id="clockSec">:00</span></h1>
-    <div class="date-line" id="dateLine">Loading date…</div>
+    <div id="homeView">
+    <section class="hero">
+      <div class="hero-text">
+      <div class="hero-kicks">
+        <p class="hero-kicker"><span class="dot"></span><span id="greeting">Hello</span></p>
+        <p class="hero-kicker alt" id="dateLine">Loading date…</p>
+      </div>
+      <h1 class="clock" id="clock"><span id="clockMain">00:00</span><span class="sec" id="clockSec">:00</span></h1>
+      <p class="hero-lede" id="message"></p>
+      </div>
+      <div class="shortcuts" id="shortcuts" aria-label="Shortcuts"></div>
+    </section>
 
-    <div class="greeting" id="greeting">Hello</div>
-    <div class="message" id="message"></div>
-
-    <div class="search-block">
+    <section class="search-block">
       <div class="engine-toggle" id="engineToggle">
         <button data-engine="google">Google</button>
         <button data-engine="youtube">YouTube</button>
@@ -138,30 +74,18 @@
       <form class="search-form" id="searchForm">
         <input type="text" id="searchInput" placeholder="Search Google, YouTube, Bible, or enter URL..." autocomplete="off">
         <button type="submit" aria-label="Search">
-          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
-            <circle cx="11" cy="11" r="7"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
       </form>
-    </div>
+    </section>
 
-    <div class="shortcuts" id="shortcuts"></div>
-  </div>
-
-  <div class="overlay" id="overlay"></div>
-
-  <div class="drawer" id="quickControls2Modal">
-    <button class="drawer-close" id="quickControls2Close" aria-label="Close">
-      <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <h2>Apps I Develop</h2>
-    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">These Are My Web-Apps!</div>
-
-<div class="field-group">
-      <label>Interactive & Simulations</label>
-      <div class="actions-grid">
-        <a href="periodictable.html" class="app-card">
+    <section class="apps-section" id="myApps">
+  
+      <div class="dev-groups">
+      <section class="dev-group">
+        <h3 class="dev-label">Interactive &amp; Simulations</h3>
+        <div class="dev-grid">
+<a href="periodictable.html" class="app-card">
   <div class="app-icon">
     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="4" width="5" height="5" rx="1"></rect>
@@ -176,7 +100,7 @@
   </div>
   <div class="app-name">Periodic Table</div>
 </a>
-        <a href="waterflow.html" class="app-card">
+<a href="waterflow.html" class="app-card">
           <div class="app-icon">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="6" cy="6" r="2"></circle>
@@ -192,8 +116,7 @@
           </div>
           <div class="app-name">Particle Simulator</div>
         </a>
-
-        <a href="fishtank.html" class="app-card">
+<a href="fishtank.html" class="app-card">
           <div class="app-icon">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"></path>
@@ -203,12 +126,13 @@
           </div>
           <div class="app-name">Virtual Fish Tank</div>
         </a>
-      </div>
-    </div>
-      <div class="field-group">
-      <label>Personal</label>
-      <div class="actions-grid">
-        <a href="journal.html" class="app-card">
+        </div>
+      </section>
+
+      <section class="dev-group">
+        <h3 class="dev-label">Personal</h3>
+        <div class="dev-grid">
+<a href="journal.html" class="app-card">
           <div class="app-icon">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -219,8 +143,7 @@
           </div>
           <div class="app-name">My Journal</div>
         </a>
-
-        <a href="todolist.html" class="app-card">
+<a href="todolist.html" class="app-card">
           <div class="app-icon">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 11 12 14 22 4"></polyline>
@@ -229,7 +152,7 @@
           </div>
           <div class="app-name">My Reminders</div>
         </a>
-         <a href="calendar.html" class="app-card">
+<a href="calendar.html" class="app-card">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -240,13 +163,13 @@
         </div>
         <div class="app-name">Calendar App</div>
       </a>
-      </div>
-    </div>
-    <div class="field-group">
-         
-      <label>Tools</label>
-      <div class="actions-grid">
-        <a href="worldclock.html" class="app-card">
+        </div>
+      </section>
+
+      <section class="dev-group">
+        <h3 class="dev-label">Tools</h3>
+        <div class="dev-grid">
+<a href="worldclock.html" class="app-card">
          <div class="app-icon">
            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
              <circle cx="12" cy="12" r="10"></circle>
@@ -255,8 +178,7 @@
         </div>
         <div class="app-name">World Clock</div>
       </a>
-
-      <a href="filemanager.html" class="app-card">
+<a href="filemanager.html" class="app-card">
         <div class="app-icon">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
@@ -265,16 +187,7 @@
         <div class="app-name">File Manager</div>
       </a>
 
-      <a href="drivesearch.html" class="app-card">
-         <div class="app-icon">
-           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
-             <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-           </svg>
-        </div>
-        <div class="app-name">Google Drive Explorer</div>
-      </a>
-
-      <a href="classroomlaunch.html" class="app-card">
+<a href="classroomlaunch.html" class="app-card">
          <div class="app-icon">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -284,13 +197,13 @@
         </div>
         <div class="app-name">Class Launcher</div>
       </a>
-      </div>
-    </div>
+        </div>
+      </section>
 
-    <div class="field-group">
-      <label>Multimedia</label>
-      <div class="actions-grid">
-        <a href="photobooth.html" class="app-card">
+      <section class="dev-group">
+        <h3 class="dev-label">Multimedia</h3>
+        <div class="dev-grid">
+<a href="photobooth.html" class="app-card">
           <div class="app-icon">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
@@ -299,8 +212,7 @@
           </div>
           <div class="app-name">Photo Booth</div>
         </a>
-
-        <a href="collage.html" class="app-card">
+<a href="collage.html" class="app-card">
           <div class="app-icon">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -310,8 +222,7 @@
           </div>
           <div class="app-name">Collage Maker</div>
         </a>
-
-        <a href="tierlist.html" class="app-card">
+<a href="tierlist.html" class="app-card">
           <div class="app-icon">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="3"></rect>
@@ -323,188 +234,86 @@
           <div class="app-name">Tierlist Maker</div>
         </a>
 
-        <a href="music.html" class="app-card">
-          <div class="app-icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 18V5l12-2v13"></path>
-              <circle cx="6" cy="18" r="3"></circle>
-              <circle cx="18" cy="16" r="3"></circle>
-            </svg>
-          </div>
-          <div class="app-name">Music Player</div>
-        </a>
+        </div>
+      </section>
       </div>
+    </section>
     </div>
-    </div>
 
-  <div class="drawer" id="quickControlsModal">
-    <button class="drawer-close" id="quickControlsClose" aria-label="Close">
-      <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <h2>Quick Controls</h2>
-    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">System & Quick Actions</div>
+    <section class="view hidden" id="settingsView" aria-label="Settings">
+      <div class="view-hero">
+        <p class="hero-kicker">Configuration</p>
+        <h1>Settings</h1>
+      </div>
+      <div class="view-panel"><div class="settings-list" id="settingsList"></div></div>
+    </section>
 
-    <div class="actions-grid">
-      <a href="https://github.com/etanmanjbbo11/myhomemenuwhichidkitseemsprettycoolig" target="_blank" class="app-card">
-        <div class="app-icon">
-          <img src="https://cdn.simpleicons.org/github/white" alt="GitHub">
-        </div>
-        <div class="app-info">
-          <div class="app-name">GitHub</div>
-          <span class="app-desc">View My GitHub Repitory!</span>
-        </div>
-      </a>
-
-      <a href="https://www.instagram.com/ethanman.25" target="_blank" class="app-card">
-        <div class="app-icon">
-          <img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram">
-        </div>
-        <div class="app-info">
-          <div class="app-name">Instagram</div>
-          <span class="app-desc">Visit My Instagram!</span>
-        </div>
-      </a>
-
-      <a href="https://soundcloud.com/ethan-isaiah-manumpil/" target="_blank" class="app-card">
-        <div class="app-icon">
-          <img src="https://cdn.simpleicons.org/soundcloud/white" alt="SoundCloud">
-        </div>
-        <div class="app-info">
-          <div class="app-name">SoundCloud</div>
-          <span class="app-desc">Yeah, I Make Music Too...</span>
-        </div>
-      </a>
-
-      <button type="button" class="app-card" id="ctrlLockBtn">
-        <div class="app-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
-        </div>
-        <div class="app-name">Go To Portal</div>
-      </button>
-
-      <button type="button" class="app-card" id="qcFullscreenBtn">
-        <div class="app-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <section class="view hidden" id="controlsView" aria-label="Quick Controls">
+      <div class="view-hero">
+        <p class="hero-kicker">Configuration</p>
+        <h1>Quick Controls</h1>
+        
+      </div>
+      <div class="view-panel"><div class="settings-hub">
+        <a class="setting-tile" data-tone="0" style="--i:0" href="https://github.com/etanmanjbbo11/myhomemenuwhichidkitseemsprettycoolig" target="_blank" rel="noopener">
+          <span class="tile-icon" aria-hidden="true"><img src="https://cdn.simpleicons.org/github/white" alt="GitHub"></span>
+          <span class="tile-text"><span class="tile-title">GitHub</span><span class="tile-sub">View My GitHub Repitory!</span></span>
+        </a>
+        <a class="setting-tile" data-tone="1" style="--i:1" href="https://www.instagram.com/ethanman.25" target="_blank" rel="noopener">
+          <span class="tile-icon" aria-hidden="true"><img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram"></span>
+          <span class="tile-text"><span class="tile-title">Instagram</span><span class="tile-sub">Visit My Instagram!</span></span>
+        </a>
+        <a class="setting-tile" data-tone="2" style="--i:2" href="https://soundcloud.com/ethan-isaiah-manumpil/" target="_blank" rel="noopener">
+          <span class="tile-icon" aria-hidden="true"><img src="https://cdn.simpleicons.org/soundcloud/white" alt="SoundCloud"></span>
+          <span class="tile-text"><span class="tile-title">SoundCloud</span><span class="tile-sub">Yeah, I Make Music Too...</span></span>
+        </a>
+        <button class="setting-tile" data-tone="3" style="--i:3" id="qcFullscreenBtn" type="button">
+          <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-          </svg>
-        </div>
-        <div class="app-name">Fullscreen</div>
-
-      </button>
-
-      <button type="button" class="app-card" id="ctrlLuckyBtn">
-        <div class="app-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          </svg></span>
+          <span class="tile-text"><span class="tile-title">Fullscreen</span><span class="tile-sub">Toggle full screen</span></span>
+        </button>
+        <button class="setting-tile" data-tone="0" style="--i:4" id="ctrlLuckyBtn" type="button">
+          <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M16 3h5v5"></path>
             <path d="M4 20L21 3"></path>
             <path d="M21 16v5h-5"></path>
             <path d="M15 15l6 6"></path>
             <path d="M4 4l5 5"></path>
-          </svg>
-        </div>
-        <div class="app-name">Open Random Site</div>
-      </button>
-
-      <button type="button" class="app-card" id="ctrlSettingsBtn">
-        <div class="app-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          </svg></span>
+          <span class="tile-text"><span class="tile-title">Open Random Site</span><span class="tile-sub">Jump to a random shortcut</span></span>
+        </button>
+        <button class="setting-tile" data-tone="1" style="--i:5" id="ctrlSettingsBtn" type="button">
+          <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-          </svg>
-        </div>
-        <div class="app-name">Open Settings</div>
-      </button>
-
-      <button type="button" class="app-card" id="ctrlReloadBtn">
-        <div class="app-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          </svg></span>
+          <span class="tile-text"><span class="tile-title">Open Settings</span><span class="tile-sub">Preferences & customization</span></span>
+        </button>
+        <button class="setting-tile" data-tone="2" style="--i:6" id="ctrlReloadBtn" type="button">
+          <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="23 4 23 10 17 10"></polyline>
             <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-          </svg>
-        </div>
-        <div class="app-name">Reload Page</div>
-      </button>
-
-      <button type="button" class="app-card shutdown-card" id="ctrlShutdownBtn">
-        <div class="app-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          </svg></span>
+          <span class="tile-text"><span class="tile-title">Reload Page</span><span class="tile-sub">Refresh this page</span></span>
+        </button>
+        <button class="setting-tile danger" data-tone="3" style="--i:7" id="ctrlShutdownBtn" type="button">
+          <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
             <line x1="12" y1="2" x2="12" y2="12"></line>
-          </svg>
-        </div>
-        <div class="app-name">Shut Down Session</div>
-      </button>
-    </div>
-  </div>
+          </svg></span>
+          <span class="tile-text"><span class="tile-title">Shut Down Session</span><span class="tile-sub">Leave this page</span></span>
+        </button>
+      </div></div>
+    </section>
 
-  <div class="drawer" id="appModal">
-    <button class="drawer-close" id="appModalClose" aria-label="Close">
-      <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <h2>Launcher</h2>
-    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Apps & Web Services</div>
-    <div id="appGridContainer"></div>
-  </div>
-
-  <div class="drawer" id="drawer">
-    <button class="drawer-close" id="drawerClose" aria-label="Close">
-      <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <h2>Settings</h2>
-    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Preferences & Customization</div>
-
-    <div class="field-group">
-      <label>Your Name</label>
-      <input type="text" id="setName" placeholder="Ethan">
-    </div>
-
-    <div class="field-group">
-      <label>Default Search Engine</label>
-      <div class="engine-toggle" id="engineSeg">
-        <button data-engine="google">Google</button>
-        <button data-engine="youtube">YouTube</button>
-        <button data-engine="bible_en">Bible</button>
-        <button data-engine="url">URL</button>
+    <section class="view hidden" id="launcherView" aria-label="Launcher">
+      <div class="view-hero">
+        <p class="hero-kicker">Websites</p>
+        <h1>Launcher</h1>
       </div>
-    </div>
-
-    <div class="field-group">
-      <label>Homepage Shortcuts</label>
-      <div id="shortcutList"></div>
-      <form class="add-form" id="addShortcutForm">
-        <input type="text" id="newShortLabel" placeholder="Label (e.g. Notion)" required>
-        <input type="text" id="newShortUrl" placeholder="URL (https://...)" required>
-        <input type="text" id="newShortIcon" placeholder="Emoji or Image URL (e.g. 🧬)">
-        <button type="submit" class="add-btn">+ Add Shortcut</button>
-      </form>
-    </div>
-
-    <div class="field-group">
-      <label>Launcher Apps</label>
-      <div id="appList" style="margin-bottom: 10px;"></div>
-      <form class="add-form" id="addAppForm">
-        <input type="text" id="newAppName" placeholder="App Name (e.g. Chess / Steam)" required>
-        <input type="text" id="newAppUrl" placeholder="URL (https://...)" required>
-        <input type="text" id="newAppIcon" placeholder="Icon Link or Emoji (e.g. 🎮)">
-        <select id="newAppCat" class="settings-select" required>
-          <option value="games">Games</option>
-          <option value="local">Local & Tools</option>
-          <option value="google">Google Apps</option>
-          <option value="productivity">Productivity</option>
-          <option value="ai">AI Tools</option>
-          <option value="media">Media & Streaming</option>
-        </select>
-        <button type="submit" class="add-btn">+ Add Site</button>
-      </form>
-    </div>
-
-    <div class="field-group">
-      <label>Web Reset</label>
-      <button type="button" class="reset-btn" id="resetBtn" style="width:100%;">Reset All Settings</button>
-    </div>
+      <div class="view-panel"><div class="settings-list" id="launcherList"></div></div>
+    </section>
   </div>
 
   <script>
@@ -537,16 +346,8 @@
       { name: "Canva", cat: "productivity", icon: "https://cdn.simpleicons.org/chai/white", url: "https://www.canva.com", desc: "Design Tool"  }
     ];
 
-    const CATEGORY_LABELS = {
-      games: "Games",
-      local: "Local & Tools",
-      google: "Google Apps",
-      productivity: "Productivity",
-      ai: "AI Tools",
-      media: "Socials & Streaming"
-    };
-
     const DEFAULTS = {
+      rev: 2,
       name: "Ethan",
       searchEngine: "google",
       shortcuts: [
@@ -556,6 +357,8 @@
         { label: "Notion", url: "https://app.notion.com", icon: "https://cdn.simpleicons.org/notion/white" },
         { label: "YouTube", url: "https://www.youtube.com", icon: "https://cdn.simpleicons.org/youtube/white" },
         { label: "GitHub", url: "https://github.com", icon: "https://cdn.simpleicons.org/github/white" },
+        { label: "VS Code", url: "https://vscode.dev", icon: "https://cdn.simpleicons.org/gnometerminal/white" },
+        { label: "Figma", url: "https://www.figma.com", icon: "https://cdn.simpleicons.org/figma/white" },
       ],
       apps: APPS_CATALOG,
       verses: [
@@ -577,6 +380,11 @@
     if (!state.apps || state.apps.length === 0) {
       state.apps = structuredClone(APPS_CATALOG);
     }
+    if ((state.rev || 1) < DEFAULTS.rev) {          // saved before VS Code + Figma were added
+      DEFAULTS.shortcuts.slice(6).forEach(sc => { if (!state.shortcuts.some(x => x.url === sc.url)) state.shortcuts.push({ ...sc }); });
+      state.rev = DEFAULTS.rev;
+      saveSettings();
+    }
 
     let isTimeVisible = localStorage.getItem("isTimeVisible") !== "false";
     let isVersionVisible = localStorage.getItem("isVersionVisible") !== "false";
@@ -594,103 +402,42 @@
       localStorage.setItem("ethan_home_settings", JSON.stringify(state));
     }
 
-    /* UNIFIED SIDEBAR DRAWER CONTROLS */
-    const overlay = document.getElementById("overlay");
-    const drawer = document.getElementById("drawer");
-    const gearBtn = document.getElementById("gearBtn");
-    const drawerClose = document.getElementById("drawerClose");
+    /* VIEWS: Settings, Quick Controls and Launcher open as pages (same style as the school site) */
+    function esc(t) {
+      return String(t ?? "").replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+    }
+    function replay(el) { el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
 
-    const quickControlsModal = document.getElementById("quickControlsModal");
-    const quickControls2Modal = document.getElementById("quickControls2Modal");
-    const quickControlsBtn = document.getElementById("quickControlsBtn");
-    const quickControls2Btn = document.getElementById("quickControls2Btn");
-    const quickControlsClose = document.getElementById("quickControlsClose");
-    const quickControls2Close = document.getElementById("quickControls2Close");
+    const homeView = document.getElementById("homeView");
+    const VIEWS = { settings: document.getElementById("settingsView"), controls: document.getElementById("controlsView"), launcher: document.getElementById("launcherView") };
+    const VIEW_BTNS = { settings: "gearBtn", controls: "quickControlsBtn", launcher: "appGridBtn" };
+    const homeBtn = document.getElementById("homeBtn");
+    let currentView = "home";
 
-    const appModal = document.getElementById("appModal");
-    const appGridBtn = document.getElementById("appGridBtn");
-    const appModalClose = document.getElementById("appModalClose");
-    const appGridContainer = document.getElementById("appGridContainer");
-
-    function closeAllDrawers() {
-      overlay.classList.remove("open");
-      drawer.classList.remove("open");
-      quickControlsModal.classList.remove("open");
-      quickControls2Modal.classList.remove("open");
-      appModal.classList.remove("open");
+    function showView(view) {
+      currentView = view;
+      homeView.classList.toggle("hidden", view !== "home");
+      Object.entries(VIEWS).forEach(([k, el]) => el.classList.toggle("hidden", k !== view));
+      homeBtn.classList.toggle("is-home", view !== "home");
+      homeBtn.setAttribute("aria-label", view === "home" ? "Home Menu" : "Back to Home");
+      Object.entries(VIEW_BTNS).forEach(([k, id]) => document.getElementById(id).classList.toggle("is-active", k === view));
+      if (view === "settings") { settingsGroup = null; renderSettings(); }
+      if (view === "launcher") renderLauncher();
+      replay(view === "home" ? homeView : VIEWS[view]);
+      scrollTo(0, 0);
     }
 
-    gearBtn.addEventListener("click", () => {
-      syncSettingsUI();
-      closeAllDrawers();
-      overlay.classList.add("open");
-      drawer.classList.add("open");
-    });
+    Object.entries(VIEW_BTNS).forEach(([v, id]) =>
+      document.getElementById(id).addEventListener("click", () => showView(currentView === v ? "home" : v)));
+    homeBtn.addEventListener("click", () => { if (currentView !== "home") showView("home"); });
 
-    quickControlsBtn.addEventListener("click", () => {
-      closeAllDrawers();
-      overlay.classList.add("open");
-      quickControlsModal.classList.add("open");
-    });
-
-    quickControls2Btn.addEventListener("click", () => {
-      closeAllDrawers();
-      overlay.classList.add("open");
-      quickControls2Modal.classList.add("open");
-    });
-
-
-    appGridBtn.addEventListener("click", () => {
-      renderAppGrid();
-      closeAllDrawers();
-      overlay.classList.add("open");
-      appModal.classList.add("open");
-    });
-
-    drawerClose.addEventListener("click", closeAllDrawers);
-    quickControlsClose.addEventListener("click", closeAllDrawers);
-    quickControls2Close.addEventListener("click", closeAllDrawers);
-    appModalClose.addEventListener("click", closeAllDrawers);
-    overlay.addEventListener("click", closeAllDrawers);
-
-    /* LOCK SCREEN & SITE LOCK LOGIC */
-    const pinOverlay = document.getElementById("pinOverlay");
-    const unlockBtn = document.getElementById("unlockBtn");
-
-    function checkUnlock() {
-      if (sessionStorage.getItem("isUnlocked") === "true") {
-        pinOverlay.classList.add("hidden");
-      } else {
-        pinOverlay.classList.remove("hidden");
-      }
-    }
-
-    function lockSite() {
-      sessionStorage.removeItem("isUnlocked");
-      closeAllDrawers();
-      checkUnlock();
-    }
-
-    unlockBtn?.addEventListener("click", () => {
-      sessionStorage.setItem("isUnlocked", "true");
-      checkUnlock();
-    });
-
-    document.getElementById("ctrlLockBtn")?.addEventListener("click", lockSite);
-
-    /* ESC KEY HANDLER */
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        if (overlay.classList.contains("open")) {
-          closeAllDrawers();
-        } else if (sessionStorage.getItem("isUnlocked") === "true") {
-          lockSite();
-        }
-      }
+    document.addEventListener("keydown", e => {
+      if (e.key !== "Escape" || currentView === "home") return;
+      if (currentView === "settings" && settingsGroup) { settingsGroup = null; renderSettings(); }
+      else showView("home");
     });
 
     /* ACTION BUTTONS */
-    document.getElementById("pinCloseBtn")?.addEventListener("click", () => location.href = "about:blank");
     document.getElementById("ctrlReloadBtn")?.addEventListener("click", () => location.reload());
     document.getElementById("ctrlShutdownBtn")?.addEventListener("click", () => location.href = "about:blank");
 
@@ -710,12 +457,7 @@
       if (rand && rand.url) window.open(rand.url, "_blank");
     });
 
-    document.getElementById("ctrlSettingsBtn")?.addEventListener("click", () => {
-      syncSettingsUI();
-      closeAllDrawers();
-      overlay.classList.add("open");
-      drawer.classList.add("open");
-    });
+    document.getElementById("ctrlSettingsBtn")?.addEventListener("click", () => showView("settings"));
 
     /* TIME & DATE */
     function updateClock() {
@@ -792,67 +534,34 @@
       document.getElementById("searchInput").value = "";
     });
 
-    /* APP LAUNCHER MANAGER */
-    function renderAppGrid() {
-      appGridContainer.innerHTML = "";
-      const appsList = state.apps || APPS_CATALOG;
+    /* APP LAUNCHER: one flat list, no categories */
+    const launcherList = document.getElementById("launcherList");
 
-      const categories = {};
-      appsList.forEach(app => {
-        const cat = app.cat || "other";
-        if (!categories[cat]) categories[cat] = [];
-        categories[cat].push(app);
-      });
-
-      Object.keys(categories).forEach(catKey => {
-        const groupDiv = document.createElement("div");
-        groupDiv.className = "field-group";
-
-        const label = document.createElement("label");
-        label.textContent = CATEGORY_LABELS[catKey] || catKey.toUpperCase();
-        groupDiv.appendChild(label);
-
-        const gridDiv = document.createElement("div");
-        gridDiv.className = "app-grid-container";
-
-        categories[catKey].forEach(app => {
-          const card = document.createElement("a");
-          card.className = "app-card";
-          card.href = app.url;
-          card.target = "_blank";
-
-          const iconDiv = document.createElement("div");
-          iconDiv.className = "app-icon";
-          if (app.icon && (app.icon.startsWith("http") || app.icon.startsWith("data:"))) {
-            const img = document.createElement("img");
-            img.src = app.icon;
-            img.alt = app.name;
-            iconDiv.appendChild(img);
-          } else {
-            iconDiv.textContent = app.icon || app.name.charAt(0);
-          }
-
-          const nameDiv = document.createElement("div");
-          nameDiv.className = "app-name";
-          nameDiv.textContent = app.name;
-
-          card.appendChild(iconDiv);
-          card.appendChild(nameDiv);
-          gridDiv.appendChild(card);
-        });
-
-        groupDiv.appendChild(gridDiv);
-        appGridContainer.appendChild(groupDiv);
-      });
+    function appIconHtml(app) {
+      if (app.icon && (app.icon.startsWith("http") || app.icon.startsWith("data:"))) return `<img src="${esc(app.icon)}" alt="">`;
+      return esc(app.icon || app.name.charAt(0));
     }
+
+    function renderLauncher() {
+      const apps = state.apps || [];
+      launcherList.innerHTML = apps.length
+        ? `<div class="settings-hub">${apps.map((a, i) => `
+          <a class="setting-tile app-tile" href="${esc(a.url)}" target="_blank" rel="noopener" data-tone="${i % 4}" style="--i:${i};--tile:var(--tile-${i % 4 + 1})">
+            <span class="app-icon" aria-hidden="true">${appIconHtml(a)}</span>
+            <span class="tile-text"><span class="tile-title">${esc(a.name)}</span><span class="tile-sub">${esc(a.desc || "")}</span></span>
+          </a>`).join("")}</div>`
+        : `<p class="empty-note">No apps yet. Add some in Settings, under Launcher apps.</p>`;
+    }
+    function renderAppGrid() { if (currentView === "launcher") renderLauncher(); }
 
     /* SHORTCUTS */
     function renderShortcuts() {
       const container = document.getElementById("shortcuts");
       container.innerHTML = "";
-      state.shortcuts.forEach(s => {
+      state.shortcuts.forEach((s, i) => {
         const a = document.createElement("a");
         a.className = "shortcut";
+        a.style.setProperty("--n", i);
         a.href = s.url;
         a.target = "_blank";
 
@@ -894,127 +603,188 @@
       }, 300);
     }
 
-    /* SETTINGS CONTROLS */
-    document.getElementById("setName").addEventListener("input", (e) => {
-      state.name = e.target.value.trim();
-      saveSettings();
-      updateClock();
-    });
+    /* SETTINGS: same hub + switch layout as the school site */
+    const UI_KEY = "ethan_home_ui";
+    const DEFAULT_BG = ["#074eb3", "#005695", "#063153", "#004B87"];
+    const UI_DEFAULTS = { lite: false, status: true, hideFilters: false, hideFloors: false, hideHero: false, hideDeco: false, bgColors: null };
+    let ui = Object.assign({}, UI_DEFAULTS);
+    try { Object.assign(ui, JSON.parse(localStorage.getItem(UI_KEY)) || {}); } catch (err) {}
+    if (!Array.isArray(ui.bgColors) || ui.bgColors.length !== 4 || !ui.bgColors.every(col => /^#[0-9a-f]{6}$/i.test(col))) ui.bgColors = null;
 
-    document.querySelectorAll("#engineSeg button").forEach(b => {
-      b.addEventListener("click", () => {
-        setEngine(b.dataset.engine);
-        syncSettingsUI();
-      });
-    });
+    const SETTING_DEFS = [
+      { key: "name", type: "name", title: "Your name", desc: "Used in the greeting on the home screen." },
+      { key: "engine", type: "engine", title: "Default search engine", desc: "The engine that is selected when the page opens." },
+      { key: "shortcuts", type: "shortcuts", title: "Homepage shortcuts", desc: "The floating bubbles beside the clock." },
+      { key: "apps", type: "apps", title: "Launcher apps", desc: "Sites and apps listed in the Launcher." },
+      { key: "lite", title: "Lite mode", desc: "Turns off every animation and the moving background, and stops the shortcut bubbles from floating. Helps on slower devices." },
+      { key: "status", title: "Status display", desc: "Shows the greeting and date pills above the clock. Turn it off to hide them." },
+      { key: "hideFilters", title: "Hide filters", desc: "Removes the search engine buttons above the search bar. Your default engine still applies." },
+      { key: "hideFloors", title: "Hide jump to floor", desc: "Removes the Apps I Develop section from the bottom of the home screen." },
+      { key: "hideHero", title: "Hide hero banner", desc: "Hides the big clock banner (greeting, clock and verse) on Home, Settings, Quick Controls and Launcher. Your shortcuts stay on screen." },
+      { key: "hideDeco", title: "Hide circular decorations", desc: "Hides the floating circles and shapes (the confetti) scattered across the background." },
+      { key: "bgColors", type: "colors", title: "Personalize background colors", desc: "Pick the colors of the moving blobs in the background. Not visible while Lite mode is on." },
+      { key: "reset", type: "reset", title: "Reset everything", desc: "Puts your name, search engine, shortcuts, launcher apps and every setting back to their defaults." }
+    ];
+    const CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    const ICON_ATTRS = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+    const SETTING_GROUPS = [
+      { id: "personal", title: "Personal", tone: 0, keys: ["name", "engine"], blurb: "Name, search engine", desc: "Make the home menu yours.",
+        icon: `<svg ${ICON_ATTRS}><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>` },
+      { id: "shortcuts", title: "Shortcuts", tone: 1, keys: ["shortcuts"], blurb: "Homepage bubbles", desc: "Add or remove the bubbles beside the clock.",
+        icon: `<svg ${ICON_ATTRS}><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>` },
+      { id: "launcher", title: "Launcher apps", tone: 2, keys: ["apps"], blurb: "Sites in the launcher", desc: "Manage what shows up in the Launcher.",
+        icon: `<svg ${ICON_ATTRS}><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>` },
+      { id: "performance", title: "Performance", tone: 3, keys: ["lite"], blurb: "Lite mode", desc: "Make the site lighter and faster on slower devices.",
+        icon: `<svg ${ICON_ATTRS}><path d="M13 2.5 4.5 13.5H11L10 21.5l8.5-11H12L13 2.5z"/></svg>` },
+      { id: "appearance", title: "Appearance", tone: 0, keys: ["status", "hideHero", "hideDeco", "bgColors"], blurb: "Status, banner, decorations, colors", desc: "Choose what shows up on screen and how the background looks.",
+        icon: `<svg ${ICON_ATTRS}><path d="M12 3.5c-3 4-5.5 6.8-5.5 10.1a5.5 5.5 0 0 0 11 0C17.5 10.3 15 7.5 12 3.5z"/></svg>` },
+      { id: "layout", title: "Home layout", tone: 1, keys: ["hideFilters", "hideFloors"], blurb: "Filters, apps section", desc: "Simplify the home screen.",
+        icon: `<svg ${ICON_ATTRS}><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M3.5 10h17M10 10v9.5"/></svg>` },
+      { id: "data", title: "Reset all settings", tone: 2, keys: ["reset"], blurb: "", desc: "Start fresh whenever you like.",
+        icon: `<svg ${ICON_ATTRS}><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4.5h4.5"/></svg>` }
+    ];
+    const settingsList = document.getElementById("settingsList");
+    let settingsGroup = null;
 
-    function renderShortcutManager() {
-      const list = document.getElementById("shortcutList");
-      list.innerHTML = "";
-      state.shortcuts.forEach((s, idx) => {
-        const row = document.createElement("div");
-        row.className = "list-row";
-        row.innerHTML = `
-          <div class="row-text">
-            <strong>${s.label}</strong>
-            <div style="font-size:11px; opacity:0.7;">${s.url}</div>
-          </div>
-          <button type="button" class="remove-btn" onclick="removeShortcut(${idx})">✕</button>
-        `;
-        list.appendChild(row);
-      });
+    function saveUI() { try { localStorage.setItem(UI_KEY, JSON.stringify(ui)); } catch (err) {} }
+    function applyBgColors() {
+      const root = document.documentElement.style;
+      [1, 2, 3, 4].forEach((n, i) => { if (ui.bgColors) root.setProperty("--bg" + n, ui.bgColors[i]); else root.removeProperty("--bg" + n); });
+    }
+    function applyUI() {
+      const cl = document.documentElement.classList;
+      cl.toggle("lite", ui.lite);
+      cl.toggle("hide-status", !ui.status);
+      cl.toggle("hide-filters", ui.hideFilters);
+      cl.toggle("hide-apps", ui.hideFloors);
+      cl.toggle("hide-hero", ui.hideHero);
+      cl.toggle("hide-deco", ui.hideDeco);
+      applyBgColors();
     }
 
-    window.removeShortcut = function(idx) {
-      state.shortcuts.splice(idx, 1);
-      saveSettings();
-      renderShortcutManager();
-      renderShortcuts();
-    };
-
-    document.getElementById("addShortcutForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const label = document.getElementById("newShortLabel").value.trim();
-      const url = document.getElementById("newShortUrl").value.trim();
-      const icon = document.getElementById("newShortIcon").value.trim();
-
-      if (!label || !url) return;
-      state.shortcuts.push({ label, url, icon: icon || label.charAt(0) });
-      saveSettings();
-
-      document.getElementById("newShortLabel").value = "";
-      document.getElementById("newShortUrl").value = "";
-      document.getElementById("newShortIcon").value = "";
-
-      renderShortcutManager();
-      renderShortcuts();
-    });
-
-    function renderAppManager() {
-      const list = document.getElementById("appList");
-      if (!list) return;
-      list.innerHTML = "";
-      (state.apps || []).forEach((app, idx) => {
-        const row = document.createElement("div");
-        row.className = "list-row";
-        row.innerHTML = `
-          <div class="row-text">
-            <strong>${app.name}</strong> <span style="font-size:10px; opacity:0.6;">(${app.cat})</span>
-            <div style="font-size:11px; opacity:0.7;">${app.url}</div>
-          </div>
-          <button type="button" class="remove-btn" onclick="removeApp(${idx})">✕</button>
-        `;
-        list.appendChild(row);
-      });
+    function renderSettingRow(d, i) {
+      const head = `<div class="setting-title" id="st-${d.key}">${d.title}</div><p class="setting-desc" id="sd-${d.key}">${d.desc}</p>`;
+      const wrap = body => `<div class="setting-row static" style="--i:${i}"><div class="setting-text">${head}${body}</div></div>`;
+      if (d.type === "name") return wrap(`<input type="text" class="input-field" id="setName" value="${esc(state.name || "")}" placeholder="Ethan" aria-labelledby="st-name">`);
+      if (d.type === "engine") return wrap(`<div class="engine-toggle" id="engineSeg">${["google", "youtube", "instagram", "bible_en", "url"].map(k => `<button type="button" data-engine="${k}" class="${state.searchEngine === k ? "active" : ""}">${ENGINES[k].name}</button>`).join("")}</div>`);
+      if (d.type === "shortcuts") return wrap(`
+        <div class="mgr-list">${state.shortcuts.map((s, n) => `<div class="list-row"><div class="row-text"><strong>${esc(s.label)}</strong><div class="row-sub">${esc(s.url)}</div></div><button type="button" class="remove-btn" data-remove="shortcut" data-i="${n}" aria-label="Remove ${esc(s.label)}">✕</button></div>`).join("")}</div>
+        <form class="add-form" id="addShortcutForm" autocomplete="off">
+          <input type="text" class="input-field" name="label" placeholder="Label (e.g. Notion)" required>
+          <input type="text" class="input-field" name="url" placeholder="URL (https://...)" required>
+          <input type="text" class="input-field" name="icon" placeholder="Emoji or Image URL (e.g. 🧬)">
+          <button type="submit" class="btn-accent">+ Add Shortcut</button>
+        </form>`);
+      if (d.type === "apps") return wrap(`
+        <div class="mgr-list">${(state.apps || []).map((a, n) => `<div class="list-row"><div class="row-text"><strong>${esc(a.name)}</strong><div class="row-sub">${esc(a.url)}</div></div><button type="button" class="remove-btn" data-remove="app" data-i="${n}" aria-label="Remove ${esc(a.name)}">✕</button></div>`).join("")}</div>
+        <form class="add-form" id="addAppForm" autocomplete="off">
+          <input type="text" class="input-field" name="name" placeholder="App Name (e.g. Chess / Steam)" required>
+          <input type="text" class="input-field" name="url" placeholder="URL (https://...)" required>
+          <input type="text" class="input-field" name="icon" placeholder="Icon Link or Emoji (e.g. 🎮)">
+          <button type="submit" class="btn-accent">+ Add Site</button>
+        </form>`);
+      if (d.type === "colors") {
+        const cols = ui.bgColors || DEFAULT_BG;
+        return wrap(`<div class="swatches" role="group" aria-labelledby="st-${d.key}">
+          ${cols.map((col, n) => `<label class="swatch" style="--sw:${col}"><input type="color" value="${col}" data-i="${n}" aria-label="Background color ${n + 1}"></label>`).join("")}
+          <button type="button" class="btn-action" id="resetBgColors">Reset</button></div>`);
+      }
+      if (d.type === "reset") return wrap(`<button type="button" class="btn-action btn-danger" id="resetAll" style="margin-top:14px">Reset all settings</button>`);
+      return `
+        <div class="setting-row" data-key="${d.key}" style="--i:${i}">
+          <div class="setting-text">${head}</div>
+          <button type="button" class="m3-switch" role="switch" aria-checked="${ui[d.key] ? "true" : "false"}" aria-labelledby="st-${d.key}" aria-describedby="sd-${d.key}"><span class="knob">${CHECK_ICON}</span></button>
+        </div>`;
     }
 
-    window.removeApp = function(idx) {
-      state.apps.splice(idx, 1);
-      saveSettings();
-      renderAppManager();
-      renderAppGrid();
-    };
+    function renderSettings() {
+      const g = SETTING_GROUPS.find(x => x.id === settingsGroup);
+      if (!g) {
+        settingsGroup = null;
+        settingsList.innerHTML = `<div class="settings-hub">` + SETTING_GROUPS.map((t, i) => `
+          <button type="button" class="setting-tile" data-group="${t.id}" data-tone="${t.tone}" style="--i:${i}">
+            <span class="tile-icon" aria-hidden="true">${t.icon}</span>
+            <span class="tile-text"><span class="tile-title">${t.title}</span><span class="tile-sub">${t.blurb}</span></span>
+          </button>`).join("") + `</div>`;
+        return;
+      }
+      settingsList.innerHTML = `
+        <div class="settings-detail-head">
+          <button type="button" class="btn-action" id="settingsBack">← Settings</button>
+          <div><h2 class="detail-title">${g.title}</h2><p class="detail-desc">${g.desc}</p></div>
+        </div>
+        <div class="settings-rows">${g.keys.map((k, i) => renderSettingRow(SETTING_DEFS.find(d => d.key === k), i)).join("")}</div>`;
+    }
 
-    document.getElementById("addAppForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const name = document.getElementById("newAppName").value.trim();
-      const url = document.getElementById("newAppUrl").value.trim();
-      const icon = document.getElementById("newAppIcon").value.trim();
-      const cat = document.getElementById("newAppCat").value;
-
-      if (!name || !url) return;
-      
-      if (!state.apps) state.apps = [];
-      state.apps.push({ name, url, icon: icon || name.charAt(0), cat, desc: "User App" });
-      saveSettings();
-
-      document.getElementById("newAppName").value = "";
-      document.getElementById("newAppUrl").value = "";
-      document.getElementById("newAppIcon").value = "";
-
-      renderAppManager();
-      renderAppGrid();
+    settingsList.addEventListener("input", e => {
+      if (e.target.id === "setName") { state.name = e.target.value.trim(); saveSettings(); updateClock(); return; }
+      const inp = e.target.closest(".swatch input");
+      if (!inp) return;
+      const colors = (ui.bgColors || DEFAULT_BG).slice();
+      colors[+inp.dataset.i] = inp.value;
+      ui.bgColors = colors;
+      inp.parentNode.style.setProperty("--sw", inp.value);
+      applyBgColors();
     });
+    settingsList.addEventListener("change", e => { if (e.target.closest(".swatch input")) saveUI(); });
 
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      if (confirm("Reset all settings to default?")) {
-        state = structuredClone(DEFAULTS);
-        saveSettings();
-        setEngine(state.searchEngine);
-        renderShortcuts();
-        renderVerse();
-        syncSettingsUI();
-        updateClock();
-        renderAppGrid();
+    settingsList.addEventListener("submit", e => {
+      e.preventDefault();
+      const f = e.target.elements;
+      if (e.target.id === "addShortcutForm") {
+        const label = f.label.value.trim(), url = f.url.value.trim(), icon = f.icon.value.trim();
+        if (!label || !url) return;
+        state.shortcuts.push({ label, url, icon: icon || label.charAt(0) });
+        saveSettings(); renderShortcuts(); renderSettings();
+      } else if (e.target.id === "addAppForm") {
+        const name = f.name.value.trim(), url = f.url.value.trim(), icon = f.icon.value.trim();
+        if (!name || !url) return;
+        if (!state.apps) state.apps = [];
+        state.apps.push({ name, url, icon: icon || name.charAt(0), desc: "User App" });
+        saveSettings(); renderSettings();
       }
     });
 
-    function syncSettingsUI() {
-      document.getElementById("setName").value = state.name || "";
-      document.querySelectorAll("#engineSeg button").forEach(b => b.classList.toggle("active", b.dataset.engine === state.searchEngine));
-      renderShortcutManager();
-      renderAppManager();
-    }
+    settingsList.addEventListener("click", e => {
+      const tile = e.target.closest(".setting-tile");
+      if (tile) { settingsGroup = tile.dataset.group; renderSettings(); settingsList.querySelector("#settingsBack").focus({ preventScroll: true }); return; }
+      if (e.target.closest("#settingsBack")) {
+        const last = settingsGroup; settingsGroup = null; renderSettings();
+        settingsList.querySelector(`[data-group="${last}"]`)?.focus({ preventScroll: true });
+        return;
+      }
+      const eng = e.target.closest("#engineSeg button");
+      if (eng) { setEngine(eng.dataset.engine); return; }
+      const rm = e.target.closest(".remove-btn");
+      if (rm) {
+        const i = +rm.dataset.i;
+        if (rm.dataset.remove === "shortcut") { state.shortcuts.splice(i, 1); saveSettings(); renderShortcuts(); }
+        else { state.apps.splice(i, 1); saveSettings(); }
+        renderSettings();
+        return;
+      }
+      if (e.target.closest("#resetBgColors")) {
+        ui.bgColors = null;
+        settingsList.querySelectorAll(".swatch input").forEach((inp, n) => { inp.value = DEFAULT_BG[n].toLowerCase(); inp.parentNode.style.setProperty("--sw", DEFAULT_BG[n]); });
+        saveUI(); applyBgColors();
+        return;
+      }
+      if (e.target.closest("#resetAll")) {
+        if (!confirm("Reset all settings to default?")) return;
+        state = structuredClone(DEFAULTS);
+        ui = Object.assign({}, UI_DEFAULTS);
+        saveSettings(); saveUI(); applyUI();
+        setEngine(state.searchEngine); renderShortcuts(); renderVerse(); updateClock();
+        settingsGroup = null; renderSettings();
+        return;
+      }
+      const row = e.target.closest(".setting-row");
+      if (!row || !row.dataset.key) return;
+      const key = row.dataset.key;
+      ui[key] = !ui[key];
+      row.querySelector(".m3-switch").setAttribute("aria-checked", ui[key] ? "true" : "false");
+      saveUI(); applyUI();
+    });
 
     /* PROTECTED NAVIGATION CONTROLS */
     function openProtectedPage(url) {
@@ -1035,7 +805,6 @@
 });
 
     /* INITIALIZATION */
-    checkUnlock();
     setEngine(state.searchEngine);
     renderShortcuts();
     renderVerse();
@@ -1043,88 +812,19 @@
 
     const versionTag = document.getElementById("versionTag");
     if (versionTag) versionTag.style.display = isVersionVisible ? "flex" : "none";
-
-    // Supabase Project Credentials
-const SUPABASE_URL = 'https://wmfjqnzxnyperjetckuq.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtZmpxbnp4bnlwZXJqZXRja3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3NjE3NDQsImV4cCI6MjEwNDMzNzc0NH0.k-r5SOY_2GpHL5kS3-9lathbGYMUzecy-X8INLAk_Tw';
-
-const pinSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Fetch broadcasts from Supabase database
-async function fetchPinAssignments() {
-  const container = document.getElementById('pinBroadcastContainer');
-  const statusPill = document.getElementById('pinSyncStatus');
-
-  try {
-    const { data, error } = await pinSupabase
-      .from('assignments')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-
-    if (!data || data.length === 0) {
-      container.innerHTML = `<p style="margin: 0; font-size: 13px; color: var(--text-muted, #8b95a1);">No active broadcast assignments.</p>`;
-      if (statusPill) statusPill.textContent = 'IDLE';
-      return;
-    }
-
-    if (statusPill) statusPill.textContent = `${data.length} `;
-
-    // Render assignment items using title, timestamp, and content fields
-    container.innerHTML = data.slice(0, 3).map(item => `
-      <div style="padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--card-border, rgba(255,255,255,0.08)); font-size: 13px; text-align: left;">
-        <span style="font-size: 10px; color: var(--accent, #dd9c47); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 2px;">
-          ${escapeHtml(item.timestamp || '')}
-        </span>
-        <div style="font-weight: 600; font-size: 13px; color: var(--text, #f3f4f6); margin-bottom: 2px;">
-          ${escapeHtml(item.title || '')}
-        </div>
-        <p style="margin: 0; font-size: 12px; color: var(--text-muted, #8b95a1); line-height: 1.3;">
-          ${escapeHtml(item.content || '')}
-        </p>
-      </div>
-    `).join('');
-
-  } catch (err) {
-    console.error('Fetch error:', err);
-    if (statusPill) {
-      statusPill.textContent = 'OFFLINE';
-      statusPill.style.color = '#ef4444';
-    }
-    container.innerHTML = `<p style="margin: 0; font-size: 12px; color: #ef4444;">Failed to sync broadcasts.</p>`;
-  }
-}
-
-// Subscribe to Realtime Supabase updates
-function subscribePinBroadcasts() {
-  pinSupabase
-    .channel('public:assignments:pin')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'assignments' },
-      () => {
-        fetchPinAssignments();
-      }
-    )
-    .subscribe();
-}
-
-// Utility function to avoid HTML injection
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-// Initialize on page ready
-document.addEventListener('DOMContentLoaded', () => {
-  fetchPinAssignments();
-  subscribePinBroadcasts();
-});
+    applyUI();
+  </script>
+  <script>
+    document.addEventListener("pointerdown", e => {
+      const t = e.target.closest(".app-card, .icon-btn-circle, .engine-toggle button, .add-btn, .reset-btn, .search-form button, .shortcut .icon, .setting-tile, .btn-action, .btn-accent, .remove-btn");
+      if (!t || document.documentElement.classList.contains("lite")) return;
+      const r = t.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2;
+      const dot = document.createElement("span");
+      dot.className = "ripple";
+      dot.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX - r.left - d / 2}px;top:${e.clientY - r.top - d / 2}px`;
+      t.appendChild(dot);
+      dot.addEventListener("animationend", () => dot.remove());
+    });
   </script>
 </body>
 </html>
