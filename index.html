@@ -79,6 +79,27 @@
       </form>
     </section>
 
+    <section class="myday" id="myDay">
+      <header class="apps-head">
+      </header>
+      <div class="day-grid">
+        <article class="day-card" id="newsCard" style="--gt:var(--tile-3)">
+          <div class="day-top"><h3 class="dev-label">News</h3>
+            <div class="day-nav"><button type="button" id="newsPrev" aria-label="Previous story">‹</button><button type="button" id="newsNext" aria-label="Next story">›</button></div>
+          </div>
+          <div class="day-body" id="newsBody"></div>
+        </article>
+        <article class="day-card" id="weatherCard" style="--gt:var(--tile-1)">
+          <div class="day-top"><h3 class="dev-label">Weather</h3><span class="day-meta" id="wxUpdated"></span></div>
+          <div class="day-body" id="weatherBody"></div>
+        </article>
+        <article class="day-card" id="cdCard" style="--gt:var(--tile-4)">
+          <div class="day-top"><h3 class="dev-label">Countdown</h3></div>
+          <div class="day-body" id="cdBody"></div>
+        </article>
+      </div>
+    </section>
+
     <section class="apps-section" id="myApps">
   
       <div class="dev-groups">
@@ -360,6 +381,29 @@
         { label: "VS Code", url: "https://vscode.dev", icon: "https://cdn.simpleicons.org/gnometerminal/white" },
         { label: "Figma", url: "https://www.figma.com", icon: "https://cdn.simpleicons.org/figma/white" },
       ],
+      weather: { name: "Jakarta, Indonesia", lat: -6.2088, lon: 106.8456, unit: "c" },
+      feeds: [
+        { name: "WIRED", url: "https://www.wired.com/feed/category/science/latest/rss" },
+        { name: "The Verge", url: "https://www.theverge.com/rss/index.xml" },
+        { name: "NASA", url: "https://www.nasa.gov/feed/" }
+      ],
+      countdowns: [
+        { id: "cd1", label: "School Starts", time: "06:45", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd2", label: "School Subjects Begin", time: "07:00", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd3", label: "First Hour", time: "07:40", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd4", label: "Second Hour", time: "08:20", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd5", label: "Break", time: "08:40", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd6", label: "Third Hour", time: "09:20", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd7", label: "Fourth Hour", time: "10:00", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd8", label: "Fifth Hour", time: "10:40", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd9", label: "Sixth Hour", time: "11:20", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd10", label: "Break", time: "11:50", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd11", label: "Seventh Hour", time: "12:30", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd12", label: "Eight Hour (School Ends on Thursday)", time: "13:10", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd13", label: "Ninth Hour", time: "13:50", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd14", label: "Tenth Hour (School Ends on Monday, Tuesday, Wednesday, Friday)", time: "14:30", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd15", label: "Bedtime", time: "21:00", repeat: "daily", days: [], created: 0 }
+      ],
       apps: APPS_CATALOG,
       verses: [
         { ref: "Joshua 1:9", text: "Be strong and courageous. Do not be afraid; for the LORD your God will be with you wherever you go." },
@@ -392,7 +436,7 @@
     function loadSettings() {
       try {
         const raw = localStorage.getItem("ethan_home_settings");
-        return raw ? Object.assign({}, DEFAULTS, JSON.parse(raw)) : structuredClone(DEFAULTS);
+        return raw ? Object.assign(structuredClone(DEFAULTS), JSON.parse(raw)) : structuredClone(DEFAULTS);
       } catch(e) {
         return structuredClone(DEFAULTS);
       }
@@ -606,7 +650,7 @@
     /* SETTINGS: same hub + switch layout as the school site */
     const UI_KEY = "ethan_home_ui";
     const DEFAULT_BG = ["#074eb3", "#005695", "#063153", "#004B87"];
-    const UI_DEFAULTS = { lite: false, status: true, hideFilters: false, hideFloors: false, hideHero: false, hideDeco: false, bgColors: null };
+    const UI_DEFAULTS = { lite: false, status: true, hideFilters: false, hideFloors: false, hideDay: false, hideHero: false, hideDeco: false, bgColors: null };
     let ui = Object.assign({}, UI_DEFAULTS);
     try { Object.assign(ui, JSON.parse(localStorage.getItem(UI_KEY)) || {}); } catch (err) {}
     if (!Array.isArray(ui.bgColors) || ui.bgColors.length !== 4 || !ui.bgColors.every(col => /^#[0-9a-f]{6}$/i.test(col))) ui.bgColors = null;
@@ -619,10 +663,14 @@
       { key: "lite", title: "Lite mode", desc: "Turns off every animation and the moving background, and stops the shortcut bubbles from floating. Helps on slower devices." },
       { key: "status", title: "Status display", desc: "Shows the greeting and date pills above the clock. Turn it off to hide them." },
       { key: "hideFilters", title: "Hide filters", desc: "Removes the search engine buttons above the search bar. Your default engine still applies." },
-      { key: "hideFloors", title: "Hide jump to floor", desc: "Removes the Apps I Develop section from the bottom of the home screen." },
+      { key: "hideFloors", title: "Hide Apps I Develop", desc: "Removes the Apps I Develop section from the bottom of the home screen." },
       { key: "hideHero", title: "Hide hero banner", desc: "Hides the big clock banner (greeting, clock and verse) on Home, Settings, Quick Controls and Launcher. Your shortcuts stay on screen." },
       { key: "hideDeco", title: "Hide circular decorations", desc: "Hides the floating circles and shapes (the confetti) scattered across the background." },
       { key: "bgColors", type: "colors", title: "Personalize background colors", desc: "Pick the colors of the moving blobs in the background. Not visible while Lite mode is on." },
+      { key: "weather", type: "weather", title: "Weather location", desc: "Search for a city, or use your current location." },
+      { key: "feeds", type: "feeds", title: "RSS feeds", desc: "The News card pulls stories (with pictures) from these feeds." },
+      { key: "countdowns", type: "countdowns", title: "Countdowns", desc: "The Countdown card shows whichever one is coming up next." },
+      { key: "hideDay", title: "Hide My Day", desc: "Removes the weather, news and countdown cards from the home screen." },
       { key: "reset", type: "reset", title: "Reset everything", desc: "Puts your name, search engine, shortcuts, launcher apps and every setting back to their defaults." }
     ];
     const CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
@@ -634,13 +682,15 @@
         icon: `<svg ${ICON_ATTRS}><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>` },
       { id: "launcher", title: "Launcher apps", tone: 2, keys: ["apps"], blurb: "Sites in the launcher", desc: "Manage what shows up in the Launcher.",
         icon: `<svg ${ICON_ATTRS}><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>` },
-      { id: "performance", title: "Performance", tone: 3, keys: ["lite"], blurb: "Lite mode", desc: "Make the site lighter and faster on slower devices.",
+      { id: "myday", title: "My Day", tone: 3, keys: ["weather", "feeds", "countdowns"], blurb: "Weather, news, countdown", desc: "Everything behind the My Day cards: where the weather is for, which RSS feeds fill the news, and what to count down to.",
+        icon: `<svg ${ICON_ATTRS}><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></svg>` },
+      { id: "performance", title: "Performance", tone: 0, keys: ["lite"], blurb: "Lite mode", desc: "Make the site lighter and faster on slower devices.",
         icon: `<svg ${ICON_ATTRS}><path d="M13 2.5 4.5 13.5H11L10 21.5l8.5-11H12L13 2.5z"/></svg>` },
-      { id: "appearance", title: "Appearance", tone: 0, keys: ["status", "hideHero", "hideDeco", "bgColors"], blurb: "Status, banner, decorations, colors", desc: "Choose what shows up on screen and how the background looks.",
+      { id: "appearance", title: "Appearance", tone: 1, keys: ["status", "hideHero", "hideDeco", "bgColors"], blurb: "Status, banner, decorations, colors", desc: "Choose what shows up on screen and how the background looks.",
         icon: `<svg ${ICON_ATTRS}><path d="M12 3.5c-3 4-5.5 6.8-5.5 10.1a5.5 5.5 0 0 0 11 0C17.5 10.3 15 7.5 12 3.5z"/></svg>` },
-      { id: "layout", title: "Home layout", tone: 1, keys: ["hideFilters", "hideFloors"], blurb: "Filters, apps section", desc: "Simplify the home screen.",
+      { id: "layout", title: "Home layout", tone: 2, keys: ["hideFilters", "hideFloors", "hideDay"], blurb: "Filters, sections", desc: "Simplify the home screen.",
         icon: `<svg ${ICON_ATTRS}><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M3.5 10h17M10 10v9.5"/></svg>` },
-      { id: "data", title: "Reset all settings", tone: 2, keys: ["reset"], blurb: "", desc: "Start fresh whenever you like.",
+      { id: "data", title: "Reset all settings", tone: 3, keys: ["reset"], blurb: "", desc: "Start fresh whenever you like.",
         icon: `<svg ${ICON_ATTRS}><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4.5h4.5"/></svg>` }
     ];
     const settingsList = document.getElementById("settingsList");
@@ -657,6 +707,7 @@
       cl.toggle("hide-status", !ui.status);
       cl.toggle("hide-filters", ui.hideFilters);
       cl.toggle("hide-apps", ui.hideFloors);
+      cl.toggle("hide-day", ui.hideDay);
       cl.toggle("hide-hero", ui.hideHero);
       cl.toggle("hide-deco", ui.hideDeco);
       applyBgColors();
@@ -682,6 +733,35 @@
           <input type="text" class="input-field" name="url" placeholder="URL (https://...)" required>
           <input type="text" class="input-field" name="icon" placeholder="Icon Link or Emoji (e.g. 🎮)">
           <button type="submit" class="btn-accent">+ Add Site</button>
+        </form>`);
+      if (d.type === "weather") return wrap(`
+        <p class="wx-current">📍 <b>${esc(state.weather.name)}</b></p>
+        <form class="add-form" id="geoForm" autocomplete="off">
+          <input type="text" class="input-field" name="q" placeholder="Search a city (e.g. Surabaya)" required>
+          <button type="submit" class="btn-accent">Search</button>
+        </form>
+        <div class="geo-results" id="geoResults"></div>
+        <div class="row-actions"><button type="button" class="btn-action" id="geoLocate">📍 Use my location</button></div>
+        <div class="engine-toggle" id="unitSeg"><button type="button" data-unit="c" class="${state.weather.unit !== "f" ? "active" : ""}">°C, km/h</button><button type="button" data-unit="f" class="${state.weather.unit === "f" ? "active" : ""}">°F, mph</button></div>`);
+      if (d.type === "feeds") return wrap(`
+        <div class="mgr-list">${state.feeds.map((f, n) => `<div class="list-row"><div class="row-text"><strong>${esc(f.name)}</strong><div class="row-sub">${esc(f.url)}</div></div><button type="button" class="rm2" data-rm="feed" data-i="${n}" aria-label="Remove ${esc(f.name)}">✕</button></div>`).join("")}</div>
+        <form class="add-form" id="addFeedForm" autocomplete="off">
+          <input type="text" class="input-field" name="name" placeholder="Name (e.g. Detik)">
+          <input type="text" class="input-field" name="url" placeholder="RSS feed URL (https://...)" required>
+          <button type="submit" class="btn-accent">+ Add Feed</button>
+        </form>
+        <div class="row-actions"><button type="button" class="btn-action" id="feedsReset">Restore default feeds</button></div>`);
+      if (d.type === "countdowns") return wrap(`
+        <div class="mgr-list">${state.countdowns.map((cd, n) => `<div class="list-row"><div class="row-text"><strong>${esc(cd.label)}</strong><div class="row-sub">${esc(cd.time)}, ${esc(repeatLabel(cd))}</div></div><button type="button" class="rm2" data-rm="cd" data-i="${n}" aria-label="Remove ${esc(cd.label)}">✕</button></div>`).join("")}</div>
+        <form class="add-form" id="addCdForm" data-rep="daily" autocomplete="off">
+          <input type="text" class="input-field" name="label" placeholder="Label (e.g. Lunch break)" required>
+          <input type="time" class="input-field" name="time" value="12:00" required>
+          <div class="engine-toggle" id="repSeg">
+            <button type="button" data-rep="once">Once</button><button type="button" data-rep="daily" class="active">Every day</button><button type="button" data-rep="weekdays">Weekdays</button><button type="button" data-rep="weekends">Weekends</button><button type="button" data-rep="custom">Custom days</button>
+          </div>
+          <div class="rep-extra hidden" id="dayPickWrap"><div class="engine-toggle" id="dayPick">${DAY_NAMES.map((n, i) => `<button type="button" data-day="${i}">${n}</button>`).join("")}</div></div>
+          <div class="rep-extra hidden" id="datePickWrap"><input type="date" class="input-field" name="date"></div>
+          <button type="submit" class="btn-accent">+ Add Countdown</button>
         </form>`);
       if (d.type === "colors") {
         const cols = ui.bgColors || DEFAULT_BG;
@@ -775,6 +855,7 @@
         ui = Object.assign({}, UI_DEFAULTS);
         saveSettings(); saveUI(); applyUI();
         setEngine(state.searchEngine); renderShortcuts(); renderVerse(); updateClock();
+        loadWeather(true); loadNews(true); renderCountdown();
         settingsGroup = null; renderSettings();
         return;
       }
@@ -784,6 +865,325 @@
       ui[key] = !ui[key];
       row.querySelector(".m3-switch").setAttribute("aria-checked", ui[key] ? "true" : "false");
       saveUI(); applyUI();
+    });
+
+    /* ===== MY DAY: weather, news and countdown ===== */
+    const qid = id => document.getElementById(id);
+    const weatherBody = qid("weatherBody"), newsBody = qid("newsBody"), cdBody = qid("cdBody");
+    const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : "#";
+    const store = {
+      get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (err) { return null; } },
+      set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (err) {} }
+    };
+    const SKEL = h => `<div class="skel" style="height:${h}px"></div>`;
+    const pad = n => String(n).padStart(2, "0");
+    const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    /* ---- Weather (Open-Meteo, no key needed) ---- */
+    function wxInfo(code, isDay) {
+      const day = isDay !== 0;
+      if (code === 0) return ["Clear sky", day ? "☀️" : "🌙"];
+      if (code === 1) return ["Mostly clear", day ? "🌤️" : "🌙"];
+      if (code === 2) return ["Partly cloudy", day ? "⛅" : "☁️"];
+      if (code === 3) return ["Overcast", "☁️"];
+      if (code === 45 || code === 48) return ["Foggy", "🌫️"];
+      if (code >= 51 && code <= 57) return ["Drizzle", "🌦️"];
+      if (code >= 61 && code <= 67) return ["Rain", "🌧️"];
+      if (code >= 71 && code <= 77) return ["Snow", "🌨️"];
+      if (code >= 80 && code <= 82) return ["Rain showers", "🌦️"];
+      if (code === 85 || code === 86) return ["Snow showers", "🌨️"];
+      if (code >= 95) return ["Thunderstorm", "⛈️"];
+      return ["Unknown", "🌡️"];
+    }
+    const compass = deg => ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(deg / 45) % 8];
+    const uvLevel = v => v < 3 ? "Low" : v < 6 ? "Medium" : v < 8 ? "High" : v < 11 ? "High" : "Extreme";
+
+    let wxAbort = null;
+    async function loadWeather(force = false) {
+      const w = state.weather, key = `${w.lat},${w.lon},${w.unit}`;
+      const cache = store.get("ethan_home_wx");
+      const same = !!cache && cache.key === key;
+      if (same) renderWeather(cache.data);                                   // paint instantly from cache
+      if (same && !force && Date.now() - cache.t < 10 * 60e3) return;        // still fresh
+      if (!same) weatherBody.innerHTML = SKEL(80) + SKEL(110) + SKEL(64);
+      if (wxAbort) wxAbort.abort();                                          // drop any older request
+      wxAbort = new AbortController();
+      try {
+        const f = w.unit === "f";
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${w.lat}&longitude=${w.lon}`
+          + `&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,is_day`
+          + `&hourly=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max`
+          + `&timezone=auto&forecast_days=2&temperature_unit=${f ? "fahrenheit" : "celsius"}&wind_speed_unit=${f ? "mph" : "kmh"}`;
+        const r = await fetch(url, { signal: wxAbort.signal });
+        if (!r.ok) throw new Error("weather");
+        const data = await r.json();
+        store.set("ethan_home_wx", { key, t: Date.now(), data });
+        renderWeather(data);
+      } catch (err) {
+        if (err.name === "AbortError" || same) return;                       // keep showing cached data if the refresh fails
+        weatherBody.innerHTML = `<div class="day-empty">Couldn't load the weather.<br><button type="button" class="btn-action" id="wxRetry">Try again</button></div>`;
+      }
+    }
+
+    function renderWeather(data) {
+      const c = data.current, d = data.daily, h = data.hourly, u = data.current_units;
+      const [cond, emoji] = wxInfo(c.weather_code, c.is_day);
+      const deg = v => Math.round(v) + "°";
+      const rain = d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? d.precipitation_probability_max[0] + "%" : "n/a";
+      const uv = d.uv_index_max && d.uv_index_max[0] != null ? `${Math.round(d.uv_index_max[0])} ${uvLevel(d.uv_index_max[0])}` : "n/a";
+      const stats = [
+        ["🌡️", "Feels like", deg(c.apparent_temperature)],
+        ["💧", "Humidity", Math.round(c.relative_humidity_2m) + "%"],
+        ["💨", "Wind", `${Math.round(c.wind_speed_10m)} ${u.wind_speed_10m.replace("mp/h", "mph")}`],
+        ["☔", "Rain", rain],
+        ["🔆", "UV", uv],
+        ["🌅", "Sunset", `${d.sunset[0].slice(11, 16)}`]
+      ];
+      const idx = Math.max(0, h.time.findIndex(t => t > c.time));
+      const hours = h.time.slice(idx, idx + 6).map((t, i) => {
+        const k = idx + i;
+        return `<div class="wx-hour"><span>${t.slice(11, 16)}</span><span>${wxInfo(h.weather_code[k], h.is_day[k])[1]}</span><span>${deg(h.temperature_2m[k])}</span></div>`;
+      }).join("");
+      weatherBody.innerHTML = `
+        <div class="wx-main">
+          <div class="wx-now">
+            <span class="wx-emoji" aria-hidden="true">${emoji}</span>
+            <div>
+              <div class="wx-temp">${Math.round(c.temperature_2m)}<sup>${esc(u.temperature_2m)}</sup></div>
+              <div class="wx-cond">${cond}</div>
+              <div class="wx-range">High ${deg(d.temperature_2m_max[0])}, Low ${deg(d.temperature_2m_min[0])}</div>
+            </div>
+          </div>
+          <div class="wx-stats">${stats.map(([ic, k, v]) => `<div class="wx-stat"><span class="wx-ic" aria-hidden="true">${ic}</span><div><small>${k}</small><b>${esc(v)}</b></div></div>`).join("")}</div>
+        </div>
+        <div class="wx-hours" aria-label="Next hours">${hours}</div>`;
+      const meta = qid("wxUpdated");
+      meta.textContent = "📍 " + state.weather.name;
+      meta.title = "Updated " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+    weatherBody.addEventListener("click", e => { if (e.target.closest("#wxRetry")) loadWeather(true); });
+    setInterval(() => { if (!document.hidden) loadWeather(); }, 15 * 60e3);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) loadWeather(); });
+
+    /* ---- News (RSS through rss2json, with pictures) ---- */
+    let newsItems = [], newsIdx = 0, newsHover = false;
+    function timeAgo(d) {
+      const s = (Date.now() - d) / 1000;
+      if (!isFinite(s) || s < 0) return "recently";
+      if (s < 3600) return Math.max(1, Math.round(s / 60)) + "m ago";
+      if (s < 86400) return Math.round(s / 3600) + "h ago";
+      return Math.round(s / 86400) + "d ago";
+    }
+    function feedImage(it) {
+      let img = it.thumbnail || "";
+      if (!img && it.enclosure && it.enclosure.link && /image|\.(jpe?g|png|webp|gif)/i.test((it.enclosure.type || "") + it.enclosure.link)) img = it.enclosure.link;
+      if (!img) { const m = (it.content || it.description || "").match(/<img[^>]+src=["']([^"']+)/i); if (m) img = m[1]; }
+      return /^https?:\/\//i.test(img) ? img.replace(/^http:\/\//i, "https://") : "";
+    }
+    async function fetchFeed(f, force) {
+      const cache = store.get("ethan_home_news") || {};
+      const hit = cache[f.url];
+      if (!force && hit && Date.now() - hit.t < 15 * 60e3) return hit.items;
+      const r = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(f.url));
+      const j = await r.json();
+      if (j.status !== "ok") throw new Error("feed");
+      const items = (j.items || []).slice(0, 6).map(it => ({
+        title: String(it.title || "").trim(), link: it.link, source: f.name,
+        date: new Date(String(it.pubDate || "").replace(" ", "T") + "Z").getTime() || 0, img: feedImage(it)
+      })).filter(it => it.title);
+      Object.keys(cache).forEach(k => { if (!state.feeds.some(x => x.url === k)) delete cache[k]; });
+      cache[f.url] = { t: Date.now(), items };
+      store.set("ethan_home_news", cache);
+      return items;
+    }
+    async function loadNews(force = false) {
+      const feeds = state.feeds || [];
+      if (!feeds.length) { newsItems = []; renderNews(); return; }
+      newsBody.innerHTML = SKEL(190) + SKEL(60) + SKEL(60) + SKEL(60);
+      const res = await Promise.allSettled(feeds.map(f => fetchFeed(f, force)));
+      newsItems = res.flatMap(r => r.status === "fulfilled" ? r.value.slice(0, 4) : []).sort((a, b) => b.date - a.date);
+      newsIdx = 0;
+      renderNews(res.length > 0 && res.every(r => r.status === "rejected"));
+    }
+    function renderNews(failed = false) {
+      if (!newsItems.length) {
+        newsBody.innerHTML = failed
+          ? `<div class="day-empty">Couldn't load the news.<br><button type="button" class="btn-action" id="newsRetry">Try again</button></div>`
+          : `<div class="day-empty">No stories yet. Add an RSS feed in Settings, under News feeds.</div>`;
+        return;
+      }
+      const pics = newsItems.filter(i => i.img);
+      const pool = pics.length >= 2 ? pics : newsItems;
+      const feat = pool[((newsIdx % pool.length) + pool.length) % pool.length];
+      const others = newsItems.filter(i => i !== feat);
+      const list = [0, 1, 2].map(k => others[(newsIdx + k) % others.length]).filter((v, i, a) => v && a.indexOf(v) === i);
+      const link = i => `href="${esc(safeUrl(i.link))}" target="_blank" rel="noopener"`;
+      newsBody.innerHTML = `
+        <a class="news-feature" ${link(feat)}>
+          ${feat.img ? `<img src="${esc(feat.img)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
+          <div class="nf-text"><span class="news-src">${esc(feat.source)}</span><div class="nf-title">${esc(feat.title)}</div></div>
+        </a>
+        <div class="news-list">${list.map(i => `
+          <a class="news-item" ${link(i)}>
+            ${i.img ? `<img class="news-thumb" src="${esc(i.img)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : `<span class="news-thumb">${esc(i.source.charAt(0))}</span>`}
+            <div><b>${esc(i.title)}</b><small>${esc(i.source)}, ${timeAgo(i.date)}</small></div>
+          </a>`).join("")}</div>`;
+    }
+    newsBody.addEventListener("click", e => { if (e.target.closest("#newsRetry")) loadNews(true); });
+    qid("newsPrev").addEventListener("click", () => { newsIdx--; renderNews(); });
+    qid("newsNext").addEventListener("click", () => { newsIdx++; renderNews(); });
+    qid("newsCard").addEventListener("mouseenter", () => newsHover = true);
+    qid("newsCard").addEventListener("mouseleave", () => newsHover = false);
+    setInterval(() => { if (!newsHover && newsItems.length > 1 && currentView === "home" && !document.hidden) { newsIdx++; renderNews(); } }, 10000);
+
+    /* ---- Countdown (daily / weekdays / weekends / custom days / once) ---- */
+    const CIRC = 2 * Math.PI * 52;
+    let cdItems = [];
+    const cdDays = cd => cd.repeat === "daily" ? [0, 1, 2, 3, 4, 5, 6] : cd.repeat === "weekdays" ? [1, 2, 3, 4, 5] : cd.repeat === "weekends" ? [0, 6] : (cd.days || []);
+    const atTime = (base, offset, time) => { const [h, m] = String(time).split(":").map(Number); return new Date(base.getFullYear(), base.getMonth(), base.getDate() + offset, h || 0, m || 0, 0, 0); };
+    function repeatLabel(cd) {
+      if (cd.repeat === "once") return cd.date ? "Once, " + cd.date : "Once";
+      if (cd.repeat === "daily") return "Every day";
+      if (cd.repeat === "weekdays") return "Weekdays";
+      if (cd.repeat === "weekends") return "Weekends";
+      return (cd.days || []).map(d => DAY_NAMES[d]).join(", ") || "Custom days";
+    }
+    function nextOccurrence(cd, now) {
+      if (cd.repeat === "once") {
+        if (!cd.date) return null;
+        const [y, mo, da] = cd.date.split("-").map(Number), [h, m] = cd.time.split(":").map(Number);
+        const t = new Date(y, mo - 1, da, h, m);
+        return t > now ? t : null;
+      }
+      const days = cdDays(cd);
+      if (!days.length) return null;
+      for (let i = 0; i <= 7; i++) { const d = atTime(now, i, cd.time); if (days.includes(d.getDay()) && d > now) return d; }
+      return null;
+    }
+    function prevOccurrence(cd, now) {
+      const days = cdDays(cd);
+      for (let i = 0; i <= 7; i++) { const d = atTime(now, -i, cd.time); if (days.includes(d.getDay()) && d <= now) return d; }
+      return null;
+    }
+    function humanRemaining(ms) {
+      const m = Math.floor(ms / 60000), d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60), mi = m % 60;
+      if (d) return `${d}d ${h}h`;
+      if (h) return `${h}h ${mi}m`;
+      return `${mi}m ${Math.floor(ms % 60000 / 1000)}s`;
+    }
+    function renderCountdown() {
+      const now = new Date();
+      cdItems = (state.countdowns || []).map(cd => ({ cd, target: nextOccurrence(cd, now) })).filter(x => x.target).sort((a, b) => a.target - b.target);
+      if (!cdItems.length) {
+        cdBody.innerHTML = `<div class="day-empty">No countdown running.<br>Add one in Settings, under Countdown.</div>`;
+        return;
+      }
+      const main = cdItems[0], rest = cdItems.slice(1, 3);
+      cdBody.innerHTML = `
+        <div class="cd-main">
+          <div class="cd-ring">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="cd-track" cx="60" cy="60" r="52"/><circle class="cd-prog" id="cdProg" cx="60" cy="60" r="52" stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC}"/></svg>
+            <div class="cd-center"><span class="cd-days" id="cdDays"></span><span class="cd-time" id="cdTime">--:--:--</span></div>
+          </div>
+          <div class="cd-info">
+            <div class="cd-label">${esc(main.cd.label)}</div>
+            <div class="cd-sub">${esc(main.cd.time)}, ${esc(repeatLabel(main.cd))}</div>
+            <div class="cd-up">${rest.map((x, i) => `<div class="cd-up-item"><span>${esc(x.cd.label)}</span><span id="cdUp${i}"></span></div>`).join("")}</div>
+          </div>
+        </div>`;
+      tickCountdown();
+    }
+    function tickCountdown() {
+      if (!cdItems.length || !qid("cdTime")) return;
+      const now = new Date();
+      if (cdItems.some(x => x.target <= now)) { renderCountdown(); return; }
+      const main = cdItems[0], ms = main.target - now;
+      const s = Math.floor(ms / 1000), d = Math.floor(s / 86400);
+      qid("cdDays").textContent = d ? d + "d" : "";
+      qid("cdTime").textContent = `${pad(Math.floor(s % 86400 / 3600))}:${pad(Math.floor(s % 3600 / 60))}:${pad(s % 60)}`;
+      const start = main.cd.repeat === "once" ? new Date(main.cd.created || now) : (prevOccurrence(main.cd, now) || new Date(main.target - 864e5));
+      const p = Math.min(1, Math.max(0, (now - start) / (main.target - start)));
+      qid("cdProg").style.strokeDashoffset = CIRC * (1 - p);
+      cdItems.slice(1, 3).forEach((x, i) => { const el = qid("cdUp" + i); if (el) el.textContent = "in " + humanRemaining(x.target - now); });
+    }
+    setInterval(tickCountdown, 1000);
+
+    /* ---- Settings: weather location, feeds, countdowns ---- */
+    let geoResults = [];
+    settingsList.addEventListener("submit", async e => {
+      const id = e.target.id, f = e.target.elements;
+      if (id === "geoForm") {
+        const q = f.q.value.trim();
+        if (!q) return;
+        const box = qid("geoResults");
+        box.innerHTML = `<p class="row-sub">Searching…</p>`;
+        try {
+          const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=en&format=json`);
+          geoResults = (await r.json()).results || [];
+          if (qid("geoResults")) qid("geoResults").innerHTML = geoResults.length
+            ? geoResults.map((g, i) => `<button type="button" class="geo-item" data-i="${i}">${esc(g.name)}<small>${esc([g.admin1, g.country].filter(Boolean).join(", "))}</small></button>`).join("")
+            : `<p class="row-sub">No places found.</p>`;
+        } catch (err) { if (qid("geoResults")) qid("geoResults").innerHTML = `<p class="row-sub">Couldn't search right now.</p>`; }
+      } else if (id === "addFeedForm") {
+        const url = f.url.value.trim();
+        if (!/^https?:\/\//i.test(url)) { alert("The feed URL must start with http:// or https://"); return; }
+        let name = f.name.value.trim();
+        if (!name) { try { name = new URL(url).hostname.replace(/^www\./, ""); } catch (err) { name = "Feed"; } }
+        state.feeds.push({ name, url });
+        saveSettings(); loadNews(true); renderSettings();
+      } else if (id === "addCdForm") {
+        const rep = e.target.dataset.rep || "daily";
+        const cd = { id: "cd" + Date.now(), label: f.label.value.trim() || "Countdown", time: f.time.value, repeat: rep, days: [], created: Date.now() };
+        if (!cd.time) { alert("Pick a time."); return; }
+        if (rep === "custom") {
+          cd.days = [...e.target.querySelectorAll("#dayPick button.active")].map(b => +b.dataset.day);
+          if (!cd.days.length) { alert("Pick at least one day."); return; }
+        }
+        if (rep === "once") { cd.date = f.date.value; if (!cd.date) { alert("Pick a date."); return; } }
+        state.countdowns.push(cd);
+        saveSettings(); renderCountdown(); renderSettings();
+      }
+    });
+
+    settingsList.addEventListener("click", e => {
+      const geo = e.target.closest(".geo-item");
+      if (geo) {
+        const g = geoResults[+geo.dataset.i];
+        if (!g) return;
+        state.weather = { name: [g.name, g.country].filter(Boolean).join(", "), lat: g.latitude, lon: g.longitude, unit: state.weather.unit };
+        saveSettings(); loadWeather(true); renderSettings();
+        return;
+      }
+      if (e.target.closest("#geoLocate")) {
+        if (!navigator.geolocation) { alert("Your browser doesn't support location."); return; }
+        navigator.geolocation.getCurrentPosition(p => {
+          state.weather = { name: "My location", lat: +p.coords.latitude.toFixed(4), lon: +p.coords.longitude.toFixed(4), unit: state.weather.unit };
+          saveSettings(); loadWeather(true); renderSettings();
+        }, () => alert("Couldn't get your location. Check the browser permission."));
+        return;
+      }
+      const unit = e.target.closest("#unitSeg button");
+      if (unit) { state.weather.unit = unit.dataset.unit; saveSettings(); loadWeather(true); renderSettings(); return; }
+      const rm = e.target.closest(".rm2");
+      if (rm) {
+        const i = +rm.dataset.i;
+        if (rm.dataset.rm === "feed") { state.feeds.splice(i, 1); saveSettings(); loadNews(true); }
+        else { state.countdowns.splice(i, 1); saveSettings(); renderCountdown(); }
+        renderSettings();
+        return;
+      }
+      if (e.target.closest("#feedsReset")) { state.feeds = structuredClone(DEFAULTS.feeds); saveSettings(); loadNews(true); renderSettings(); return; }
+      const rep = e.target.closest("#repSeg button");
+      if (rep) {
+        const form = rep.closest("form");
+        form.dataset.rep = rep.dataset.rep;
+        rep.parentNode.querySelectorAll("button").forEach(b => b.classList.toggle("active", b === rep));
+        form.querySelector("#dayPickWrap").classList.toggle("hidden", rep.dataset.rep !== "custom");
+        form.querySelector("#datePickWrap").classList.toggle("hidden", rep.dataset.rep !== "once");
+        return;
+      }
+      const day = e.target.closest("#dayPick button");
+      if (day) day.classList.toggle("active");
     });
 
     /* PROTECTED NAVIGATION CONTROLS */
@@ -813,6 +1213,7 @@
     const versionTag = document.getElementById("versionTag");
     if (versionTag) versionTag.style.display = isVersionVisible ? "flex" : "none";
     applyUI();
+    loadWeather(); loadNews(); renderCountdown();
   </script>
   <script>
     document.addEventListener("pointerdown", e => {
