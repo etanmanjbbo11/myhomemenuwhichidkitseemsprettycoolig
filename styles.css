@@ -447,6 +447,18 @@ button.dev-label:active { transform:scale(.94); }
 .cd-big.done { opacity:.6; }
 @media (max-width:560px) { .wxp-day { grid-template-columns:48px 26px 38px 38px 1fr 38px; gap:6px; padding:10px 12px; } }
 
+/* ===== Feed status ===== */
+.feed-note { margin-top:10px; font-size:.85rem; font-weight:600; color:var(--on2); }
+.feed-note:empty { display:none; }
+.feed-note.bad { color:var(--danger); }
+.feed-note.good { color:var(--t); }
+.feed-note .btn-action { height:34px; margin-left:6px; padding:0 14px; font-size:.8rem; }
+.feed-badge { margin-top:2px; font-size:.72rem; font-weight:700; }
+.feed-badge.ok { color:var(--t); }
+.feed-badge.bad { color:var(--danger); }
+.feed-warn { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:16px; padding:10px 16px; border-radius:18px; background:color-mix(in srgb,var(--danger) 12%,var(--s2)); color:var(--danger); font-size:.85rem; font-weight:700; }
+.feed-warn .btn-action { height:32px; padding:0 14px; font-size:.78rem; }
+
 /* ===== Responsive ===== */
 @media (max-width:860px) {
   .hero { grid-template-columns:1fr; }
