@@ -34,6 +34,16 @@
         <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
       </svg>
     </button>
+    <button class="icon-btn-circle" id="newsBtn" aria-label="My News" title="My News">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M5 4h11a2 2 0 0 1 2 2v13H7a2 2 0 0 1-2-2V4z"></path><path d="M18 8h2v9a2 2 0 0 1-2 2"></path><path d="M8 8h6M8 12h6M8 16h4"></path></svg>
+    </button>
+    <button class="icon-btn-circle" id="weatherBtn" aria-label="Weather" title="Weather">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 10.5a3.75 3.75 0 0 1-.5 7.5H7z"></path></svg>
+    </button>
+    <button class="icon-btn-circle" id="countdownBtn" aria-label="My Countdowns" title="My Countdowns">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"><circle cx="12" cy="13.5" r="7"></circle><path d="M12 9.5v4l2.5 1.5M9.5 3.5h5"></path></svg>
+    </button>
+
    
 
     <button class="icon-btn-circle" id="quickControlsBtn" aria-label="Quick Controls" title="Quick Controls">
@@ -79,22 +89,20 @@
       </form>
     </section>
 
-    <section class="myday" id="myDay">
-      <header class="apps-head">
-      </header>
+    <section class="myday" id="myDay" aria-label="My Day">
       <div class="day-grid">
         <article class="day-card" id="newsCard" style="--gt:var(--tile-3)">
-          <div class="day-top"><h3 class="dev-label">News</h3>
+          <div class="day-top"><button type="button" class="dev-label" data-open="news" aria-label="Open My News">News <span aria-hidden="true">›</span></button>
             <div class="day-nav"><button type="button" id="newsPrev" aria-label="Previous story">‹</button><button type="button" id="newsNext" aria-label="Next story">›</button></div>
           </div>
           <div class="day-body" id="newsBody"></div>
         </article>
         <article class="day-card" id="weatherCard" style="--gt:var(--tile-1)">
-          <div class="day-top"><h3 class="dev-label">Weather</h3><span class="day-meta" id="wxUpdated"></span></div>
+          <div class="day-top"><button type="button" class="dev-label" data-open="weather" aria-label="Open Weather">Weather <span aria-hidden="true">›</span></button><span class="day-meta" id="wxUpdated"></span></div>
           <div class="day-body" id="weatherBody"></div>
         </article>
         <article class="day-card" id="cdCard" style="--gt:var(--tile-4)">
-          <div class="day-top"><h3 class="dev-label">Countdown</h3></div>
+          <div class="day-top"><button type="button" class="dev-label" data-open="countdowns" aria-label="Open My Countdowns">Countdown <span aria-hidden="true">›</span></button></div>
           <div class="day-body" id="cdBody"></div>
         </article>
       </div>
@@ -328,6 +336,42 @@
       </div></div>
     </section>
 
+    <section class="view hidden" id="newsView" aria-label="My News">
+      <div class="view-hero">
+        <p class="hero-kicker">Headlines</p>
+        <h1>My News</h1>
+        <p class="hero-lede" id="newsViewMeta">Stories from your RSS feeds.</p>
+      </div>
+      <div class="view-panel"><div id="newsPage"></div></div>
+    </section>
+
+    <section class="view hidden" id="weatherView" aria-label="Weather">
+      <div class="view-hero">
+        <p class="hero-kicker" id="wxKicker">Forecast</p>
+        <h1>Weather</h1>
+        <p class="hero-lede" id="wxLede"></p>
+      </div>
+      <div class="view-panel"><div id="weatherPage"></div></div>
+    </section>
+
+    <section class="view hidden" id="countdownsView" aria-label="My Countdowns">
+      <div class="view-hero">
+        <p class="hero-kicker">Time</p>
+        <h1>My Countdowns</h1>
+        <p class="hero-lede">Everything you're counting down to.</p>
+      </div>
+      <div class="view-panel"><div id="cdPage"></div></div>
+    </section>
+
+    <section class="view hidden" id="storyView" aria-label="News story">
+      <div class="view-hero">
+        <p class="hero-kicker" id="storySource">News</p>
+        <h1 id="storyTitle"></h1>
+        <p class="hero-lede" id="storyMeta"></p>
+      </div>
+      <div class="view-panel" id="storyPanel"></div>
+    </section>
+
     <section class="view hidden" id="launcherView" aria-label="Launcher">
       <div class="view-hero">
         <p class="hero-kicker">Websites</p>
@@ -383,26 +427,13 @@
       ],
       weather: { name: "Jakarta, Indonesia", lat: -6.2088, lon: 106.8456, unit: "c" },
       feeds: [
-        { name: "WIRED", url: "https://www.wired.com/feed/category/science/latest/rss" },
+        { name: "BBC News", url: "https://feeds.bbci.co.uk/news/rss.xml" },
         { name: "The Verge", url: "https://www.theverge.com/rss/index.xml" },
         { name: "NASA", url: "https://www.nasa.gov/feed/" }
       ],
       countdowns: [
-        { id: "cd1", label: "School Starts", time: "06:45", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd2", label: "School Subjects Begin", time: "07:00", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd3", label: "First Hour", time: "07:40", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd4", label: "Second Hour", time: "08:20", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd5", label: "Break", time: "08:40", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd6", label: "Third Hour", time: "09:20", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd7", label: "Fourth Hour", time: "10:00", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd8", label: "Fifth Hour", time: "10:40", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd9", label: "Sixth Hour", time: "11:20", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd10", label: "Break", time: "11:50", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd11", label: "Seventh Hour", time: "12:30", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd12", label: "Eight Hour (School Ends on Thursday)", time: "13:10", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd13", label: "Ninth Hour", time: "13:50", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd14", label: "Tenth Hour (School Ends on Monday, Tuesday, Wednesday, Friday)", time: "14:30", repeat: "weekdays", days: [], created: 0 },
-        { id: "cd15", label: "Bedtime", time: "21:00", repeat: "daily", days: [], created: 0 }
+        { id: "cd1", label: "School's out", time: "15:30", repeat: "weekdays", days: [], created: 0 },
+        { id: "cd2", label: "Bedtime", time: "22:00", repeat: "daily", days: [], created: 0 }
       ],
       apps: APPS_CATALOG,
       verses: [
@@ -453,20 +484,23 @@
     function replay(el) { el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
 
     const homeView = document.getElementById("homeView");
-    const VIEWS = { settings: document.getElementById("settingsView"), controls: document.getElementById("controlsView"), launcher: document.getElementById("launcherView") };
-    const VIEW_BTNS = { settings: "gearBtn", controls: "quickControlsBtn", launcher: "appGridBtn" };
+    const VIEWS = { settings: document.getElementById("settingsView"), controls: document.getElementById("controlsView"), launcher: document.getElementById("launcherView"), story: document.getElementById("storyView"), news: document.getElementById("newsView"), weather: document.getElementById("weatherView"), countdowns: document.getElementById("countdownsView") };
+    const VIEW_BTNS = { settings: "gearBtn", controls: "quickControlsBtn", launcher: "appGridBtn", news: "newsBtn", weather: "weatherBtn", countdowns: "countdownBtn" };
     const homeBtn = document.getElementById("homeBtn");
     let currentView = "home";
 
-    function showView(view) {
+    function showView(view, group = null) {
       currentView = view;
       homeView.classList.toggle("hidden", view !== "home");
       Object.entries(VIEWS).forEach(([k, el]) => el.classList.toggle("hidden", k !== view));
       homeBtn.classList.toggle("is-home", view !== "home");
       homeBtn.setAttribute("aria-label", view === "home" ? "Home Menu" : "Back to Home");
       Object.entries(VIEW_BTNS).forEach(([k, id]) => document.getElementById(id).classList.toggle("is-active", k === view));
-      if (view === "settings") { settingsGroup = null; renderSettings(); }
+      if (view === "settings") { settingsGroup = group; renderSettings(); }
       if (view === "launcher") renderLauncher();
+      if (view === "news") renderNewsPage();
+      if (view === "weather") renderWeatherPage();
+      if (view === "countdowns") renderCdPage();
       replay(view === "home" ? homeView : VIEWS[view]);
       scrollTo(0, 0);
     }
@@ -478,6 +512,7 @@
     document.addEventListener("keydown", e => {
       if (e.key !== "Escape" || currentView === "home") return;
       if (currentView === "settings" && settingsGroup) { settingsGroup = null; renderSettings(); }
+      else if (currentView === "story") showView(storyFrom);
       else showView("home");
     });
 
@@ -663,7 +698,7 @@
       { key: "lite", title: "Lite mode", desc: "Turns off every animation and the moving background, and stops the shortcut bubbles from floating. Helps on slower devices." },
       { key: "status", title: "Status display", desc: "Shows the greeting and date pills above the clock. Turn it off to hide them." },
       { key: "hideFilters", title: "Hide filters", desc: "Removes the search engine buttons above the search bar. Your default engine still applies." },
-      { key: "hideFloors", title: "Hide Apps I Develop", desc: "Removes the Apps I Develop section from the bottom of the home screen." },
+      { key: "hideFloors", title: "Hide jump to floor", desc: "Removes the Apps I Develop section from the bottom of the home screen." },
       { key: "hideHero", title: "Hide hero banner", desc: "Hides the big clock banner (greeting, clock and verse) on Home, Settings, Quick Controls and Launcher. Your shortcuts stay on screen." },
       { key: "hideDeco", title: "Hide circular decorations", desc: "Hides the floating circles and shapes (the confetti) scattered across the background." },
       { key: "bgColors", type: "colors", title: "Personalize background colors", desc: "Pick the colors of the moving blobs in the background. Not visible while Lite mode is on." },
@@ -896,11 +931,11 @@
       return ["Unknown", "🌡️"];
     }
     const compass = deg => ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(deg / 45) % 8];
-    const uvLevel = v => v < 3 ? "Low" : v < 6 ? "Medium" : v < 8 ? "High" : v < 11 ? "High" : "Extreme";
+    const uvLevel = v => v < 3 ? "Low" : v < 6 ? "Moderate" : v < 8 ? "High" : v < 11 ? "Very high" : "Extreme";
 
-    let wxAbort = null;
+    let wxAbort = null, wxData = null;
     async function loadWeather(force = false) {
-      const w = state.weather, key = `${w.lat},${w.lon},${w.unit}`;
+      const w = state.weather, key = `v2,${w.lat},${w.lon},${w.unit}`;
       const cache = store.get("ethan_home_wx");
       const same = !!cache && cache.key === key;
       if (same) renderWeather(cache.data);                                   // paint instantly from cache
@@ -911,9 +946,10 @@
       try {
         const f = w.unit === "f";
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${w.lat}&longitude=${w.lon}`
-          + `&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,is_day`
-          + `&hourly=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max`
-          + `&timezone=auto&forecast_days=2&temperature_unit=${f ? "fahrenheit" : "celsius"}&wind_speed_unit=${f ? "mph" : "kmh"}`;
+          + `&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day`
+          + `&hourly=temperature_2m,weather_code,is_day,precipitation_probability`
+          + `&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max,precipitation_sum`
+          + `&timezone=auto&forecast_days=7&temperature_unit=${f ? "fahrenheit" : "celsius"}&wind_speed_unit=${f ? "mph" : "kmh"}`;
         const r = await fetch(url, { signal: wxAbort.signal });
         if (!r.ok) throw new Error("weather");
         const data = await r.json();
@@ -926,6 +962,7 @@
     }
 
     function renderWeather(data) {
+      wxData = data;
       const c = data.current, d = data.daily, h = data.hourly, u = data.current_units;
       const [cond, emoji] = wxInfo(c.weather_code, c.is_day);
       const deg = v => Math.round(v) + "°";
@@ -934,10 +971,10 @@
       const stats = [
         ["🌡️", "Feels like", deg(c.apparent_temperature)],
         ["💧", "Humidity", Math.round(c.relative_humidity_2m) + "%"],
-        ["💨", "Wind", `${Math.round(c.wind_speed_10m)} ${u.wind_speed_10m.replace("mp/h", "mph")}`],
+        ["💨", "Wind", `${Math.round(c.wind_speed_10m)} ${u.wind_speed_10m.replace("mp/h", "mph")} ${compass(c.wind_direction_10m)}`],
         ["☔", "Rain", rain],
         ["🔆", "UV", uv],
-        ["🌅", "Sunset", `${d.sunset[0].slice(11, 16)}`]
+        ["🌅", "Sun", `${d.sunrise[0].slice(11, 16)} / ${d.sunset[0].slice(11, 16)}`]
       ];
       const idx = Math.max(0, h.time.findIndex(t => t > c.time));
       const hours = h.time.slice(idx, idx + 6).map((t, i) => {
@@ -960,13 +997,14 @@
       const meta = qid("wxUpdated");
       meta.textContent = "📍 " + state.weather.name;
       meta.title = "Updated " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      if (currentView === "weather") renderWeatherPage();
     }
     weatherBody.addEventListener("click", e => { if (e.target.closest("#wxRetry")) loadWeather(true); });
     setInterval(() => { if (!document.hidden) loadWeather(); }, 15 * 60e3);
     document.addEventListener("visibilitychange", () => { if (!document.hidden) loadWeather(); });
 
     /* ---- News (RSS through rss2json, with pictures) ---- */
-    let newsItems = [], newsIdx = 0, newsHover = false;
+    let newsItems = [], newsIdx = 0, newsHover = false, newsLoading = false, newsFilter = "All", storyFrom = "home";
     function timeAgo(d) {
       const s = (Date.now() - d) / 1000;
       if (!isFinite(s) || s < 0) return "recently";
@@ -980,8 +1018,26 @@
       if (!img) { const m = (it.content || it.description || "").match(/<img[^>]+src=["']([^"']+)/i); if (m) img = m[1]; }
       return /^https?:\/\//i.test(img) ? img.replace(/^http:\/\//i, "https://") : "";
     }
+    function cleanParas(html) {
+      if (!html) return [];
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      doc.querySelectorAll("script,style,figure,figcaption,iframe").forEach(n => n.remove());
+      let paras = [...doc.querySelectorAll("p")].map(p => p.textContent.replace(/\s+/g, " ").trim()).filter(t => t.length > 25 && !/appeared first on/i.test(t));
+      if (!paras.length) { const t = (doc.body.textContent || "").replace(/\s+/g, " ").trim(); if (t && !/appeared first on/i.test(t)) paras = [t]; }
+      const out = []; let total = 0;
+      for (const p of paras) {
+        if (total > 1400) break;
+        out.push(p.length > 700 ? p.slice(0, 700).replace(/\s+\S*$/, "") + "…" : p);
+        total += p.length;
+      }
+      return out;
+    }
+    function storyParas(it) {
+      const a = cleanParas(it.content), b = cleanParas(it.description);
+      return a.join(" ").length >= b.join(" ").length ? a : b;
+    }
     async function fetchFeed(f, force) {
-      const cache = store.get("ethan_home_news") || {};
+      const cache = store.get("ethan_home_news2") || {};
       const hit = cache[f.url];
       if (!force && hit && Date.now() - hit.t < 15 * 60e3) return hit.items;
       const r = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(f.url));
@@ -989,21 +1045,24 @@
       if (j.status !== "ok") throw new Error("feed");
       const items = (j.items || []).slice(0, 6).map(it => ({
         title: String(it.title || "").trim(), link: it.link, source: f.name,
-        date: new Date(String(it.pubDate || "").replace(" ", "T") + "Z").getTime() || 0, img: feedImage(it)
+        date: new Date(String(it.pubDate || "").replace(" ", "T") + "Z").getTime() || 0, img: feedImage(it), author: String(it.author || "").trim(), summary: storyParas(it)
       })).filter(it => it.title);
       Object.keys(cache).forEach(k => { if (!state.feeds.some(x => x.url === k)) delete cache[k]; });
       cache[f.url] = { t: Date.now(), items };
-      store.set("ethan_home_news", cache);
+      store.set("ethan_home_news2", cache);
       return items;
     }
     async function loadNews(force = false) {
       const feeds = state.feeds || [];
-      if (!feeds.length) { newsItems = []; renderNews(); return; }
+      if (!feeds.length) { newsItems = []; renderNews(); if (currentView === "news") renderNewsPage(); return; }
+      newsLoading = true;
       newsBody.innerHTML = SKEL(190) + SKEL(60) + SKEL(60) + SKEL(60);
       const res = await Promise.allSettled(feeds.map(f => fetchFeed(f, force)));
-      newsItems = res.flatMap(r => r.status === "fulfilled" ? r.value.slice(0, 4) : []).sort((a, b) => b.date - a.date);
+      newsItems = res.flatMap(r => r.status === "fulfilled" ? r.value.slice(0, 6) : []).sort((a, b) => b.date - a.date);
       newsIdx = 0;
+      newsLoading = false;
       renderNews(res.length > 0 && res.every(r => r.status === "rejected"));
+      if (currentView === "news") renderNewsPage();
     }
     function renderNews(failed = false) {
       if (!newsItems.length) {
@@ -1017,7 +1076,7 @@
       const feat = pool[((newsIdx % pool.length) + pool.length) % pool.length];
       const others = newsItems.filter(i => i !== feat);
       const list = [0, 1, 2].map(k => others[(newsIdx + k) % others.length]).filter((v, i, a) => v && a.indexOf(v) === i);
-      const link = i => `href="${esc(safeUrl(i.link))}" target="_blank" rel="noopener"`;
+      const link = i => `href="${esc(safeUrl(i.link))}" target="_blank" rel="noopener" data-story="${newsItems.indexOf(i)}"`;
       newsBody.innerHTML = `
         <a class="news-feature" ${link(feat)}>
           ${feat.img ? `<img src="${esc(feat.img)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
@@ -1029,7 +1088,47 @@
             <div><b>${esc(i.title)}</b><small>${esc(i.source)}, ${timeAgo(i.date)}</small></div>
           </a>`).join("")}</div>`;
     }
-    newsBody.addEventListener("click", e => { if (e.target.closest("#newsRetry")) loadNews(true); });
+    function storyClick(e) {
+      const a = e.target.closest("[data-story]");
+      if (a && e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey) { e.preventDefault(); openStory(+a.dataset.story); return true; }
+      return false;
+    }
+    newsBody.addEventListener("click", e => {
+      if (e.target.closest("#newsRetry")) { loadNews(true); return; }
+      storyClick(e);
+    });
+
+    /* ---- Story page: read the story's info on this site ---- */
+    let storyIdx = 0;
+    function renderStory(i) {
+      const it = newsItems[i];
+      if (!it) return;
+      storyIdx = i;
+      qid("storySource").textContent = it.source;
+      qid("storyTitle").textContent = it.title;
+      const when = it.date ? new Date(it.date).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) + " (" + timeAgo(it.date) + ")" : "";
+      qid("storyMeta").textContent = [when, it.author].filter(Boolean).join(", ");
+      const paras = it.summary || [];
+      qid("storyPanel").innerHTML = `
+        <div class="story-layout${it.img ? "" : " no-img"}">
+          ${it.img ? `<img class="story-img" src="${esc(it.img)}" alt="" onerror="this.remove()">` : ""}
+          <div class="story-text">
+            ${paras.length ? paras.map(p => `<p>${esc(p)}</p>`).join("") : `<p class="story-none">No preview text is available for this story.</p>`}
+            <div class="story-actions">
+              <button type="button" class="btn-action" id="storyBack">← Back</button>
+              ${newsItems.length > 1 ? `<button type="button" class="btn-action" id="storyPrev">‹ Previous</button><button type="button" class="btn-action" id="storyNext">Next ›</button>` : ""}
+              <a class="btn-accent" href="${esc(safeUrl(it.link))}" target="_blank" rel="noopener"><span>Read full story</span><span class="arr" aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>`;
+    }
+    function openStory(i) { storyFrom = currentView === "news" ? "news" : "home"; renderStory(i); showView("story"); }
+    qid("storyPanel").addEventListener("click", e => {
+      const n = newsItems.length;
+      if (e.target.closest("#storyBack")) { showView(storyFrom); return; }
+      if (e.target.closest("#storyPrev")) { renderStory((storyIdx - 1 + n) % n); replay(qid("storyView")); }
+      else if (e.target.closest("#storyNext")) { renderStory((storyIdx + 1) % n); replay(qid("storyView")); }
+    });
     qid("newsPrev").addEventListener("click", () => { newsIdx--; renderNews(); });
     qid("newsNext").addEventListener("click", () => { newsIdx++; renderNews(); });
     qid("newsCard").addEventListener("mouseenter", () => newsHover = true);
@@ -1106,7 +1205,118 @@
       qid("cdProg").style.strokeDashoffset = CIRC * (1 - p);
       cdItems.slice(1, 3).forEach((x, i) => { const el = qid("cdUp" + i); if (el) el.textContent = "in " + humanRemaining(x.target - now); });
     }
-    setInterval(tickCountdown, 1000);
+    setInterval(() => { tickCountdown(); if (currentView === "countdowns") tickCdPage(); }, 1000);
+
+    /* ---- Detail pages: My News, Weather, My Countdowns ---- */
+    const newsPage = qid("newsPage"), wxPage = qid("weatherPage"), cdPage = qid("cdPage");
+    qid("myDay").addEventListener("click", e => { const b = e.target.closest("[data-open]"); if (b) showView(b.dataset.open); });
+
+    function renderNewsPage() {
+      const sources = [...new Set(newsItems.map(i => i.source))];
+      if (newsFilter !== "All" && !sources.includes(newsFilter)) newsFilter = "All";
+      const items = newsItems.filter(i => newsFilter === "All" || i.source === newsFilter);
+      qid("newsViewMeta").textContent = newsItems.length ? `${newsItems.length} stories from ${sources.length} feed${sources.length === 1 ? "" : "s"}.` : "Stories from your RSS feeds.";
+      const body = newsLoading && !newsItems.length
+        ? `<div class="news-grid">${[1, 2, 3, 4, 5, 6].map(() => SKEL(230)).join("")}</div>`
+        : items.length
+          ? `<div class="news-grid">${items.map(i => `
+            <a class="news-card" href="${esc(safeUrl(i.link))}" target="_blank" rel="noopener" data-story="${newsItems.indexOf(i)}">
+              <div class="nc-img">${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy" onerror="this.remove()">` : `<span>${esc(i.source.charAt(0))}</span>`}<span class="news-src">${esc(i.source)}</span></div>
+              <div class="nc-body"><b>${esc(i.title)}</b>${i.summary && i.summary[0] ? `<p>${esc(i.summary[0].slice(0, 150))}${i.summary[0].length > 150 ? "…" : ""}</p>` : ""}<small>${timeAgo(i.date)}</small></div>
+            </a>`).join("")}</div>`
+          : `<div class="day-empty">${(state.feeds || []).length ? "No stories loaded yet." : "No feeds yet. Add one in Settings, under My Day."}</div>`;
+      newsPage.innerHTML = `
+        <div class="page-toolbar">
+          <div class="engine-toggle" id="newsChips">${["All", ...sources].map(n => `<button type="button" data-src="${esc(n)}" class="${n === newsFilter ? "active" : ""}">${esc(n)}</button>`).join("")}</div>
+          <div class="page-actions"><button type="button" class="btn-action" id="newsRefresh">↻ Refresh</button><button type="button" class="btn-action" id="newsManage">Manage feeds</button></div>
+        </div>${body}`;
+    }
+    newsPage.addEventListener("click", e => {
+      if (storyClick(e)) return;
+      const chip = e.target.closest("#newsChips button");
+      if (chip) { newsFilter = chip.dataset.src; renderNewsPage(); return; }
+      if (e.target.closest("#newsRefresh")) { loadNews(true); renderNewsPage(); return; }
+      if (e.target.closest("#newsManage")) showView("settings", "myday");
+    });
+
+    function renderWeatherPage() {
+      qid("wxKicker").textContent = "📍 " + state.weather.name;
+      if (!wxData) { qid("wxLede").textContent = "Loading the forecast…"; wxPage.innerHTML = SKEL(120) + SKEL(160) + SKEL(260); loadWeather(); return; }
+      const data = wxData, c = data.current, d = data.daily, h = data.hourly, u = data.current_units;
+      const [cond, emoji] = wxInfo(c.weather_code, c.is_day);
+      const deg = v => v == null ? "n/a" : Math.round(v) + "°";
+      const num = (v, suf = "") => v == null ? "n/a" : Math.round(v) + suf;
+      const windU = (u.wind_speed_10m || "").replace("mp/h", "mph");
+      qid("wxLede").textContent = `${cond}. Feels like ${deg(c.apparent_temperature)}, high ${deg(d.temperature_2m_max[0])}, low ${deg(d.temperature_2m_min[0])}.`;
+      const ms = new Date(d.sunset[0]) - new Date(d.sunrise[0]);
+      const daylight = isFinite(ms) ? `${Math.floor(ms / 3.6e6)}h ${Math.round(ms % 3.6e6 / 6e4)}m` : "n/a";
+      const rainSum = d.precipitation_sum && d.precipitation_sum[0] != null ? `${d.precipitation_sum[0]} ${(data.daily_units && data.daily_units.precipitation_sum) || "mm"}` : "n/a";
+      const tiles = [
+        ["🌡️", "Feels like", deg(c.apparent_temperature)], ["💧", "Humidity", num(c.relative_humidity_2m, "%")],
+        ["💨", "Wind", `${num(c.wind_speed_10m)} ${windU} ${compass(c.wind_direction_10m)}`], ["🌬️", "Gusts", c.wind_gusts_10m != null ? `${num(c.wind_gusts_10m)} ${windU}` : "n/a"],
+        ["🧭", "Pressure", c.pressure_msl != null ? `${num(c.pressure_msl)} hPa` : "n/a"], ["☁️", "Cloud cover", num(c.cloud_cover, "%")],
+        ["🔆", "UV index", d.uv_index_max && d.uv_index_max[0] != null ? `${Math.round(d.uv_index_max[0])}, ${uvLevel(d.uv_index_max[0])}` : "n/a"],
+        ["☔", "Rain chance", d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? d.precipitation_probability_max[0] + "%" : "n/a"],
+        ["🌧️", "Rain today", rainSum], ["🌅", "Sunrise", d.sunrise[0].slice(11, 16)], ["🌇", "Sunset", d.sunset[0].slice(11, 16)], ["⏳", "Daylight", daylight]
+      ];
+      const idx = Math.max(0, h.time.findIndex(t => t > c.time));
+      const hours = h.time.slice(idx, idx + 24).map((t, i) => {
+        const k = idx + i, p = h.precipitation_probability ? h.precipitation_probability[k] : null;
+        return `<div class="wxp-hour"><span>${t.slice(11, 16)}</span><span class="e">${wxInfo(h.weather_code[k], h.is_day[k])[1]}</span><b>${deg(h.temperature_2m[k])}</b><small>${p != null ? "☔ " + p + "%" : ""}</small></div>`;
+      }).join("");
+      const lo = Math.min(...d.temperature_2m_min), hi = Math.max(...d.temperature_2m_max), span = Math.max(1, hi - lo);
+      const days = d.time.map((t, i) => {
+        const name = i === 0 ? "Today" : new Date(t + "T00:00").toLocaleDateString([], { weekday: "short" });
+        const [ct, em] = wxInfo(d.weather_code ? d.weather_code[i] : 0, 1);
+        const mn = d.temperature_2m_min[i], mx = d.temperature_2m_max[i], p = d.precipitation_probability_max ? d.precipitation_probability_max[i] : null;
+        return `<div class="wxp-day"><span class="dn">${name}</span><span title="${ct}">${em}</span><span class="dp">${p != null ? p + "%" : ""}</span><span class="dl">${deg(mn)}</span><div class="dbar"><i style="left:${((mn - lo) / span * 100).toFixed(1)}%;width:${Math.max(6, (mx - mn) / span * 100).toFixed(1)}%"></i></div><span class="dh">${deg(mx)}</span></div>`;
+      }).join("");
+      wxPage.innerHTML = `
+        <div class="wxp-now"><span class="wx-emoji" aria-hidden="true">${emoji}</span><div><div class="wx-temp">${Math.round(c.temperature_2m)}<sup>${esc(u.temperature_2m)}</sup></div><div class="wx-cond">${cond}</div></div></div>
+        <div class="wxp-tiles">${tiles.map(([ic, k, v]) => `<div class="wx-stat"><span class="wx-ic" aria-hidden="true">${ic}</span><div><small>${k}</small><b>${esc(v)}</b></div></div>`).join("")}</div>
+        <h2 class="page-h">Next 24 hours</h2>
+        <div class="wxp-hours">${hours}</div>
+        <h2 class="page-h">${d.time.length}-day forecast</h2>
+        <div class="wxp-days">${days}</div>
+        <div class="page-actions" style="margin-top:20px"><button type="button" class="btn-action" id="wxRefresh">↻ Refresh</button><button type="button" class="btn-action" id="wxLocation">Change location</button></div>`;
+    }
+    wxPage.addEventListener("click", e => {
+      if (e.target.closest("#wxRefresh")) loadWeather(true);
+      else if (e.target.closest("#wxLocation")) showView("settings", "myday");
+    });
+
+    let cdPageItems = [];
+    function renderCdPage() {
+      const now = new Date();
+      cdPageItems = (state.countdowns || []).map(cd => ({ cd, target: nextOccurrence(cd, now) }))
+        .sort((a, b) => (a.target ? a.target.getTime() : Infinity) - (b.target ? b.target.getTime() : Infinity));
+      cdPage.innerHTML = (cdPageItems.length ? `<div class="cd-grid">${cdPageItems.map((x, i) => `
+        <article class="cd-big${x.target ? "" : " done"}" style="--gt:var(--tile-${i % 4 + 1})">
+          <div class="cd-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="cd-track" cx="60" cy="60" r="52"/><circle class="cd-prog" id="cdpProg${i}" cx="60" cy="60" r="52" stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC}"/></svg>
+            <div class="cd-center"><span class="cd-days" id="cdpDays${i}"></span><span class="cd-time" id="cdpTime${i}">${x.target ? "--:--:--" : "Done"}</span></div></div>
+          <div class="cd-info">
+            <div class="cd-label">${esc(x.cd.label)}</div>
+            <div class="cd-sub">${esc(x.cd.time)}, ${esc(repeatLabel(x.cd))}</div>
+            <div class="cd-next">${x.target ? "Next: " + x.target.toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "No upcoming date"}</div>
+          </div>
+        </article>`).join("")}</div>` : `<div class="day-empty">No countdowns yet.</div>`)
+        + `<div class="page-actions" style="margin-top:20px"><button type="button" class="btn-action" id="cdManage">Manage countdowns</button></div>`;
+      tickCdPage();
+    }
+    function tickCdPage() {
+      const now = new Date();
+      if (cdPageItems.some(x => x.target && x.target <= now)) { renderCdPage(); return; }
+      cdPageItems.forEach((x, i) => {
+        if (!x.target || !qid("cdpTime" + i)) return;
+        const sec = Math.floor((x.target - now) / 1000), d = Math.floor(sec / 86400);
+        qid("cdpDays" + i).textContent = d ? d + "d" : "";
+        qid("cdpTime" + i).textContent = `${pad(Math.floor(sec % 86400 / 3600))}:${pad(Math.floor(sec % 3600 / 60))}:${pad(sec % 60)}`;
+        const start = x.cd.repeat === "once" ? new Date(x.cd.created || now) : (prevOccurrence(x.cd, now) || new Date(x.target - 864e5));
+        const p = Math.min(1, Math.max(0, (now - start) / (x.target - start)));
+        qid("cdpProg" + i).style.strokeDashoffset = CIRC * (1 - p);
+      });
+    }
+    cdPage.addEventListener("click", e => { if (e.target.closest("#cdManage")) showView("settings", "myday"); });
 
     /* ---- Settings: weather location, feeds, countdowns ---- */
     let geoResults = [];
